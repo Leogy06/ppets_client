@@ -1,6 +1,7 @@
 "use client";
 import {
   EmployeeProps,
+  useEditEmployeeMutation,
   useGetDepartmentQuery,
   useGetEmployeesQuery,
 } from "@/state/api";
@@ -44,15 +45,26 @@ const Employee = () => {
     isError: isDptErr,
   } = useGetDepartmentQuery();
 
+  //edit employee
+  const [editEmployee] = useEditEmployeeMutation();
+
   const columns: GridColDef[] = [
-    { field: "LASTNAME", headerName: "Last Name", width: 150 },
+    { field: "ID_NUMBER", headerName: "ID number", width: 150, editable: true },
+    { field: "LASTNAME", headerName: "Last Name", width: 150, editable: true },
     {
       field: "FIRSTNAME",
       headerName: "First Name",
       width: 150,
+      editable: true,
     },
-    { field: "MIDDLENAME", headerName: "Middle Name", width: 150 },
-    { field: "SUFFIX", headerName: "Suffix", width: 100 },
+    {
+      field: "MIDDLENAME",
+      headerName: "Middle Name",
+      width: 150,
+      editable: true,
+    },
+    { field: "SUFFIX", headerName: "Suffix", width: 100, editable: true },
+    { field: "CURRENT_DEPARTMENT" },
     { field: "CREATED_BY", headerName: "Added by", width: 150 },
     {
       field: "CREATED_WHEN",
@@ -70,6 +82,21 @@ const Employee = () => {
       valueFormatter: (param) => dateFormmater(param as string),
     },
   ];
+
+  //handle row edit
+  const handleRowEdit = async (newRow: any) => {
+    console.log("New Row: ", newRow);
+
+    const { ID, ...updatedFields } = newRow;
+    try {
+      await editEmployee({ data: updatedFields, id: ID });
+
+      return { ...newRow };
+    } catch (error) {
+      console.error(error);
+      return { ...employees?.find((row) => row.ID === ID) };
+    }
+  };
 
   //router
   const router = useRouter();
@@ -108,7 +135,11 @@ const Employee = () => {
         )}
       </div>
       <Paper sx={{ height: 400, width: "100%", marginBottom: "1rem" }}>
-        <DataGrid rows={employees} columns={columns} />
+        <DataGrid
+          rows={employees}
+          columns={columns}
+          processRowUpdate={handleRowEdit}
+        />
       </Paper>
       <div className="flex justify-end">
         <Button

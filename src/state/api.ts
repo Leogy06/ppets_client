@@ -53,6 +53,7 @@ export const apiSlice = createApi({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["Employees"],
     }),
 
     //department api
@@ -67,4 +68,5 @@ export const {
   useGetEmployeesQuery,
   useGetDepartmentQuery,
   useAddEmployeeMutation,
+  useEditEmployeeMutation,
 } = apiSlice;
