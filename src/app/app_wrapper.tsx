@@ -5,6 +5,7 @@ import Topbar from "./(component)/topbar";
 import Sidebar from "./(component)/sidebar";
 import StoreProvider, { useAppSelector } from "./redux";
 import { createTheme, ThemeProvider } from "@mui/material";
+import { GlobalSnackbarProvider } from "@/context/GlobalSnackbar";
 
 const Wrapper = ({ children }: { children: ReactNode }) => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
@@ -29,15 +30,17 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 
   return (
     <ThemeProvider theme={muiTheme}>
-      <div
-        className={`flex flex-col h-screen bg-gray-50 text-gray-900 ${
-          isDarkMode ? "dark" : "light"
-        }`}
-      >
-        <Topbar />
-        <Sidebar />
-        {children}
-      </div>
+      <GlobalSnackbarProvider>
+        <div
+          className={`flex flex-col h-screen bg-gray-50 text-gray-900 ${
+            isDarkMode ? "dark" : "light"
+          }`}
+        >
+          <Topbar />
+          <Sidebar />
+          {children}
+        </div>
+      </GlobalSnackbarProvider>
     </ThemeProvider>
   );
 };

@@ -1,6 +1,12 @@
 "use client";
 
-import { Dashboard, Inventory, KeyRounded, People } from "@mui/icons-material";
+import {
+  Dashboard,
+  Houseboat,
+  Inventory,
+  KeyRounded,
+  People,
+} from "@mui/icons-material";
 import {
   Box,
   Divider,
@@ -35,9 +41,14 @@ const navigations = [
     path: "/inventory",
   },
   {
-    label: "Encoder",
+    label: "Property Custodian",
     icon: <KeyRounded />,
     path: "/encoder",
+  },
+  {
+    label: "Department",
+    icon: <Houseboat />,
+    path: "/department",
   },
 ];
 
