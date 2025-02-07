@@ -23,6 +23,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  //check if its in the login page;
+
   return (
     <html lang="en">
       <body

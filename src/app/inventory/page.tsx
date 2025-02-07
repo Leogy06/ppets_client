@@ -1,7 +1,12 @@
 import React from "react";
+import PageHeader from "@/app/(component)/pageheader";
 
 const Inventory = () => {
-  return <div>Inventory</div>;
+  return (
+    <>
+      <PageHeader pageHead="Inventory" />
+    </>
+  );
 };
 
 export default Inventory;

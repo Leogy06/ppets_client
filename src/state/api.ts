@@ -56,6 +56,16 @@ export const apiSlice = createApi({
       invalidatesTags: ["Employees"],
     }),
 
+    //
+    deleteEmployees: builder.mutation({
+      query: (IDs: number[]) => ({
+        url: `/employees/delete?DELETED=1`, //change lang 0 kung mag revert
+        method: "DELETE",
+        body: { IDs },
+      }),
+      invalidatesTags: ["Employees"],
+    }),
+
     //department api
     getDepartment: builder.query<DepartmentProps[], void>({
       query: () => "/departments",
@@ -69,4 +79,5 @@ export const {
   useGetDepartmentQuery,
   useAddEmployeeMutation,
   useEditEmployeeMutation,
+  useDeleteEmployeesMutation,
 } = apiSlice;
