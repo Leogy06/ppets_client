@@ -1,5 +1,6 @@
 "use client";
 import {
+  EmployeeProps,
   useDeleteEmployeesMutation,
   useEditEmployeeMutation,
   useGetDepartmentQuery,
@@ -18,6 +19,7 @@ import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
+import { ErrorParams } from "@/types/global_types";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -92,11 +94,7 @@ const Employee = () => {
   } = useGetEmployeesQuery(departmentID);
 
   //get department
-  const {
-    data: departments,
-    isLoading: isDptRdy,
-    isError: isDptErr,
-  } = useGetDepartmentQuery();
+  const { data: departments, isLoading: isDptRdy } = useGetDepartmentQuery();
 
   //edit employee
   const [editEmployee] = useEditEmployeeMutation();
@@ -144,9 +142,7 @@ const Employee = () => {
   ];
 
   //handle row edit
-  const handleRowEdit = async (newRow: any) => {
-    console.log("New Row: ", newRow);
-
+  const handleRowEdit = async (newRow: EmployeeProps) => {
     const { ID, ...updatedFields } = newRow;
     try {
       await editEmployee({ data: updatedFields, id: ID });
@@ -169,10 +165,11 @@ const Employee = () => {
 
       openSnackbar(result?.message || "Employees are deleted.", "success");
       setOpenDltConfMdl(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
       openSnackbar(
-        error?.response.message || "Unable to Delete employee(s)",
+        (error as ErrorParams)?.response?.message ||
+          "Unable to Delete employee(s)",
         "error"
       );
     }
@@ -226,8 +223,9 @@ const Employee = () => {
         <DataGrid
           rows={employees}
           columns={columns}
-          processRowUpdate={handleRowEdit}
+          processRowUpdate={(newRow) => handleRowEdit(newRow)}
           checkboxSelection
+          getRowId={(row) => row.ID}
           onRowSelectionModelChange={(rowSelectionModel) =>
             handleSelectionChange(rowSelectionModel as number[])
           }

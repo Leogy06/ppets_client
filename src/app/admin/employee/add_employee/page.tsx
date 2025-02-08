@@ -48,21 +48,19 @@ const AddEmployee = () => {
   //submit form
 
   //get department
-  const {
-    data: departments,
-    isLoading: isDptRdy,
-    isError: isDptError,
-  } = useGetDepartmentQuery();
+  const { data: departments, isLoading: isDptRdy } = useGetDepartmentQuery();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      const result: any = await addEmployee(formValues).unwrap();
+      const result = await addEmployee(formValues).unwrap();
       openSnackbar(result?.message || "Employee Added", "success");
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      openSnackbar(error.data.message, "error");
+      const errorMessage = (error as { data: { message: string } }).data
+        .message;
+      openSnackbar(errorMessage, "error");
     }
   };
 
@@ -110,8 +108,11 @@ const AddEmployee = () => {
             onChange={(_, newValue) => {
               if (newValue) {
                 handleChangeDepartment({
-                  target: { value: newValue.ID.toString() },
-                });
+                  target: {
+                    value: String(newValue.ID),
+                    name: "DEPARTMENT_ID",
+                  } as EventTarget & HTMLInputElement,
+                } as SelectChangeEvent);
               }
             }}
             renderInput={(params) => (

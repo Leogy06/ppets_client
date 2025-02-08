@@ -4,7 +4,7 @@ import { ArrowRight, PeopleOutlineOutlined } from "@mui/icons-material";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const EmployeeLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   //router
@@ -42,4 +42,4 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default layout;
+export default EmployeeLayout;

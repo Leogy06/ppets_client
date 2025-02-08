@@ -1,13 +1,12 @@
 "use client";
 
 import React, { ReactNode, useEffect, useMemo } from "react";
-import Topbar from "./(component)/topbar";
-import Sidebar from "./(component)/sidebar";
 import StoreProvider, { useAppSelector } from "./redux";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { GlobalSnackbarProvider } from "@/context/GlobalSnackbar";
-import { usePathname } from "next/navigation";
 
+//for darkmode
+//snackbar
 const Wrapper = ({ children }: { children: ReactNode }) => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
@@ -29,10 +28,6 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
     [isDarkMode]
   );
 
-  const pathname = usePathname();
-
-  const mustLogin = pathname === "/";
-
   return (
     <ThemeProvider theme={muiTheme}>
       <GlobalSnackbarProvider>
@@ -41,8 +36,6 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
             isDarkMode ? "dark" : "light"
           }`}
         >
-          {!mustLogin && <Topbar />}
-          <Sidebar />
           {children}
         </div>
       </GlobalSnackbarProvider>
@@ -54,7 +47,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
       <Wrapper>
-        <div className="p-4 overflow-auto relative ">{children}</div>
+        <div className="p-4 overflow-auto">{children}</div>
       </Wrapper>
     </StoreProvider>
   );

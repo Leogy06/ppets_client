@@ -3,8 +3,10 @@ import { Button, TextField } from "@mui/material";
 import Image from "next/image";
 import ibs_logo from "@/assets/ibs.png";
 import lgu_logo from "@/assets/lgu_logo.png";
+import { useRouter } from "next/navigation";
 
-const LoginAdmin = () => {
+const LoginPage = () => {
+  const router = useRouter();
   return (
     <div className="flex items-center justify-center h-[38rem] ">
       <div className="flex flex-col justify-center gap-4 w-full md:w-96 ">
@@ -14,7 +16,11 @@ const LoginAdmin = () => {
         </div>
         <TextField label="Username" name="username" />
         <TextField label="Password" name="password" />
-        <Button variant="contained" sx={{ backgroundColor: "#375ba5" }}>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#375ba5" }}
+          onClick={() => router.push("/admin")}
+        >
           Login
         </Button>
         <Button variant="text">Forgot Password</Button>
@@ -23,4 +29,4 @@ const LoginAdmin = () => {
   );
 };
 
-export default LoginAdmin;
+export default LoginPage;
