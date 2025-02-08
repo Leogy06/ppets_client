@@ -6,11 +6,11 @@ import Sidebar from "@/app/admin/(components)/sidebar";
 
 const AdminDashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex flex-col">
+    <>
       <Topbar />
       <Sidebar />
-      {children}
-    </div>
+      <div className="p-4 flex flex-col">{children}</div>
+    </>
   );
 };
 

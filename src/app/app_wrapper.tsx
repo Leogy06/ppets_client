@@ -46,9 +46,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
-      <Wrapper>
-        <div className="p-4 overflow-auto">{children}</div>
-      </Wrapper>
+      <Wrapper>{children}</Wrapper>
     </StoreProvider>
   );
 };

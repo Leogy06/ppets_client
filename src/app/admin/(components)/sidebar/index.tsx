@@ -28,27 +28,27 @@ const navigations = [
   {
     label: "Dashboard",
     icon: <Dashboard />,
-    path: "/",
+    path: "/admin",
   },
   {
     label: "Employees",
     icon: <People />,
-    path: "/employee",
+    path: "/admin/employee",
   },
   {
     label: "Inventory",
     icon: <Inventory />,
-    path: "/inventory",
+    path: "/admin/inventory",
   },
   {
-    label: "Property Custodian",
+    label: "Manager",
     icon: <KeyRounded />,
-    path: "/encoder",
+    path: "admin/manager",
   },
   {
     label: "Department",
     icon: <Houseboat />,
-    path: "/department",
+    path: "/admin/department",
   },
 ];
 

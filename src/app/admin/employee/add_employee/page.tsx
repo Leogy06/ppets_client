@@ -125,7 +125,7 @@ const AddEmployee = () => {
             <Button variant="contained" type="submit">
               Submit
             </Button>
-            <Button type="reset" onClick={() => router.push("/employee")}>
+            <Button type="reset" onClick={() => router.push("/admin/employee")}>
               cancel
             </Button>
           </div>

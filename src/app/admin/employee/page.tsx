@@ -234,7 +234,7 @@ const Employee = () => {
       <div className="flex justify-end">
         <Button
           variant="contained"
-          onClick={() => router.push("/employee/add_employee")}
+          onClick={() => router.push("/admin/employee/add_employee")}
         >
           add employee
         </Button>
