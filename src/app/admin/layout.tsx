@@ -4,7 +4,7 @@ import React from "react";
 import Topbar from "@/app/admin/(components)/topbar";
 import Sidebar from "@/app/admin/(components)/sidebar";
 
-const AdminDashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const AdminPageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Topbar />
@@ -14,4 +14,4 @@ const AdminDashboardLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default AdminDashboardLayout;
+export default AdminPageLayout;
