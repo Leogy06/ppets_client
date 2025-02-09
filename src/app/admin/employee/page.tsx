@@ -5,7 +5,8 @@ import {
   useEditEmployeeMutation,
   useGetDepartmentQuery,
   useGetEmployeesQuery,
-} from "@/state/api";
+  useLogoutMutation,
+} from "@/features/api/apiSlice";
 import { dateFormmater } from "@/utils/date_formmater";
 import {
   Autocomplete,
@@ -78,6 +79,10 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 };
 
 const Employee = () => {
+  //router
+  const router = useRouter();
+  //logout
+  const [logout] = useLogoutMutation();
   //modal state for delete confimation
   const [openDltConfMdl, setOpenDltConfMdl] = useState(false);
   //use snackbar
@@ -175,9 +180,6 @@ const Employee = () => {
     }
   };
 
-  //router
-  const router = useRouter();
-
   if (isEmployeeRdy) {
     return <p className="animate-pulse">Loading...</p>;
   }
@@ -185,6 +187,7 @@ const Employee = () => {
   if (isEmployeeErr) {
     return <p className="text-red-500">Error loading data...</p>;
   }
+
   return (
     <>
       <div className=" flex justify-end mb-4">

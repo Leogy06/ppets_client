@@ -30,11 +30,24 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
+    credentials: "include",
   }),
-  tagTypes: ["Employees", "Departments"],
-
-  //employee api
+  tagTypes: ["Employees", "Departments", "User"],
   endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (credentials) => ({
+        url: "/user/auth/api/login",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/user/auth/api/logout",
+        method: "POST",
+      }),
+    }),
+    //employee api
     getEmployees: builder.query<EmployeeProps[], number>({
       query: (department) => `/employees?department=${department}`,
       providesTags: ["Employees"],
@@ -55,8 +68,6 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Employees"],
     }),
-
-    //
     deleteEmployees: builder.mutation({
       query: (IDs: number[]) => ({
         url: `/employees/delete?DELETED=1`, //change lang 0 kung mag revert
@@ -71,13 +82,27 @@ export const apiSlice = createApi({
       query: () => "/departments",
       providesTags: ["Departments"],
     }),
+
+    //user
+    checkUser: builder.query({
+      query: () => "/user/auth/api/checkuser",
+      providesTags: ["User"],
+    }),
   }),
 });
 
 export const {
-  useGetEmployeesQuery,
-  useGetDepartmentQuery,
+  //authenticate user
+  useLoginMutation,
+  useLogoutMutation,
+  useCheckUserQuery,
+
+  //employees
   useAddEmployeeMutation,
-  useEditEmployeeMutation,
+  useGetEmployeesQuery,
   useDeleteEmployeesMutation,
+  useEditEmployeeMutation,
+
+  //departments
+  useGetDepartmentQuery,
 } = apiSlice;

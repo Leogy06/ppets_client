@@ -5,6 +5,7 @@ import {
   Houseboat,
   Inventory,
   KeyRounded,
+  Logout,
   People,
 } from "@mui/icons-material";
 import {
@@ -16,12 +17,13 @@ import {
   ListItemText,
 } from "@mui/material";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import ibs_logo from "@/assets/ibs_logo.png";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
+import { useLogoutMutation } from "@/features/api/apiSlice";
 
 //navigations
 const navigations = [
@@ -43,7 +45,7 @@ const navigations = [
   {
     label: "Manager",
     icon: <KeyRounded />,
-    path: "admin/manager",
+    path: "/admin/manager",
   },
   {
     label: "Department",
@@ -66,21 +68,42 @@ const Sidebar = () => {
     dispatch(setIsSideBarCollapse(false));
   };
 
+  //logout
+  const router = useRouter();
+
+  const [logout] = useLogoutMutation();
+  const handleLogout = async () => {
+    await logout({});
+    router.push("/");
+  };
+
   return (
     <Drawer open={isSidebarOpen} onClose={closeSidebar}>
-      <Box sx={{ width: 260, height: "100%" }}>
+      <Box
+        sx={{
+          width: 260,
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {/**Side bar header */}
         <div className="flex items-center justify-center gap-2 p-1">
-          <Image src={ibs_logo} alt="ibs-logo" className="h-12 w-auto" />
+          <Image
+            src={ibs_logo}
+            priority
+            alt="ibs-logo"
+            className="h-12 w-auto"
+          />
           <div className="flex flex-col items-center justify-center text-base ">
-            <div className="flex items-baseline text-green-500 ms-0">
-              <h3 className="text-lg font-bold">I</h3>nventory
+            <div className={`flex items-baseline text-inherit  ms-0`}>
+              <h3 className="text-lg font-bold text-green-500">I</h3>nventory
             </div>{" "}
-            <div className="flex items-baseline text-blue-500 ms-6">
-              <h3 className="text-lg font-bold">B</h3>orrowing
+            <div className={`flex items-baseline text-inherit ms-6`}>
+              <h3 className="text-lg font-bold text-blue-500">B</h3>orrowing
             </div>{" "}
-            <div className="flex items-baseline text-yellow-500 ms-12">
-              <h3 className="text-lg font-bold">S</h3>ystem
+            <div className={`flex items-baseline text-inherit  ms-12`}>
+              <h3 className="text-lg font-bold text-yellow-500">S</h3>ystem
             </div>
           </div>
         </div>
@@ -89,18 +112,46 @@ const Sidebar = () => {
           {navigations.map((navi, index) => (
             <Link key={index} href={navi.path}>
               <ListItem
-                className="flex gap-4"
-                sx={{
-                  backgroundColor: `${pathname === navi.path ? "#375ba5" : ""}`,
-                  color: `${pathname === navi.path ? "#fff" : "#375ba5"}`,
-                }}
+                className="flex gap-4 hover:bg-blue-300"
+                sx={(theme) => ({
+                  backgroundColor:
+                    pathname === navi.path ? "#375ba5" : "transparent",
+                  color:
+                    pathname === navi.path
+                      ? "#fff"
+                      : theme.palette.mode === "dark"
+                      ? "#fff"
+                      : "#000",
+                })}
               >
                 {navi.icon}
-                <ListItemText primary={navi.label} />
+                <ListItemText
+                  primary={navi.label}
+                  sx={(theme) => ({
+                    color:
+                      pathname === navi.path
+                        ? "#fff"
+                        : theme.palette.mode === "dark"
+                        ? "#fff"
+                        : "#000",
+                  })}
+                />
               </ListItem>
             </Link>
           ))}
         </List>
+        <div className="self-baseline mt-auto w-full">
+          <Divider />
+          <ListItem disablePadding>
+            <button
+              className="flex items-center gap-4 justify-center w-full hover:bg-blue-300 p-4 text-lg"
+              onClick={handleLogout}
+            >
+              <Logout className="text-black" />
+              Logout
+            </button>
+          </ListItem>
+        </div>
       </Box>
     </Drawer>
   );

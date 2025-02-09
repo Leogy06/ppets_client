@@ -1,7 +1,10 @@
 "use client";
 
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import { useAddEmployeeMutation, useGetDepartmentQuery } from "@/state/api";
+import {
+  useAddEmployeeMutation,
+  useGetDepartmentQuery,
+} from "@/features/api/apiSlice";
 import {
   Autocomplete,
   Button,

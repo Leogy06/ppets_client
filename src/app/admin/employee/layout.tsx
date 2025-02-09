@@ -5,10 +5,11 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 const EmployeePageLayout = ({ children }: { children: React.ReactNode }) => {
+  //path name
   const pathname = usePathname();
-
   //router
   const router = useRouter();
+
   return (
     <>
       <div className="flex items-baseline gap-2 w-full overflow-auto">
