@@ -5,7 +5,6 @@ import {
   useEditEmployeeMutation,
   useGetDepartmentQuery,
   useGetEmployeesQuery,
-  useLogoutMutation,
 } from "@/features/api/apiSlice";
 import { dateFormmater } from "@/utils/date_formmater";
 import {
@@ -81,8 +80,6 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 const Employee = () => {
   //router
   const router = useRouter();
-  //logout
-  const [logout] = useLogoutMutation();
   //modal state for delete confimation
   const [openDltConfMdl, setOpenDltConfMdl] = useState(false);
   //use snackbar
