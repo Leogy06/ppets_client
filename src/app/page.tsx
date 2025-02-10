@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import Image from "next/image";
 import ibs_logo from "@/assets/ibs_logo.png";
 import lgu_logo from "@/assets/lgu_logo.png";
-import { useLoginMutation } from "@/features/api/apiSlice";
+import { useCheckUserQuery, useLoginMutation } from "@/features/api/apiSlice";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import { useRouter } from "next/navigation";
 
@@ -16,6 +16,13 @@ const LoginPage = () => {
     username: "",
     password: "",
   });
+
+  //check user
+  const {
+    data: userData,
+    isLoading: isUsrRdy,
+    isError: isUsrErr,
+  } = useCheckUserQuery({});
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginForm((prevForm) => ({ ...prevForm, [name]: value }));
@@ -54,6 +61,28 @@ const LoginPage = () => {
       openSnackbar(errorMessage, "error");
     }
   };
+
+  //check if user already login
+  useEffect(() => {
+    if (userData) {
+      //redirect the user depending on the role
+      switch (userData.user.role) {
+        case "1":
+          router.push("/admin");
+          break;
+        case "2":
+          router.push("/manager");
+          break;
+        case "3":
+          router.push("/employee");
+          break;
+        default:
+          router.push("/");
+          localStorage.removeItem("role");
+          openSnackbar("Unknown user type", "error");
+      }
+    }
+  }, [userData]);
 
   return (
     <div className="flex items-center justify-center h-[38rem] p-4">

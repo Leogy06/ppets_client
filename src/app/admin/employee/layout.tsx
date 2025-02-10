@@ -17,19 +17,21 @@ const EmployeePageLayout = ({ children }: { children: React.ReactNode }) => {
           <PeopleOutlineOutlined />
           <span
             className="hover:underline-offset-1 hover:cursor-pointer"
-            onClick={() => pathname !== "/employee" && router.push("/employee")}
+            onClick={() =>
+              pathname !== "/admin/employee" && router.push("/admin/employee")
+            }
           >
             Employee
           </span>
         </h1>
         {/**add further pathname */}
-        {pathname === "/employee/add_employee" && (
+        {pathname === "/admin/employee/add_employee" && (
           <h1 className={`text-xl font-medium mb-4 flex gap-1`}>
             <ArrowRight />{" "}
             <a
-              href="/employee/add_employee "
+              href="/admin/employee/add_employee "
               className={`${
-                pathname === "/employee/add_employee" &&
+                pathname === "/admin/employee/add_employee" &&
                 "font-semibold text-blue-600"
               }`}
             >
