@@ -1,3 +1,4 @@
+import { ItemProps } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface EmployeeProps {
@@ -32,7 +33,7 @@ export const apiSlice = createApi({
     baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
     credentials: "include",
   }),
-  tagTypes: ["Employees", "Departments", "User", "Items"],
+  tagTypes: ["Employees", "Departments", "User", "Items", "ItemCategories"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -90,9 +91,24 @@ export const apiSlice = createApi({
     }),
 
     //item
-    getItems: builder.query({
+    getItems: builder.query<ItemProps[], void>({
       query: () => "/item",
       providesTags: ["Items"],
+    }),
+
+    addItem: builder.mutation({
+      query: (data) => ({
+        url: "/item",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Items"],
+    }),
+
+    //item category
+    getItemCategories: builder.query({
+      query: () => "/item-category",
+      providesTags: ["ItemCategories"],
     }),
   }),
 });
@@ -114,4 +130,8 @@ export const {
 
   //item
   useGetItemsQuery,
+  useAddItemMutation,
+
+  //item-category
+  useGetItemCategoriesQuery,
 } = apiSlice;

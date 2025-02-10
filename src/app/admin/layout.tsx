@@ -3,7 +3,7 @@
 import React from "react";
 import Topbar from "@/app/admin/(components)/topbar";
 import Sidebar from "@/app/admin/(components)/sidebar";
-import { useCheckUserQuery, } from "@/features/api/apiSlice";
+import { useCheckUserQuery } from "@/features/api/apiSlice";
 
 const AdminPageLayout = ({ children }: { children: React.ReactNode }) => {
   //redirect to login if user has no token and role is not
@@ -20,7 +20,7 @@ const AdminPageLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <Topbar />
       <Sidebar />
-      <div className="p-4 flex flex-col">{children}</div>
+      <div className="p-4 flex flex-col overflow-auto">{children}</div>
     </>
   );
 };

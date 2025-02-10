@@ -147,7 +147,7 @@ const Sidebar = () => {
               className="flex items-center gap-4 justify-center w-full hover:bg-blue-300 p-4 text-lg"
               onClick={handleLogout}
             >
-              <Logout className="text-black" />
+              <Logout sx={{ color: "inherit" }} />
               Logout
             </button>
           </ListItem>

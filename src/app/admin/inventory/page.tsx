@@ -1,6 +1,5 @@
 "use client";
 
-import PageHeader from "@/app/(component)/pageheader";
 import { useGetItemsQuery } from "@/features/api/apiSlice";
 import { Button, Paper } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -13,9 +12,10 @@ const Inventory = () => {
     data: items,
     isLoading: isItmRdy,
     isError: isErrItm,
-  } = useGetItemsQuery({});
+  } = useGetItemsQuery();
 
   const columns: GridColDef[] = [
+    { field: "name", headerName: "Name", width: 180 },
     { field: "description", headerName: "Description", width: 250 },
     { field: "quantity", headerName: "Quantity", width: 250, type: "number" },
     { field: "ics", headerName: "ICS#", width: 170 },
@@ -50,7 +50,6 @@ const Inventory = () => {
 
   return (
     <>
-      <PageHeader pageHead="Inventory" />
       <Paper sx={{ width: "100%", height: 400 }}>
         <DataGrid columns={columns} rows={items} />
       </Paper>

@@ -30,8 +30,6 @@ const LoginPage = () => {
     try {
       const { user, message } = await loginUser(loginForm).unwrap();
 
-      console.log({ user });
-
       //redirect the user depending on the role
       switch (user.role) {
         case 1:
@@ -74,11 +72,10 @@ const LoginPage = () => {
           break;
         default:
           router.push("/");
-          localStorage.removeItem("role");
           openSnackbar("Unknown user type", "error");
       }
     }
-  }, [userData]);
+  }, [userData, openSnackbar, router]);
 
   return (
     <div className="flex items-center justify-center h-[38rem] p-4">
@@ -87,9 +84,19 @@ const LoginPage = () => {
         className="flex flex-col justify-center gap-4 w-full md:w-96 "
       >
         <div className="flex gap-4 justify-center items-center">
-          <Image src={lgu_logo} alt="lgu-logo" className="h-32 w-auto" />
+          <Image
+            src={lgu_logo}
+            alt="lgu-logo"
+            className="h-32 w-auto"
+            priority
+          />
           <div className="flex flex-col items-center">
-            <Image src={ibs_logo} alt="ibs-logo" className="h-32 w-auto" />
+            <Image
+              src={ibs_logo}
+              alt="ibs-logo"
+              className="h-32 w-auto"
+              priority
+            />
             <span className="flex text-base items-baseline gap-1">
               <div className="flex items-baseline">
                 <h1 className="text-green-600 font-bold text-2xl">I</h1>{" "}
