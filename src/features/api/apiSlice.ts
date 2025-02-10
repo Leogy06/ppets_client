@@ -32,7 +32,7 @@ export const apiSlice = createApi({
     baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
     credentials: "include",
   }),
-  tagTypes: ["Employees", "Departments", "User"],
+  tagTypes: ["Employees", "Departments", "User", "Items"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -88,6 +88,12 @@ export const apiSlice = createApi({
       query: () => "/user/auth/api/checkuser",
       providesTags: ["User"],
     }),
+
+    //item
+    getItems: builder.query({
+      query: () => "/item",
+      providesTags: ["Items"],
+    }),
   }),
 });
 
@@ -105,4 +111,7 @@ export const {
 
   //departments
   useGetDepartmentQuery,
+
+  //item
+  useGetItemsQuery,
 } = apiSlice;

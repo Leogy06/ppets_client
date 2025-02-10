@@ -18,11 +18,7 @@ const LoginPage = () => {
   });
 
   //check user
-  const {
-    data: userData,
-    isLoading: isUsrRdy,
-    isError: isUsrErr,
-  } = useCheckUserQuery({});
+  const { data: userData } = useCheckUserQuery({});
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginForm((prevForm) => ({ ...prevForm, [name]: value }));
