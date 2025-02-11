@@ -8,10 +8,103 @@ import {
   Autocomplete,
   Button,
   CircularProgress,
+  Modal,
   TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+
+interface ConfirmationModalProps {
+  open: boolean;
+  onClose: () => void;
+  submit: (e: React.FormEvent<HTMLFormElement>) => void;
+  itemForm: {
+    name: string;
+    description: string;
+    quantity: number;
+    ics: string;
+    are_no: string;
+    prop_no: string;
+    serial_no: string;
+    value: number;
+    category_item: number;
+  };
+}
+
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  open,
+  onClose,
+  submit,
+  itemForm,
+}) => {
+  return (
+    <Modal open={open} onClose={onClose}>
+      {/* From Uiverse.io by EcheverriaJesus */}
+      <div className="flex flex-col bg-white h-96 w-96 rounded-md py-4 px-6 border absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-auto">
+        <h3 className="text-center font-bold text-xl text-gray-800 pb-2">
+          Item Summary
+        </h3>
+        <h3 className="text-base font-semibold text-gray-900 flex gap-1">
+          <p>Name:</p> {itemForm.name}
+        </h3>
+        <p className="text-sm text-gray-500 pb-3 flex gap-1">
+          <p>Description:</p> {itemForm.description}
+        </p>
+        <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
+          <p className="">Quantity:</p>
+          <p>{itemForm.quantity}</p>
+        </div>
+        <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
+          <p className="">ICS:</p>
+          <p>{itemForm.ics}</p>
+        </div>
+        <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
+          <p className="">ARE #:</p>
+          <p>{itemForm.are_no}</p>
+        </div>
+        <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
+          <p className="">Property #:</p>
+          <p>{itemForm.prop_no}</p>
+        </div>
+        <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
+          <p className="">Serial #:</p>
+          <p>{itemForm.serial_no}</p>
+        </div>
+        <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
+          <p className="">Value:</p>
+          <p>{itemForm.value}</p>
+        </div>
+        <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
+          <p className="">Category:</p>
+          <p>{itemForm.category_item}</p>
+        </div>
+        <div className="flex justify-center items-center py-3">
+          <Button
+            variant="contained"
+            onClick={() =>
+              submit(
+                new Event(
+                  "submit"
+                ) as unknown as React.FormEvent<HTMLFormElement>
+              )
+            }
+            disabled={
+              !itemForm.name ||
+              !itemForm.description ||
+              !itemForm.quantity ||
+              !itemForm.serial_no ||
+              !itemForm.value ||
+              !itemForm.category_item
+            }
+          >
+            Save
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
 
 const AddItem = () => {
   const [itemForm, setItemForm] = useState({
@@ -37,6 +130,9 @@ const AddItem = () => {
 
   const { openSnackbar } = useSnackbar();
 
+  //modal confirmation
+  const [openModal, setOpenModal] = useState(false);
+
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
 
@@ -53,6 +149,15 @@ const AddItem = () => {
     } else {
       openSnackbar("Item has been added.", "success");
     }
+  };
+
+  //handle modals
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   if (isItmCatRdy) {
@@ -128,7 +233,15 @@ const AddItem = () => {
             onChange={handleChangeForm}
             disabled={isItemLding}
             type="number"
+            inputProps={{ step: "0.01" }}
             required
+          />
+
+          <TextField //change pani
+            name="emp_owner"
+            label="Owner"
+            onChange={handleChangeForm}
+            disabled={isItemLding}
           />
 
           <Autocomplete
@@ -157,7 +270,15 @@ const AddItem = () => {
               />
             )}
           />
-          <div className="flex gap-2 justify-center md:justify-end">
+          <div className="flex gap-2 justify-center  md:justify-end">
+            <Button
+              variant="contained"
+              type="button"
+              onClick={handleOpenModal}
+              disabled={isItemLding}
+            >
+              checkout
+            </Button>
             <Button
               type="reset"
               onClick={() => router.push("/admin/inventory")}
@@ -165,12 +286,16 @@ const AddItem = () => {
             >
               cancel
             </Button>
-            <Button variant="contained" type="submit" disabled={isItemLding}>
-              add
-            </Button>
           </div>
         </form>
       </div>
+      {/*Modal confirmation add*/}
+      <ConfirmationModal
+        open={openModal}
+        onClose={handleCloseModal}
+        submit={handleSubmitForm}
+        itemForm={itemForm}
+      />
     </>
   );
 };

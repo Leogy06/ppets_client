@@ -90,16 +90,27 @@ export const apiSlice = createApi({
       providesTags: ["User"],
     }),
 
-    //item
+    //items
+    //view
     getItems: builder.query<ItemProps[], void>({
       query: () => "/item",
       providesTags: ["Items"],
     }),
 
+    //add
     addItem: builder.mutation({
       query: (data) => ({
         url: "/item",
         method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Items"],
+    }),
+    //edit
+    editItem: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/item/${id}`,
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: ["Items"],
@@ -131,6 +142,7 @@ export const {
   //item
   useGetItemsQuery,
   useAddItemMutation,
+  useEditItemMutation,
 
   //item-category
   useGetItemCategoriesQuery,

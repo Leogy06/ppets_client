@@ -15,15 +15,37 @@ const Inventory = () => {
   } = useGetItemsQuery();
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Name", width: 180 },
-    { field: "description", headerName: "Description", width: 250 },
-    { field: "quantity", headerName: "Quantity", width: 250, type: "number" },
-    { field: "ics", headerName: "ICS#", width: 170 },
-    { field: "are_no", headerName: "ARE#", width: 130 },
-    { field: "prop_no", headerName: "PROP#", width: 120 },
-    { field: "value", headerName: "VALUE", width: 90 },
-    { field: "status", headerName: "STATUS", width: 75 },
-    { field: "category_item", headerName: "CATEGORY", width: 250 },
+    { field: "name", headerName: "Name", width: 180, editable: true },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 250,
+      editable: true,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 250,
+      type: "number",
+      editable: true,
+    },
+    {
+      field: "emp_ownder",
+      headerName: "Owner",
+      width: 170,
+      valueGetter: (params) => (params ? params : "Not owned"),
+    },
+    { field: "ics", headerName: "ICS#", width: 170, editable: true },
+    { field: "are_no", headerName: "ARE#", width: 130, editable: true },
+    { field: "prop_no", headerName: "PROP#", width: 120, editable: true },
+    { field: "value", headerName: "VALUE", width: 90, editable: true },
+    { field: "status", headerName: "STATUS", width: 75, editable: true },
+    {
+      field: "category_item",
+      headerName: "CATEGORY",
+      width: 250,
+      editable: true,
+    },
     {
       field: "createdAt",
       headerName: "Added at#",
