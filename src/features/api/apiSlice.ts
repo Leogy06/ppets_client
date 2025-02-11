@@ -116,6 +116,16 @@ export const apiSlice = createApi({
       invalidatesTags: ["Items"],
     }),
 
+    //delete item
+    deleteItems: builder.mutation({
+      query: ({ ids }) => ({
+        url: "/item",
+        method: "DELETE",
+        body: ids,
+      }),
+      invalidatesTags: ["Items"],
+    }),
+
     //item category
     getItemCategories: builder.query({
       query: () => "/item-category",
@@ -143,6 +153,7 @@ export const {
   useGetItemsQuery,
   useAddItemMutation,
   useEditItemMutation,
+  useDeleteItemsMutation,
 
   //item-category
   useGetItemCategoriesQuery,
