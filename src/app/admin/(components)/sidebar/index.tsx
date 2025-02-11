@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AccountTreeOutlined,
   Dashboard,
   Houseboat,
   Inventory,
@@ -51,6 +52,11 @@ const navigations = [
     label: "Department",
     icon: <Houseboat />,
     path: "/admin/department",
+  },
+  {
+    label: "Distributions",
+    icon: <AccountTreeOutlined />,
+    path: "/admin/distributions",
   },
 ];
 

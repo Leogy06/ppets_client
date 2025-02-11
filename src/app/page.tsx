@@ -43,7 +43,7 @@ const LoginPage = () => {
           break;
         default:
           router.push("/");
-          localStorage.removeItem("role");
+
           openSnackbar("Unknown user type", "error");
       }
 
@@ -61,13 +61,13 @@ const LoginPage = () => {
     if (userData) {
       //redirect the user depending on the role
       switch (userData.user.role) {
-        case "1":
+        case 1:
           router.push("/admin");
           break;
-        case "2":
+        case 2:
           router.push("/manager");
           break;
-        case "3":
+        case 3:
           router.push("/employee");
           break;
         default:
