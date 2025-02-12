@@ -47,6 +47,7 @@ export const apiSlice = createApi({
         url: "/user/auth/api/logout",
         method: "POST",
       }),
+      invalidatesTags: ["User"],
     }),
     //employee api
     getEmployees: builder.query<EmployeeProps[], number>({

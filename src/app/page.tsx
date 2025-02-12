@@ -8,6 +8,7 @@ import lgu_logo from "@/assets/lgu_logo.png";
 import { useCheckUserQuery, useLoginMutation } from "@/features/api/apiSlice";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -17,8 +18,9 @@ const LoginPage = () => {
     password: "",
   });
 
-  //check user
-  const { data: userData } = useCheckUserQuery({});
+  //check auth
+  const { user } = useAuth();
+
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginForm((prevForm) => ({ ...prevForm, [name]: value }));
@@ -28,10 +30,11 @@ const LoginPage = () => {
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { user, message } = await loginUser(loginForm).unwrap();
+      const result = await loginUser(loginForm).unwrap();
+      console.log({ result });
 
       //redirect the user depending on the role
-      switch (user.role) {
+      switch (result.user?.role) {
         case 1:
           router.push("/admin");
           break;
@@ -47,7 +50,7 @@ const LoginPage = () => {
           openSnackbar("Unknown user type", "error");
       }
 
-      openSnackbar(message || "Success login.", "info");
+      openSnackbar("Success login.", "info");
     } catch (error) {
       console.error(`Unable to login user - ${error}`);
       const errorMessage = (error as { data: { message: string } }).data
@@ -56,26 +59,26 @@ const LoginPage = () => {
     }
   };
 
-  //check if user already login
   useEffect(() => {
-    if (userData) {
-      //redirect the user depending on the role
-      switch (userData.user.role) {
+    if (user) {
+      switch (user.role) {
         case 1:
           router.push("/admin");
           break;
+
         case 2:
           router.push("/manager");
           break;
+
         case 3:
           router.push("/employee");
           break;
+
         default:
-          router.push("/");
-          openSnackbar("Unknown user type", "error");
+          break;
       }
     }
-  }, [userData, openSnackbar, router]);
+  }, [user]);
 
   return (
     <div className="flex items-center justify-center h-[38rem] p-4">

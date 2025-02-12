@@ -5,6 +5,15 @@ import {
   useGetDepartmentQuery,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
+import {
+  AddShoppingCartOutlined,
+  AddShoppingCartRounded,
+  ControlPoint,
+  DifferenceOutlined,
+  Handshake,
+  HandshakeOutlined,
+  PostAddOutlined,
+} from "@mui/icons-material";
 import { Autocomplete, Paper, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
@@ -46,13 +55,19 @@ const Distribution = () => {
       renderCell: (params) => (
         <div className="flex gap-2">
           <DefaultButton
-            btnText="Distribute item"
+            btnIcon={<PostAddOutlined />}
+            title="Distribute one item"
             color="secondary"
+            placement="left"
             onClick={() =>
               router.push(`/admin/distributions/distribute/${params.id}`)
             }
           />
-          <DefaultButton btnText="Multiple item distribution" />
+          <DefaultButton
+            btnIcon={<DifferenceOutlined />}
+            title="Add multiple items"
+            placement="right"
+          />
         </div>
       ),
     },
@@ -67,7 +82,11 @@ const Distribution = () => {
         className="w-full md:w-96 mb-4"
         options={departments || []}
         getOptionLabel={(option) => option.DEPARTMENT_NAME || ""}
-        value={departments?.find((d) => d.ID === department || null)}
+        value={
+          departments && department
+            ? departments?.find((d) => d.ID === department) || null
+            : null
+        }
         onChange={(_, newValue) => {
           if (newValue) {
             setDepartment(newValue.ID);

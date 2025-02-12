@@ -4,6 +4,8 @@ import React, { ReactNode, useEffect, useMemo } from "react";
 import StoreProvider, { useAppSelector } from "./redux";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { GlobalSnackbarProvider } from "@/context/GlobalSnackbar";
+import { AuthProvider } from "@/context/AuthContext";
+import Sidebar from "./(component)/sidebar";
 
 //for darkmode
 //snackbar
@@ -46,7 +48,10 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
-      <Wrapper>{children}</Wrapper>
+      <AuthProvider>
+        <Sidebar />
+        <Wrapper>{children}</Wrapper>
+      </AuthProvider>
     </StoreProvider>
   );
 };

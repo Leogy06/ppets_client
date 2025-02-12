@@ -10,7 +10,7 @@ import { ItemProps } from "@/types/global_types";
 import { Button, Modal, Paper } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -115,7 +115,20 @@ const Inventory = () => {
     { field: "ics", headerName: "ICS#", width: 170, editable: true },
     { field: "are_no", headerName: "ARE#", width: 130, editable: true },
     { field: "prop_no", headerName: "PROP#", width: 120, editable: true },
-    { field: "value", headerName: "VALUE", width: 90, editable: true },
+    {
+      field: "unit_value",
+      headerName: "Unit Value",
+      width: 90,
+      type: "number",
+      editable: true,
+    },
+    {
+      field: "total_value",
+      headerName: "Total Value",
+      width: 90,
+      type: "number",
+      editable: true,
+    },
     { field: "status", headerName: "STATUS", width: 75, editable: true },
     {
       field: "category_item",
@@ -166,6 +179,12 @@ const Inventory = () => {
 
     openSnackbar("Item(s) deleted successfully.", "success");
   };
+
+  useEffect(() => {
+    if (items) {
+      console.log({ items });
+    }
+  }, [items]);
 
   if (isItmRdy) {
     return <div className="animate-pulse text-lg">Loading...</div>;

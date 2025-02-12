@@ -1,13 +1,17 @@
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import React from "react";
 
 interface DefaultButtonProps {
-  btnText: string;
+  btnText?: string;
   variant?: "contained" | "outlined" | "text";
   onClick?: () => void;
   type?: "submit" | "button" | "reset";
   disabled?: boolean;
   color?: "primary" | "success" | "secondary";
+  title?: string;
+  placement?: "left" | "top" | "right";
+  btnIcon?: React.ReactNode;
+  secondIcon?: React.ReactNode;
 }
 
 const DefaultButton: React.FC<DefaultButtonProps> = ({
@@ -17,17 +21,25 @@ const DefaultButton: React.FC<DefaultButtonProps> = ({
   type = "button",
   disabled = false,
   color = "primary",
+  title,
+  btnIcon,
+  placement = "left",
+  secondIcon,
 }) => {
   return (
-    <Button
-      color={color}
-      variant={variant}
-      onClick={onClick}
-      type={type}
-      disabled={disabled}
-    >
-      {btnText}
-    </Button>
+    <Tooltip title={title} placement={placement}>
+      <Button
+        color={color}
+        variant={variant}
+        onClick={onClick}
+        type={type}
+        disabled={disabled}
+      >
+        {btnIcon}
+        {secondIcon}
+        {btnText}
+      </Button>
+    </Tooltip>
   );
 };
 
