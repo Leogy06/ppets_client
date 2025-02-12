@@ -6,15 +6,14 @@ import { useRouter } from "next/navigation";
 import { useCheckUserQuery } from "@/features/api/apiSlice";
 
 const ManagerLayout = ({ children }: { children: React.ReactNode }) => {
-  const { data: user, isLoading } = useCheckUserQuery({});
+  const { data, isLoading } = useCheckUserQuery({});
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== 2)) {
+    if (!isLoading && (!data || data.role !== 2)) {
       router.push("/");
     }
-    console.log({ user });
-  }, [user]);
+  }, [data]);
 
   return isLoading ? (
     <div className="animate-pulse">Loading...</div>
@@ -22,10 +21,7 @@ const ManagerLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <Topbar />
       <PageHeader pageHead="Property Custodian" />
-      <div className="p-4 flex flex-col">
-        <div>Welcome user: {user?.username ?? "Guess"} </div>
-        {children}
-      </div>
+      <div className="p-4 flex flex-col">{children}</div>
     </>
   );
 };
