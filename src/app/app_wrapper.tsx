@@ -1,11 +1,12 @@
 "use client";
 
 import React, { ReactNode, useEffect, useMemo } from "react";
-import StoreProvider, { useAppSelector } from "./redux";
+import StoreProvider, { useAppSelector } from "@/app/redux";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { GlobalSnackbarProvider } from "@/context/GlobalSnackbar";
 import { AuthProvider } from "@/context/AuthContext";
-import Sidebar from "./(component)/sidebar";
+import Sidebar from "@/app/(component)/sidebar";
+import Topbar from "@/app/(component)/topbar";
 
 //for darkmode
 //snackbar
@@ -38,6 +39,8 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
             isDarkMode ? "dark" : "light"
           }`}
         >
+          <Sidebar />
+          <Topbar />
           {children}
         </div>
       </GlobalSnackbarProvider>
@@ -49,7 +52,6 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
       <AuthProvider>
-        <Sidebar />
         <Wrapper>{children}</Wrapper>
       </AuthProvider>
     </StoreProvider>

@@ -78,6 +78,10 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Employees"],
     }),
+    getEmployeeById: builder.query({
+      query: (empId) => `/employees/${empId}`,
+      providesTags: ["Employees"],
+    }),
 
     //department api
     getDepartment: builder.query<DepartmentProps[], void>({
@@ -117,6 +121,12 @@ export const apiSlice = createApi({
       invalidatesTags: ["Items"],
     }),
 
+    //get items by owner
+    getItemsByOwner: builder.query({
+      query: (empId) => `/item/${empId}`,
+      providesTags: ["Items"],
+    }),
+
     //delete item
     deleteItems: builder.mutation({
       query: ({ ids }) => ({
@@ -146,6 +156,7 @@ export const {
   useGetEmployeesQuery,
   useDeleteEmployeesMutation,
   useEditEmployeeMutation,
+  useGetEmployeeByIdQuery,
 
   //departments
   useGetDepartmentQuery,
@@ -155,6 +166,7 @@ export const {
   useAddItemMutation,
   useEditItemMutation,
   useDeleteItemsMutation,
+  useGetItemsByOwnerQuery,
 
   //item-category
   useGetItemCategoriesQuery,

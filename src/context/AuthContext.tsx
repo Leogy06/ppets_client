@@ -8,30 +8,34 @@ import { useRouter } from "next/navigation";
 
 // Define the type for the user
 interface User {
+  id: number;
   role: number;
   username: string;
-  user: {
-    id: number;
-    role: number;
-  };
+  emp_id: number;
   // Add other user fields if needed
+}
+
+interface Credentials {
+  username: string;
+  password: string;
 }
 
 // Define the AuthContext type
 interface AuthContextType {
   user: User | null;
   logoutUser: () => Promise<void>;
-  loginUser: (params: any) => void;
+  loginUser: (credentials: Credentials) => void;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [login] = useLoginMutation({});
-  const [user, setUser] = useState(null);
+  const [login, { isLoading }] = useLoginMutation({});
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const [logout] = useLogoutMutation();
-  const { data, isLoading } = useCheckUserQuery({});
+  const { data } = useCheckUserQuery({});
 
   useEffect(() => {
     if (data) {
@@ -39,9 +43,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [data]);
 
-  const loginUser = async (credentials: any) => {
+  const loginUser = async (credentials: Credentials) => {
     const result = await login(credentials).unwrap();
-    setUser(result);
+    setUser(result.user);
   };
 
   const logoutUser = async () => {
@@ -51,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, logoutUser, loginUser }}>
+    <AuthContext.Provider value={{ user, logoutUser, loginUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

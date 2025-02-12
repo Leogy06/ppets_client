@@ -1,5 +1,4 @@
 import PageHeader from "@/app/(component)/pageheader";
-import Sidebar from "@/app/(component)/sidebar";
 import { AccountTreeOutlined } from "@mui/icons-material";
 import React from "react";
 

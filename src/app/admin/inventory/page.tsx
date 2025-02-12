@@ -10,7 +10,7 @@ import { ItemProps } from "@/types/global_types";
 import { Button, Modal, Paper } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -88,8 +88,7 @@ const Inventory = () => {
   const [openConfirmDlt, setOpenConfirmDlt] = useState(false);
 
   //delete items mustation
-  const [deleteItems, { isLoading: isDltLdng, isError: isDltErr }] =
-    useDeleteEmployeesMutation();
+  const [deleteItems, { isError: isDltErr }] = useDeleteEmployeesMutation();
 
   const columns: GridColDef[] = [
     { field: "name", headerName: "Name", width: 180, editable: true },
@@ -179,12 +178,6 @@ const Inventory = () => {
 
     openSnackbar("Item(s) deleted successfully.", "success");
   };
-
-  useEffect(() => {
-    if (items) {
-      console.log({ items });
-    }
-  }, [items]);
 
   if (isItmRdy) {
     return <div className="animate-pulse text-lg">Loading...</div>;

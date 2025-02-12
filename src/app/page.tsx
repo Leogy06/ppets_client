@@ -5,21 +5,18 @@ import { Button, CircularProgress, TextField } from "@mui/material";
 import Image from "next/image";
 import ibs_logo from "@/assets/ibs_logo.png";
 import lgu_logo from "@/assets/lgu_logo.png";
-import { useCheckUserQuery, useLoginMutation } from "@/features/api/apiSlice";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 const LoginPage = () => {
   const router = useRouter();
-  const [loginUser, { isLoading }] = useLoginMutation();
   const [loginForm, setLoginForm] = useState({
     username: "",
     password: "",
   });
 
-  //check auth
-  const { user } = useAuth();
+  //check user
 
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,14 +24,17 @@ const LoginPage = () => {
   };
   const { openSnackbar } = useSnackbar();
 
+  //auth context
+  const { loginUser, user, isLoading } = useAuth();
+
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const result = await loginUser(loginForm).unwrap();
-      console.log({ result });
+      loginUser(loginForm);
+      console.log("User from auth ", user);
 
       //redirect the user depending on the role
-      switch (result.user?.role) {
+      switch (user?.role) {
         case 1:
           router.push("/admin");
           break;
@@ -59,6 +59,7 @@ const LoginPage = () => {
     }
   };
 
+  //check if user login
   useEffect(() => {
     if (user) {
       switch (user.role) {
@@ -75,10 +76,11 @@ const LoginPage = () => {
           break;
 
         default:
+          router.push("/");
           break;
       }
     }
-  }, [user]);
+  }, [user, router]);
 
   return (
     <div className="flex items-center justify-center h-[38rem] p-4">

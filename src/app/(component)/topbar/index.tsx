@@ -1,15 +1,21 @@
 import { useAppSelector } from "@/app/redux";
+import { useAuth } from "@/context/AuthContext";
 import { setIsDarkMode, setIsSideBarCollapse } from "@/state";
-import { DarkMode, LightMode, Menu, Settings } from "@mui/icons-material";
+import { DarkMode, LightMode, Menu } from "@mui/icons-material";
 import React from "react";
 import { useDispatch } from "react-redux";
 
 const Topbar = () => {
   const dispatch = useDispatch();
+  const { user } = useAuth();
+  //sidebar
+  const isSidebarOpen = useAppSelector(
+    (state) => state.global.isSideBarCollapse
+  );
 
   //side bar
   const openSidebar = () => {
-    dispatch(setIsSideBarCollapse(true));
+    dispatch(setIsSideBarCollapse(!isSidebarOpen));
   };
 
   //dark mode toggle
@@ -19,7 +25,7 @@ const Topbar = () => {
     dispatch(setIsDarkMode(!isDarkMode));
   };
 
-  return (
+  return user ? (
     <div className="flex items-center justify-between bg-gray-50 text-gray-900 shadow-lg p-4">
       {/*First segment */}
       <div className="flex gap-4">
@@ -31,12 +37,10 @@ const Topbar = () => {
         <button onClick={toggleDarkMode}>
           {isDarkMode ? <DarkMode /> : <LightMode />}
         </button>
-        <button className="hover:text-gray-500">
-          <Settings />
-        </button>
+        <span className="hover:text-gray-500">{user.username}</span>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default Topbar;

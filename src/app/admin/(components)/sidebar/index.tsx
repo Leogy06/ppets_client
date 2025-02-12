@@ -18,13 +18,13 @@ import {
   ListItemText,
 } from "@mui/material";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React from "react";
 import ibs_logo from "@/assets/ibs_logo.png";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
-import { useLogoutMutation } from "@/features/api/apiSlice";
+import { useAuth } from "@/context/AuthContext";
 
 //navigations
 const navigations = [
@@ -62,6 +62,7 @@ const navigations = [
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const { logoutUser } = useAuth();
 
   const dispatch = useAppDispatch();
 
@@ -72,15 +73,6 @@ const Sidebar = () => {
 
   const closeSidebar = () => {
     dispatch(setIsSideBarCollapse(false));
-  };
-
-  //logout
-  const router = useRouter();
-
-  const [logout] = useLogoutMutation();
-  const handleLogout = async () => {
-    await logout({});
-    router.push("/");
   };
 
   return (
@@ -151,7 +143,7 @@ const Sidebar = () => {
           <ListItem disablePadding>
             <button
               className="flex items-center gap-4 justify-center w-full hover:bg-blue-300 p-4 text-lg"
-              onClick={handleLogout}
+              onClick={logoutUser}
             >
               <Logout sx={{ color: "inherit" }} />
               Logout

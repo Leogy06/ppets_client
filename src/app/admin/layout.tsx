@@ -1,34 +1,33 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Topbar from "@/app/admin/(components)/topbar";
-import Sidebar from "@/app/admin/(components)/sidebar";
-import { useCheckUserQuery } from "@/features/api/apiSlice";
 import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/GlobalSnackbar";
+import { useAuth } from "@/context/AuthContext";
 
 const AdminPageLayout = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading, isError } = useCheckUserQuery({});
   const router = useRouter();
+  const { openSnackbar } = useSnackbar();
 
+  //auth context
+  const { user, isLoading } = useAuth();
+
+  //check if already login
   useEffect(() => {
-    if (isError) {
+    if (!isLoading && (!user || user.role !== 1)) {
       router.push("/");
     }
-  }, [isError, router]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div className="text-red-500">Error fetching data...</div>;
-  }
+  }, [user, router, isLoading, openSnackbar]);
 
   return (
     <>
-      <Topbar />
-      <Sidebar />
-      <div className="p-4 flex flex-col overflow-auto">{children}</div>
+      {isLoading ? (
+        <div className="animate-pulse">Loading...</div>
+      ) : (
+        <>
+          <div className="p-4 flex flex-col overflow-auto">{children}</div>
+        </>
+      )}
     </>
   );
 };
