@@ -5,7 +5,6 @@ import { Button, CircularProgress, TextField } from "@mui/material";
 import Image from "next/image";
 import ibs_logo from "@/assets/ibs_logo.png";
 import lgu_logo from "@/assets/lgu_logo.png";
-import { useSnackbar } from "@/context/GlobalSnackbar";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
@@ -22,41 +21,13 @@ const LoginPage = () => {
     const { name, value } = e.target;
     setLoginForm((prevForm) => ({ ...prevForm, [name]: value }));
   };
-  const { openSnackbar } = useSnackbar();
 
   //auth context
   const { loginUser, user, isLoading } = useAuth();
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      loginUser(loginForm);
-      console.log("User from auth ", user);
-
-      //redirect the user depending on the role
-      switch (user?.role) {
-        case 1:
-          router.push("/admin");
-          break;
-        case 2:
-          router.push("/manager");
-          break;
-        case 3:
-          router.push("/employee");
-          break;
-        default:
-          router.push("/");
-
-          openSnackbar("Unknown user type", "error");
-      }
-
-      openSnackbar("Success login.", "info");
-    } catch (error) {
-      console.error(`Unable to login user - ${error}`);
-      const errorMessage = (error as { data: { message: string } }).data
-        .message;
-      openSnackbar(errorMessage, "error");
-    }
+    loginUser(loginForm);
   };
 
   //check if user login

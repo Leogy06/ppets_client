@@ -34,15 +34,17 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
   return (
     <ThemeProvider theme={muiTheme}>
       <GlobalSnackbarProvider>
-        <div
-          className={`flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden ${
-            isDarkMode ? "dark" : "light"
-          }`}
-        >
-          <Sidebar />
-          <Topbar />
-          {children}
-        </div>
+        <AuthProvider>
+          <div
+            className={`flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden ${
+              isDarkMode ? "dark" : "light"
+            }`}
+          >
+            <Sidebar />
+            <Topbar />
+            {children}
+          </div>
+        </AuthProvider>
       </GlobalSnackbarProvider>
     </ThemeProvider>
   );
@@ -51,9 +53,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
-      <AuthProvider>
-        <Wrapper>{children}</Wrapper>
-      </AuthProvider>
+      <Wrapper>{children}</Wrapper>
     </StoreProvider>
   );
 };

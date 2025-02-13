@@ -5,6 +5,7 @@ import {
   useLogoutMutation,
 } from "@/features/api/apiSlice";
 import { useRouter } from "next/navigation";
+import { useSnackbar } from "./GlobalSnackbar";
 
 // Define the type for the user
 interface User {
@@ -13,6 +14,11 @@ interface User {
   username: string;
   emp_id: number;
   // Add other user fields if needed
+}
+
+interface Employee {
+  ID: number;
+  CURRENT_DPT_ID: number;
 }
 
 interface Credentials {
@@ -26,6 +32,7 @@ interface AuthContextType {
   logoutUser: () => Promise<void>;
   loginUser: (credentials: Credentials) => void;
   isLoading: boolean;
+  empDetails: Employee | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -33,19 +40,31 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [login, { isLoading }] = useLoginMutation({});
   const [user, setUser] = useState<User | null>(null);
+  const [empDetails, setEmpDetails] = useState<Employee | null>(null);
   const router = useRouter();
   const [logout] = useLogoutMutation();
   const { data } = useCheckUserQuery({});
 
+  //snackbar
+  const { openSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (data) {
       setUser(data.user);
+      setEmpDetails(data.empDetails);
     }
   }, [data]);
 
   const loginUser = async (credentials: Credentials) => {
-    const result = await login(credentials).unwrap();
-    setUser(result.user);
+    try {
+      const result = await login(credentials).unwrap();
+      console.log("Result: ", result);
+
+      setUser(result.user);
+    } catch (error: any) {
+      console.error(`Unable to login`, error);
+      openSnackbar(error?.data?.message || "Unable to login", "error");
+    }
   };
 
   const logoutUser = async () => {
@@ -55,7 +74,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, logoutUser, loginUser, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, logoutUser, loginUser, isLoading, empDetails }}
+    >
       {children}
     </AuthContext.Provider>
   );
