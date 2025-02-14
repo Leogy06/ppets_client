@@ -58,7 +58,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginUser = async (credentials: Credentials) => {
     try {
       const result = await login(credentials).unwrap();
-      console.log("Result: ", result);
 
       setUser(result.user);
     } catch (error: any) {
