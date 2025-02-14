@@ -4,9 +4,13 @@ import { useAuth } from "@/context/AuthContext";
 import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
+import DefaultButton from "../(component)/buttonDefault";
+import { useRouter } from "next/navigation";
 
 const ManagerPage = () => {
   const { user } = useAuth();
+
+  const router = useRouter();
 
   const {
     data: ownedItems,
@@ -27,12 +31,6 @@ const ManagerPage = () => {
       width: 250,
       type: "number",
       editable: true,
-    },
-    {
-      field: "emp_ownder",
-      headerName: "Owner",
-      width: 170,
-      valueGetter: (params) => (params ? params : "Not owned"),
     },
     { field: "ics", headerName: "ICS#", width: 170, editable: true },
     { field: "are_no", headerName: "ARE#", width: 130, editable: true },
@@ -80,21 +78,23 @@ const ManagerPage = () => {
 
   return (
     <>
-      {isLoading ? (
-        <div className="animate-pulse">Loading...</div>
-      ) : (
-        <DataGrid
-          columns={columns}
-          rows={ownedItems}
-          loading={isLoading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "linear-progress",
-              noRowsVariant: "linear-progress",
-            },
-          }}
+      <DataGrid
+        columns={columns}
+        rows={ownedItems}
+        loading={isLoading}
+        slotProps={{
+          loadingOverlay: {
+            variant: "linear-progress",
+            noRowsVariant: "linear-progress",
+          },
+        }}
+      />
+      <div className="flex justify-end mt-4">
+        <DefaultButton
+          btnText="add item"
+          onClick={() => router.push("/manager/add_item")}
         />
-      )}
+      </div>
     </>
   );
 };
