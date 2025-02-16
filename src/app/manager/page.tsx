@@ -4,12 +4,17 @@ import { useAuth } from "@/context/AuthContext";
 import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
+<<<<<<< HEAD
 import PageHeader from "../(component)/pageheader";
+=======
+>>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
 import DefaultButton from "../(component)/buttonDefault";
 import { useRouter } from "next/navigation";
 
 const ManagerPage = () => {
   const { user } = useAuth();
+  const router = useRouter();
+
   const router = useRouter();
 
   const {
@@ -31,12 +36,6 @@ const ManagerPage = () => {
       width: 250,
       type: "number",
       editable: true,
-    },
-    {
-      field: "emp_ownder",
-      headerName: "Owner",
-      width: 170,
-      valueGetter: (params) => (params ? params : "Not owned"),
     },
     { field: "ics", headerName: "ICS#", width: 170, editable: true },
     { field: "are_no", headerName: "ARE#", width: 130, editable: true },
@@ -84,14 +83,11 @@ const ManagerPage = () => {
 
   return (
     <>
+<<<<<<< HEAD
       <PageHeader pageHead="Items in Custody" />
 
       <div className="mb-4 flex justify-end">
-        <DefaultButton
-          btnText="add item"
-          onClick={() => router.push("/manager/add_item")}
-        />
-      </div>
+=======
       <DataGrid
         columns={columns}
         rows={ownedItems}
@@ -103,6 +99,27 @@ const ManagerPage = () => {
           },
         }}
       />
+      <div className="flex justify-end mt-4">
+>>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
+        <DefaultButton
+          btnText="add item"
+          onClick={() => router.push("/manager/add_item")}
+        />
+      </div>
+<<<<<<< HEAD
+      <DataGrid
+        columns={columns}
+        rows={ownedItems}
+        loading={isLoading}
+        slotProps={{
+          loadingOverlay: {
+            variant: "linear-progress",
+            noRowsVariant: "linear-progress",
+          },
+        }}
+      />
+=======
+>>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
     </>
   );
 };
