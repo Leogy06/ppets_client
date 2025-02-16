@@ -172,7 +172,7 @@ const AddItem = () => {
       <div className="w-full flex justify-center ">
         <form
           onSubmit={handleSubmitForm}
-          className="flex flex-col gap-4 w-full md:w-96"
+          className="flex flex-col gap-4 w-full md:w-96 h-[32rem] md:h-[48rem] overflow-auto p-4"
         >
           <TextField
             name="name"
@@ -180,6 +180,7 @@ const AddItem = () => {
             onChange={handleChangeForm}
             disabled={isItemLding}
             required
+            fullWidth
           />
           <TextField
             name="description"
@@ -187,6 +188,7 @@ const AddItem = () => {
             onChange={handleChangeForm}
             disabled={isItemLding}
             required
+            fullWidth
           />
           <TextField
             name="quantity"
@@ -195,6 +197,7 @@ const AddItem = () => {
             disabled={isItemLding}
             type="number"
             required
+            fullWidth
           />
 
           <TextField
@@ -203,6 +206,7 @@ const AddItem = () => {
             onChange={handleChangeForm}
             disabled={isItemLding}
             required
+            fullWidth
           />
           <TextField
             name="are_no"
@@ -211,6 +215,7 @@ const AddItem = () => {
             onChange={handleChangeForm}
             disabled={isItemLding}
             required
+            fullWidth
           />
           <TextField
             name="prop_no"
@@ -219,6 +224,7 @@ const AddItem = () => {
             onChange={handleChangeForm}
             disabled={isItemLding}
             required
+            fullWidth
           />
           <TextField
             name="serial_no"
@@ -226,6 +232,7 @@ const AddItem = () => {
             onChange={handleChangeForm}
             disabled={isItemLding}
             required
+            fullWidth
           />
           <TextField
             name="value"
@@ -235,6 +242,7 @@ const AddItem = () => {
             type="number"
             inputProps={{ step: "0.01" }}
             required
+            fullWidth
           />
 
           <TextField //change pani
@@ -242,6 +250,7 @@ const AddItem = () => {
             label="Owner"
             onChange={handleChangeForm}
             disabled={isItemLding}
+            fullWidth
           />
 
           <Autocomplete

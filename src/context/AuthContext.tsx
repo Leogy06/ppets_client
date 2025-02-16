@@ -6,25 +6,7 @@ import {
 } from "@/features/api/apiSlice";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "./GlobalSnackbar";
-
-// Define the type for the user
-interface User {
-  id: number;
-  role: number;
-  username: string;
-  emp_id: number;
-  // Add other user fields if needed
-}
-
-interface Employee {
-  ID: number;
-  CURRENT_DPT_ID: number;
-}
-
-interface Credentials {
-  username: string;
-  password: string;
-}
+import { Credentials, Employee, User } from "@/types/global_types";
 
 // Define the AuthContext type
 interface AuthContextType {
@@ -48,28 +30,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   //snackbar
   const { openSnackbar } = useSnackbar();
 
+  //use effect
   useEffect(() => {
     if (data) {
       setUser(data.user);
       setEmpDetails(data.empDetails);
+      console.log("Use effect in use auth has been executed.");
     }
   }, [data]);
 
   const loginUser = async (credentials: Credentials) => {
     try {
       const result = await login(credentials).unwrap();
-      console.log("Result: ", result);
 
       setUser(result.user);
-    } catch (error: any) {
+      setEmpDetails(result.empDetails);
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null && "data" in error) {
+        const err = error as { data?: { message?: string } };
+        openSnackbar(err.data?.message || "Unable to login", "error");
+      } else {
+        openSnackbar("Unable to login", "error");
+      }
       console.error(`Unable to login`, error);
-      openSnackbar(error?.data?.message || "Unable to login", "error");
     }
   };
 
   const logoutUser = async () => {
     await logout({}); // Clear session (backend)
-    setUser(null);
+    setUser(null); //clear user
+    setEmpDetails(null);
     router.push("/");
   };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useAddEmployeeMutation,
@@ -16,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const AddEmployee = () => {
+  const { user } = useAuth();
   const router = useRouter();
 
   //use snackbar
@@ -28,6 +30,8 @@ const AddEmployee = () => {
     LASTNAME: "",
     SUFFIX: "",
     DEPARTMENT_ID: "",
+    CREATED_BY: user?.id,
+    UPDATED_BY: user?.id,
   });
 
   //add employee

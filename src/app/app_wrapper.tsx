@@ -42,7 +42,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
           >
             <Sidebar />
             <Topbar />
-            {children}
+            <div className="p-4">{children}</div>
           </div>
         </AuthProvider>
       </GlobalSnackbarProvider>

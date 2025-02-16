@@ -1,6 +1,5 @@
 "use client";
 import {
-  EmployeeProps,
   useDeleteEmployeesMutation,
   useEditEmployeeMutation,
   useGetDepartmentQuery,
@@ -19,7 +18,8 @@ import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import { ErrorParams } from "@/types/global_types";
+import { Employee as EmployeeProps, ErrorParams } from "@/types/global_types";
+import { useAuth } from "@/context/AuthContext";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -78,6 +78,8 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 };
 
 const Employee = () => {
+  const { user } = useAuth();
+
   //router
   const router = useRouter();
   //modal state for delete confimation
@@ -124,7 +126,14 @@ const Employee = () => {
       editable: true,
     },
     { field: "SUFFIX", headerName: "Suffix", width: 100, editable: true },
-    { field: "CURRENT_DEPARTMENT" },
+    {
+      field: "CURRENT_DPT_ID",
+      headerName: "Department",
+      width: 180,
+      valueGetter: (params) =>
+        departments?.find((department) => department.ID === params)
+          ?.DESCRIPTION,
+    },
     { field: "CREATED_BY", headerName: "Added by", width: 150 },
     {
       field: "CREATED_WHEN",
@@ -147,7 +156,10 @@ const Employee = () => {
   const handleRowEdit = async (newRow: EmployeeProps) => {
     const { ID, ...updatedFields } = newRow;
     try {
-      await editEmployee({ data: updatedFields, id: ID });
+      await editEmployee({
+        data: { ...updatedFields, UPDATED_BY: user?.id },
+        id: ID,
+      });
 
       return { ...newRow };
     } catch (error) {

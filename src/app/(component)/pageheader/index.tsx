@@ -2,7 +2,6 @@
 
 import React from "react";
 import { SvgIconComponent } from "@mui/icons-material";
-import { usePathname } from "next/navigation";
 
 interface PageHeaderProps {
   pageHead: string;
@@ -11,20 +10,9 @@ interface PageHeaderProps {
   pathTo?: string;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({
-  pageHead,
-  icon,
-  onClick,
-  pathTo,
-}) => {
-  const pathname = usePathname();
+const PageHeader: React.FC<PageHeaderProps> = ({ pageHead, icon }) => {
   return (
-    <h1
-      className={`font-bold text-lg mb-4 flex gap-1 cursor-pointer hover:bg-gray-200 p-2 rounded ${
-        pathTo === pathname ? "hidden" : "flex"
-      } `}
-      onClick={onClick}
-    >
+    <h1 className={`font-bold text-lg mb-4 flex gap-1 p-2 rounded `}>
       {icon && React.createElement(icon)}
       {pageHead}
     </h1>

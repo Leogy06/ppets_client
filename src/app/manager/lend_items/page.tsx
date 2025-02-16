@@ -1,13 +1,14 @@
 "use client";
 
 import DefaultButton from "@/app/(component)/buttonDefault";
+import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetEmployeesQuery } from "@/features/api/apiSlice";
 import { DifferenceOutlined } from "@mui/icons-material";
-import { Button, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 
 const LendItem = () => {
   const { empDetails } = useAuth();
@@ -41,24 +42,21 @@ const LendItem = () => {
 
   return (
     <>
-      {isLoading ? (
-        <div className="animate-pulse">Loading...</div>
-      ) : (
-        <Paper sx={{ height: 400 }}>
-          <DataGrid
-            columns={columns}
-            rows={employees}
-            getRowId={(row) => row.ID}
-            loading={isLoading}
-            slotProps={{
-              loadingOverlay: {
-                variant: "linear-progress",
-                noRowsVariant: "linear-progress",
-              },
-            }}
-          />
-        </Paper>
-      )}
+      <PageHeader pageHead="Lend Items" />
+      <Paper sx={{ height: 400 }}>
+        <DataGrid
+          columns={columns}
+          rows={employees}
+          getRowId={(row) => row.ID}
+          loading={isLoading}
+          slotProps={{
+            loadingOverlay: {
+              variant: "linear-progress",
+              noRowsVariant: "linear-progress",
+            },
+          }}
+        />
+      </Paper>
     </>
   );
 };

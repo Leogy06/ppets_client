@@ -6,7 +6,7 @@ import {
   useEditItemMutation,
   useGetItemsQuery,
 } from "@/features/api/apiSlice";
-import { ItemProps } from "@/types/global_types";
+import { Item } from "@/types/global_types";
 import { Button, Modal, Paper } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
@@ -152,7 +152,7 @@ const Inventory = () => {
   ];
 
   //handle row edit
-  const handleRowEdit = async (newRow: ItemProps) => {
+  const handleRowEdit = async (newRow: Item) => {
     const { id, ...updatedFields } = newRow;
 
     try {
@@ -193,6 +193,7 @@ const Inventory = () => {
         <DataGrid
           columns={columns}
           rows={items}
+          loading={isItmRdy}
           processRowUpdate={(newRow) => handleRowEdit(newRow)}
           checkboxSelection
           onRowSelectionModelChange={(rowSelectionModal) =>

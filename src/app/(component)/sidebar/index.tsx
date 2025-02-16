@@ -2,12 +2,15 @@
 
 import {
   AccountTreeOutlined,
+  CategoryOutlined,
   Dashboard,
   DifferenceOutlined,
+  History,
   Houseboat,
   Inventory,
   KeyRounded,
   Logout,
+  MoveToInboxOutlined,
   People,
 } from "@mui/icons-material";
 import {
@@ -75,6 +78,24 @@ const managerNavigations = [
     icon: <DifferenceOutlined />,
     path: "/manager/lend_items",
   },
+  {
+    label: "Category Item",
+    icon: <CategoryOutlined />,
+    path: "/manager/item_category",
+  },
+];
+
+const employeeNavigations = [
+  {
+    label: "Borrowing History",
+    icon: <History />,
+    path: "/employee",
+  },
+  {
+    label: "Borrowed Items",
+    icon: <MoveToInboxOutlined />,
+    path: "/employee/borrowed_items",
+  },
 ];
 
 const SideBarHeader = () => {
@@ -117,7 +138,13 @@ const Sidebar = () => {
   }
 
   const userNavigations =
-    user.role === 1 ? navigations : user.role === 2 ? managerNavigations : [];
+    user.role === 1
+      ? navigations
+      : user.role === 2
+      ? managerNavigations
+      : user.role === 3
+      ? employeeNavigations
+      : [];
 
   //admin sidebar
   return (

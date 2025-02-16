@@ -1,39 +1,19 @@
-import { ItemProps } from "@/types/global_types";
+import { Department, Employee, Item } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-export interface EmployeeProps {
-  ID: number;
-  ID_NUMBER?: number;
-  FIRSTNAME?: string;
-  MIDDLENAME?: string;
-  LASTNAME?: string;
-  SUFFIX?: string;
-  DEPARTMENT_ID?: number;
-  CURRENT_DEPARTMENT?: number;
-  CREATED_BY?: number;
-  CREATED_WHEN?: Date;
-  UPDATED_BY?: number;
-  UPDATED_WHEN?: Date;
-  DELETED?: number;
-}
-
-export interface DepartmentProps {
-  ID: number;
-  DEPARTMENT_NAME: string;
-  CODE: string;
-  DESCRIPTION?: string;
-  OFFICER: string;
-  POSITION: string;
-  ENTRY_DATE: Date;
-}
-
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
     credentials: "include",
   }),
-  tagTypes: ["Employees", "Departments", "User", "Items", "ItemCategories"],
+  tagTypes: [
+    "Employees",
+    "Departments",
+    "User",
+    "Items",
+    "ItemCategories",
+    "BorrowingTransaction",
+  ],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -50,7 +30,7 @@ export const apiSlice = createApi({
       invalidatesTags: ["User"],
     }),
     //employee api
-    getEmployees: builder.query<EmployeeProps[], number>({
+    getEmployees: builder.query<Employee[], number>({
       query: (department) => `/employees?department=${department}`,
       providesTags: ["Employees"],
     }),
@@ -84,7 +64,7 @@ export const apiSlice = createApi({
     }),
 
     //department api
-    getDepartment: builder.query<DepartmentProps[], void>({
+    getDepartment: builder.query<Department[], void>({
       query: () => "/departments",
       providesTags: ["Departments"],
     }),
@@ -97,7 +77,7 @@ export const apiSlice = createApi({
 
     //items
     //view
-    getItems: builder.query<ItemProps[], void>({
+    getItems: builder.query<Item[], void>({
       query: () => "/item",
       providesTags: ["Items"],
     }),
@@ -142,6 +122,29 @@ export const apiSlice = createApi({
       query: () => "/item-category",
       providesTags: ["ItemCategories"],
     }),
+    addCategoryItem: builder.mutation({
+      query: (data) => ({
+        url: "/item-category",
+        method: "POST",
+        body: { description: data },
+      }),
+    }),
+
+    //borrowing
+    addBorrowingTransaction: builder.mutation({
+      query: ({ borrowedItems, borrower, owner }) => ({
+        url: `/borrowing?owner=${owner}&borrower=${borrower}`,
+        method: "POST",
+        body: { borrowedItems },
+      }),
+      invalidatesTags: ["BorrowingTransaction", "Items"],
+    }),
+    getBorrowingTransactionByBorrower: builder.query({
+      query: ({ empId }) => ({
+        url: `/borrowing/borrower?empId=${empId}`,
+      }),
+      providesTags: ["BorrowingTransaction"],
+    }),
   }),
 });
 
@@ -170,4 +173,9 @@ export const {
 
   //item-category
   useGetItemCategoriesQuery,
+  useAddCategoryItemMutation,
+
+  //borrowing transaction
+  useAddBorrowingTransactionMutation,
+  useGetBorrowingTransactionByBorrowerQuery,
 } = apiSlice;

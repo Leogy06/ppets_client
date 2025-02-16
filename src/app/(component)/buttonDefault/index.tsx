@@ -34,6 +34,7 @@ const DefaultButton: React.FC<DefaultButtonProps> = ({
         onClick={onClick}
         type={type}
         disabled={disabled}
+        className="flex items-center gap-1"
       >
         {btnIcon}
         {secondIcon}
