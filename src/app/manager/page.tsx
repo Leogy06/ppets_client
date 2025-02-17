@@ -4,17 +4,12 @@ import { useAuth } from "@/context/AuthContext";
 import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
-<<<<<<< HEAD
 import PageHeader from "../(component)/pageheader";
-=======
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
 import DefaultButton from "../(component)/buttonDefault";
 import { useRouter } from "next/navigation";
 
 const ManagerPage = () => {
   const { user } = useAuth();
-  const router = useRouter();
-
   const router = useRouter();
 
   const {
@@ -83,43 +78,14 @@ const ManagerPage = () => {
 
   return (
     <>
-<<<<<<< HEAD
       <PageHeader pageHead="Items in Custody" />
 
       <div className="mb-4 flex justify-end">
-=======
-      <DataGrid
-        columns={columns}
-        rows={ownedItems}
-        loading={isLoading}
-        slotProps={{
-          loadingOverlay: {
-            variant: "linear-progress",
-            noRowsVariant: "linear-progress",
-          },
-        }}
-      />
-      <div className="flex justify-end mt-4">
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
         <DefaultButton
           btnText="add item"
           onClick={() => router.push("/manager/add_item")}
         />
       </div>
-<<<<<<< HEAD
-      <DataGrid
-        columns={columns}
-        rows={ownedItems}
-        loading={isLoading}
-        slotProps={{
-          loadingOverlay: {
-            variant: "linear-progress",
-            noRowsVariant: "linear-progress",
-          },
-        }}
-      />
-=======
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
     </>
   );
 };
