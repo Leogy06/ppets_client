@@ -8,7 +8,6 @@ export interface Item {
   id?: number;
   name: string;
   description?: string;
-<<<<<<< HEAD
   quantity: number;
   ics?: string;
   are_no: string;
@@ -41,6 +40,7 @@ export interface User {
 export interface Employee {
   ID: number;
   CURRENT_DPT_ID: number;
+  FIRSTNAME: string;
 }
 
 export interface Credentials {
@@ -56,21 +56,4 @@ export interface Department {
   OFFICER: string;
   POSITION: string;
   ENTRY_DATE: Date;
-=======
-  quantity: number | null;
-  ics_no?: string;
-  are_no: string;
-  serial_no?: string;
-  unit_value?: number;
-  category_item: number | null;
-  added_by: number | null;
-  accountable_emp: number | null;
-}
-
-export interface ItemCatProps {
-  id: number;
-  description: string;
-  createdAt: Date;
-  updatedAt: Date;
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
 }

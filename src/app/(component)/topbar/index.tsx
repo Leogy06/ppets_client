@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 
 const Topbar = () => {
   const dispatch = useDispatch();
-  const { user } = useAuth();
+  const { user, empDetails } = useAuth();
   //sidebar
   const isSidebarOpen = useAppSelector(
     (state) => state.global.isSideBarCollapse
@@ -37,7 +37,7 @@ const Topbar = () => {
         <button onClick={toggleDarkMode}>
           {isDarkMode ? <DarkMode /> : <LightMode />}
         </button>
-        <span className="hover:text-gray-500">{user.username}</span>
+        <span className="hover:text-gray-500">{empDetails?.FIRSTNAME}</span>
       </div>
     </div>
   ) : null;
