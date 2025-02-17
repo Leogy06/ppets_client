@@ -5,15 +5,12 @@ import {
   CategoryOutlined,
   Dashboard,
   DifferenceOutlined,
-  History,
   Houseboat,
   Inventory,
   KeyRounded,
   Logout,
   MoveToInboxOutlined,
   People,
-  PeopleAlt,
-  PeopleAltOutlined,
 } from "@mui/icons-material";
 import {
   Box,
@@ -87,21 +84,12 @@ const managerNavigations = [
   },
 ];
 
+//employee navigations
 const employeeNavigations = [
-  {
-    label: "Borrowing History",
-    icon: <History />,
-    path: "/employee",
-  },
   {
     label: "Borrowed Items",
     icon: <MoveToInboxOutlined />,
-    path: "/employee/borrowed_items",
-  },
-  {
-    label: "Employees",
-    icon: <PeopleAltOutlined />,
-    path: "/employee/employees",
+    path: "/employee",
   },
 ];
 

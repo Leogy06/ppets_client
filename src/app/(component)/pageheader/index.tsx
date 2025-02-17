@@ -12,7 +12,7 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ pageHead, icon }) => {
   return (
-    <h1 className={`font-bold text-lg mb-4 flex gap-1 p-2 rounded `}>
+    <h1 className={`font-bold text-lg mb-4 flex gap-1 rounded `}>
       {icon && React.createElement(icon)}
       {pageHead}
     </h1>

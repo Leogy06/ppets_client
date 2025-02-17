@@ -58,7 +58,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Employees"],
     }),
-    getEmployeeById: builder.query({
+    getEmployeeById: builder.query<Employee, string>({
       query: (empId) => `/employees/${empId}`,
       providesTags: ["Employees"],
     }),
@@ -129,6 +129,13 @@ export const apiSlice = createApi({
         body: { description: data },
       }),
     }),
+    editCategoryItem: builder.mutation({
+      query: ({ id, description }) => ({
+        url: `/item-category/${id}`,
+        method: "PUT",
+        body: { description },
+      }),
+    }),
 
     //borrowing
     addBorrowingTransaction: builder.mutation({
@@ -174,6 +181,7 @@ export const {
   //item-category
   useGetItemCategoriesQuery,
   useAddCategoryItemMutation,
+  useEditCategoryItemMutation,
 
   //borrowing transaction
   useAddBorrowingTransactionMutation,

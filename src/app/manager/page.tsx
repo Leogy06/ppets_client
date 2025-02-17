@@ -4,13 +4,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
-<<<<<<< HEAD
 import PageHeader from "@/app/(component)/pageheader";
 import DefaultButton from "@/app/(component)/buttonDefault";
-=======
-import PageHeader from "../(component)/pageheader";
-import DefaultButton from "../(component)/buttonDefault";
->>>>>>> ad5cca11589a9ad3d1a3572e083fbdcddc9b1c57
 import { useRouter } from "next/navigation";
 
 const ManagerPage = () => {
@@ -63,7 +58,7 @@ const ManagerPage = () => {
     },
     {
       field: "createdAt",
-      headerName: "Added at#",
+      headerName: "Added at",
       width: 150,
       type: "dateTime",
       valueGetter: (params) => (params ? new Date(params) : null),
@@ -91,7 +86,6 @@ const ManagerPage = () => {
           onClick={() => router.push("/manager/add_item")}
         />
       </div>
-<<<<<<< HEAD
       <DataGrid
         columns={columns}
         rows={ownedItems}
@@ -103,8 +97,6 @@ const ManagerPage = () => {
           },
         }}
       />
-=======
->>>>>>> ad5cca11589a9ad3d1a3572e083fbdcddc9b1c57
     </>
   );
 };

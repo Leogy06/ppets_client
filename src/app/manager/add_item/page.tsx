@@ -1,17 +1,13 @@
 "use client";
-<<<<<<< HEAD
 import BackArrow from "@/app/(component)/backArrow";
-=======
-
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
 import DefaultButton from "@/app/(component)/buttonDefault";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
+import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useAddItemMutation,
   useGetItemCategoriesQuery,
 } from "@/features/api/apiSlice";
-<<<<<<< HEAD
 import { Item, ItemCategory } from "@/types/global_types";
 import { CheckOutlined } from "@mui/icons-material";
 import { Autocomplete, Modal, TextField } from "@mui/material";
@@ -29,7 +25,7 @@ const ConfirmAddItem = ({
 }) => {
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="flex flex-col items-center gap-4 rounded-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4">
+      <div className="flex flex-col items-center gap-4 rounded-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8">
         <CheckOutlined />
         <p className="text-lg font-semibold text-gray-800">
           Confirm add Items.
@@ -62,6 +58,9 @@ const AddItem = () => {
   const { data: catItems, isLoading: isCatItmLdng } = useGetItemCategoriesQuery(
     {}
   );
+
+  //snackbar
+  const { openSnackbar } = useSnackbar();
   const [itemForm, setItemForm] = useState<Item>({
     name: "",
     quantity: 0,
@@ -82,72 +81,36 @@ const AddItem = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-=======
-import { ItemCatProps, ItemProps } from "@/types/global_types";
-import { Autocomplete, TextField } from "@mui/material";
-import React, { useState } from "react";
-
-const AddItem = () => {
-  const { data: catItems, isLoading: isCatLdng } = useGetItemCategoriesQuery(
-    {}
-  );
-
-  const { empDetails, user } = useAuth();
-
-  const [itemForm, setItemForm] = useState<ItemProps>({
-    name: "",
-    description: "",
-    quantity: 0,
-    ics_no: "",
-    are_no: "",
-    unit_value: 0,
-    category_item: 0,
-    added_by: user?.id || 0,
-    accountable_emp: empDetails?.ID || 0,
-  });
-
-  const [addItem] = useAddItemMutation();
-
-  const handleChangeItemForm = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
     setItemForm((prevForm) => ({
       ...prevForm,
       [name]: value,
     }));
   };
 
-<<<<<<< HEAD
   const handleSubmitItem = async () => {
     try {
-      const result = await addItem(itemForm).unwrap();
-      console.log("result: ", result);
+      await addItem(itemForm).unwrap();
+      setOpenModal(false);
+      router.push("/manager");
     } catch (error) {
+      const errMsg =
+        (error as { data: { message: string } })?.data.message ??
+        "Unable to add item.";
       console.error("Unable to add item. ", error);
-=======
-  const handleSubmitItem = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      const result = await addItem(itemForm);
-      console.log("Item added: ", result);
-    } catch (error) {
-      console.error("Unable to submit item form: ", error);
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
+      openSnackbar(errMsg, "error");
     }
   };
 
   return (
     <>
-<<<<<<< HEAD
       <div className="mb-4">
         <PageHeader pageHead="Add item" />
         <BackArrow backTo="/manager" />
       </div>
       <div className="flex w-full justify-center ">
         <form
-          onSubmit={handleSubmitItem}
-          className="flex flex-col gap-4 h-[38rem] md:h-[48rem] overflow-auto w-full md:w-[48rem]"
+          className="flex flex-col gap-4 h-[38rem] md:h-[40rem] lg:h-[48] overflow-auto w-full md:w-[48rem] p-2"
+          onSubmit={(e) => e.preventDefault()}
         >
           <TextField
             label="Item Name"
@@ -170,6 +133,7 @@ const AddItem = () => {
             value={itemForm.quantity}
             onChange={handleChange}
             fullWidth
+            required
           />
           <TextField
             label="ICS"
@@ -257,95 +221,29 @@ const AddItem = () => {
               variant="text"
               btnText="cancel"
             />
-            <DefaultButton onClick={() => setOpenModal(true)} btnText="add" />
-          </div>{" "}
+            <DefaultButton
+              onClick={() => {
+                if (
+                  !itemForm.name ||
+                  !itemForm.quantity ||
+                  !itemForm.unit_value ||
+                  !itemForm.category_item
+                ) {
+                  return;
+                }
+                setOpenModal(true);
+              }}
+              btnText="add"
+              type="submit"
+            />
+          </div>
+          <ConfirmAddItem
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            confirm={handleSubmitItem}
+          />
         </form>
       </div>
-      <ConfirmAddItem
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        confirm={handleSubmitItem}
-      />
-=======
-      <button>
-        <></>
-      </button>
-      <div className="flex justify-center  w-full ">
-        <form
-          onSubmit={handleSubmitItem}
-          className=" flex flex-col gap-4 w-full md:w-96"
-        >
-          <TextField
-            name="name"
-            label="Item name"
-            onChange={handleChangeItemForm}
-            required
-          />
-          <TextField
-            name="description"
-            label="Description"
-            onChange={handleChangeItemForm}
-            required
-          />
-          <TextField
-            name="quantity"
-            label="Quantity"
-            type="number"
-            onChange={handleChangeItemForm}
-            required
-          />
-
-          <TextField
-            name="unit_value"
-            label="Unit value"
-            placeholder="Price per piece"
-            type="number"
-            required
-            onChange={handleChangeItemForm}
-          />
-          <TextField
-            name="ics"
-            label="ICS #"
-            placeholder="Optional"
-            onChange={handleChangeItemForm}
-          />
-          <TextField
-            name="are_no"
-            label="ARE #"
-            onChange={handleChangeItemForm}
-          />
-          <TextField
-            name="prop_no"
-            label="PROP #"
-            onChange={handleChangeItemForm}
-          />
-          <TextField
-            name="serial_no"
-            label="Serial #"
-            onChange={handleChangeItemForm}
-          />
-          <Autocomplete
-            options={catItems || []}
-            getOptionLabel={(option: ItemCatProps) => option.description}
-            onChange={(_, newValue) =>
-              setItemForm((prevForm) => ({
-                ...prevForm,
-                category_item: newValue ? newValue.id : null,
-              }))
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Item Category"
-                required
-                disabled={isCatLdng}
-              />
-            )}
-          />
-          <DefaultButton btnText="Add" type="submit" />
-        </form>
-      </div>
->>>>>>> ee03bfbf193bc5b3785b5f8435b49137bc6dab22
     </>
   );
 };

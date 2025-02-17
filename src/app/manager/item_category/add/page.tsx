@@ -15,11 +15,16 @@ const AddItemCategory = () => {
   const { openSnackbar } = useSnackbar();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result = await additemCategory(description).unwrap();
-    console.log(result);
 
-    setDescription("");
-    openSnackbar(result.data.message, "success");
+    try {
+      const result = await additemCategory(description).unwrap();
+      console.log(result);
+
+      setDescription("");
+      openSnackbar("Item category has been added.", "success");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
