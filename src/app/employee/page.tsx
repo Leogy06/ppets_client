@@ -22,12 +22,11 @@ const Employee = () => {
     },
     { field: "quantity", headerName: "Quantity", width: 70 },
     {
-      field: "ownerEmp",
-      headerName: "Custodian",
+      field: "LASTNAME",
+      headerName: "Last name",
       width: 180,
-      valueGetter: (params: { LASTNAME: string; FIRSTNAME: string }) =>
-        params ? `${params.LASTNAME}, ${params.FIRSTNAME}` : "Unknown Owner",
     },
+
     {
       field: "createdAt",
       headerName: "Date of Borrow",
@@ -52,7 +51,7 @@ const Employee = () => {
 
   return (
     <>
-      <PageHeader pageHead="Request Item" />
+      <PageHeader pageHead="Borrowing History" />
       <DataGrid rows={data} columns={columns} loading={isLoading} />
     </>
   );

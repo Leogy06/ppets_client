@@ -40,7 +40,12 @@ export interface User {
 export interface Employee {
   ID: number;
   CURRENT_DPT_ID: number;
+<<<<<<< HEAD
   FIRSTNAME: string;
+=======
+  MIDDLENAME: string;
+  SUFFIX: string;
+>>>>>>> ad5cca11589a9ad3d1a3572e083fbdcddc9b1c57
 }
 
 export interface Credentials {

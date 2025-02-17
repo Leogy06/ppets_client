@@ -12,6 +12,8 @@ import {
   Logout,
   MoveToInboxOutlined,
   People,
+  PeopleAlt,
+  PeopleAltOutlined,
 } from "@mui/icons-material";
 import {
   Box,
@@ -95,6 +97,11 @@ const employeeNavigations = [
     label: "Borrowed Items",
     icon: <MoveToInboxOutlined />,
     path: "/employee/borrowed_items",
+  },
+  {
+    label: "Employees",
+    icon: <PeopleAltOutlined />,
+    path: "/employee/employees",
   },
 ];
 
