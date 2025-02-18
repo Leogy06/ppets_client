@@ -60,3 +60,15 @@ export interface Department {
   POSITION: string;
   ENTRY_DATE: Date;
 }
+
+export interface BorrowingTransactionTypes {
+  id: number;
+  borrowedItem: number;
+  borrower: number | null;
+  owner: number | null;
+  quantity: number | null;
+  status: number | null;
+  remarks: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

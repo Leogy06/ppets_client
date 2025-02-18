@@ -11,6 +11,7 @@ import {
   Logout,
   MoveToInboxOutlined,
   People,
+  RequestQuoteOutlined,
 } from "@mui/icons-material";
 import {
   Box,
@@ -90,6 +91,11 @@ const employeeNavigations = [
     label: "Borrowed Items",
     icon: <MoveToInboxOutlined />,
     path: "/employee",
+  },
+  {
+    label: "Request Item",
+    icon: <RequestQuoteOutlined />,
+    path: "/employee/request_item",
   },
 ];
 

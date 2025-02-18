@@ -37,7 +37,7 @@ const Employee = () => {
     {
       field: "status",
       headerName: "Borrowing Status",
-      width: 100,
+      width: 180,
       valueGetter: (params) =>
         params === 1
           ? "Pending"
@@ -52,7 +52,12 @@ const Employee = () => {
   return (
     <>
       <PageHeader pageHead="Borrowing History" />
-      <DataGrid rows={data} columns={columns} loading={isLoading} />
+      <DataGrid
+        rows={data}
+        columns={columns}
+        loading={isLoading}
+        sx={{ height: 400 }}
+      />
     </>
   );
 };

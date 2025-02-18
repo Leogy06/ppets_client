@@ -82,6 +82,12 @@ export const apiSlice = createApi({
       providesTags: ["Items"],
     }),
 
+    //get items by id
+    getItemsById: builder.query<Item, number>({
+      query: (itemId: number) => `/item/byId/${itemId}`,
+      providesTags: ["Items"],
+    }),
+
     //add
     addItem: builder.mutation({
       query: (data) => ({
@@ -104,6 +110,11 @@ export const apiSlice = createApi({
     //get items by owner
     getItemsByOwner: builder.query({
       query: (empId) => `/item/${empId}`,
+      providesTags: ["Items"],
+    }),
+    //get items by department
+    getItemsDepartment: builder.query({
+      query: (department) => `/item/byDepartment/${department}`,
       providesTags: ["Items"],
     }),
 
@@ -177,6 +188,8 @@ export const {
   useEditItemMutation,
   useDeleteItemsMutation,
   useGetItemsByOwnerQuery,
+  useGetItemsDepartmentQuery,
+  useGetItemsByIdQuery,
 
   //item-category
   useGetItemCategoriesQuery,

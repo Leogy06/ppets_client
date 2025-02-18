@@ -8,6 +8,7 @@ const DefaultTextField = ({
   placeholder,
   value,
   required = true,
+  type = "text",
 }: {
   name: string;
   label: string;
@@ -15,6 +16,7 @@ const DefaultTextField = ({
   placeholder?: string;
   value?: string;
   required?: boolean;
+  type?: "text" | "number";
 }) => {
   return (
     <TextField
@@ -25,6 +27,7 @@ const DefaultTextField = ({
       placeholder={placeholder}
       fullWidth
       required={required}
+      type={type}
     />
   );
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -13,7 +14,7 @@ const EmployeePageLayout = ({ children }: { children: React.ReactNode }) => {
       router.push("/");
     }
   }, [isLoading, router, user]);
-  return <>{children}</>;
+  return <Paper className="p-4">{children}</Paper>;
 };
 
 export default EmployeePageLayout;
