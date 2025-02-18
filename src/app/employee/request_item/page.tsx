@@ -8,10 +8,10 @@ import {
   useGetItemsDepartmentQuery,
 } from "@/features/api/apiSlice";
 import { Employee } from "@/types/global_types";
-import { Autocomplete, Paper, TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const RequestItem = () => {
   const router = useRouter();

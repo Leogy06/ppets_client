@@ -6,11 +6,14 @@ import DefaultTextField from "@/app/(component)/defaultTextField";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import { useGetItemsByIdQuery } from "@/features/api/apiSlice";
+import {
+  useAddBorrowingTransactionMutation,
+  useGetItemsByIdQuery,
+} from "@/features/api/apiSlice";
 import { BorrowingTransactionTypes } from "@/types/global_types";
-import { Modal, TextField } from "@mui/material";
+import { Modal } from "@mui/material";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const ConfirmModal = ({
   open,
@@ -21,15 +24,31 @@ const ConfirmModal = ({
   onClose: () => void;
   confirm: () => void;
 }) => {
-  return <Modal open={open} onClose={onClose}></Modal>;
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-lg flex flex-col gap-4 justify-center">
+        <h1 className="text-lg font-semibold text-center">Confirm Request?</h1>
+        <div className="flex items-center gap-2">
+          <DefaultButton btnText="cancel" variant="text" onClick={onClose} />
+          <DefaultButton btnText="request" onClick={confirm} />
+        </div>
+      </div>
+    </Modal>
+  );
 };
 
 const RequestForm = () => {
   const { itemId } = useParams();
-  //user
-  const { empDetails } = useAuth();
   const parsedItemId = Number(itemId);
-  const { data: itemDetails, isLoading } = useGetItemsByIdQuery(parsedItemId);
+
+  const { empDetails } = useAuth();
+  //api
+  //get item
+  const { data: itemDetails, isLoading: isItmLdng } =
+    useGetItemsByIdQuery(parsedItemId);
+
+  //add transaction
+  const [addTransaction] = useAddBorrowingTransactionMutation();
 
   //snackbar
   const { openSnackbar } = useSnackbar();
@@ -51,6 +70,7 @@ const RequestForm = () => {
     const { name, value } = e.target;
     setRequestItemForm((prevForm) => ({
       ...prevForm,
+      [name]: value,
     }));
   };
 
@@ -64,15 +84,32 @@ const RequestForm = () => {
     setIsModalOpen(true);
   };
 
+  const handleSubmitApi = async () => {
+    try {
+      const result = await addTransaction({
+        borrowedItems: requestItemForm,
+        borrower: empDetails?.ID,
+        owner: itemDetails?.accountable_emp,
+      }).unwrap();
+      console.log("result ", result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <PageHeader pageHead="Request Form" />
       <BackArrow backTo="/employee/request_item" />
-      <div className="mb-4 flex flex-col">
-        <h1>Item details: </h1>
-        <span>Name: {itemDetails?.name ?? "Unknown Item"}</span>
-        <span>Qty. {itemDetails?.quantity}</span>
-      </div>
+      {isItmLdng ? (
+        "Loading..."
+      ) : (
+        <div className="mb-4 flex flex-col">
+          <h1>Item details: </h1>
+          <span>Name: {itemDetails?.name ?? "Unknown Item"}</span>
+          <span>Qty. {itemDetails?.quantity}</span>
+        </div>
+      )}
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <DefaultTextField
           name="quantity"
@@ -85,8 +122,13 @@ const RequestForm = () => {
           label="Reason for the request"
           onChange={handleRequestFormChange}
         />
-        <DefaultButton btnText="request" />
+        <DefaultButton btnText="request" type="submit" />
       </form>
+      <ConfirmModal
+        confirm={handleSubmitApi}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 };
