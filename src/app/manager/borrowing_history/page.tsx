@@ -7,15 +7,19 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useEditBorrowingTransactionMutation,
   useGetBorrowingTransactionByOwnerQuery,
+  useGetStatusProcessQuery,
 } from "@/features/api/apiSlice";
 import { Employee } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const BorrowingHistory = () => {
   const { empDetails } = useAuth();
   const { openSnackbar } = useSnackbar();
+
+  //get status process
+  const { data: statusProcesses } = useGetStatusProcessQuery();
   //get borrowing history
   const { data: borrowingLogs, isLoading: isBorrowingLogsLdng } =
     useGetBorrowingTransactionByOwnerQuery(empDetails?.ID);
@@ -58,7 +62,16 @@ const BorrowingHistory = () => {
       },
     },
     { field: "quantity", headerName: "Quantity", width: 70 },
-    { field: "status", headerName: "Status", width: 100 },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 100,
+      valueGetter: (params) => {
+        return statusProcesses
+          ?.find((status) => status.id === params)
+          ?.description.toUpperCase();
+      },
+    },
     { field: "remarks", headerName: "Reason for Borrowing", width: 200 },
     {
       field: "createdAt",
@@ -78,12 +91,22 @@ const BorrowingHistory = () => {
           <div className="flex gap-2 items-center p-1">
             <DefaultButton
               btnText="approve"
-              onClick={() => handleEditBorrowTransaction(params.row.id, 2)}
+              onClick={() => handleEditBorrowTransaction(params.row.id, 1)}
+              disabled={
+                params.row.status === 1 ||
+                params.row.status === 3 ||
+                params.row.status === 4
+              }
             />
             <DefaultButton
               btnText="reject"
+              disabled={
+                params.row.status === 1 ||
+                params.row.status === 3 ||
+                params.row.status === 4
+              }
               color="secondary"
-              onClick={() => handleEditBorrowTransaction(params.row.id, 3)}
+              onClick={() => handleEditBorrowTransaction(params.row.id, 4)}
             />
           </div>
         );
@@ -95,6 +118,7 @@ const BorrowingHistory = () => {
     <>
       <PageHeader pageHead="Item Requests" />
       <DataGrid
+        sx={{ height: 480 }}
         rows={borrowingLogs}
         getRowId={(params) => params.id}
         columns={columns}

@@ -72,3 +72,8 @@ export interface BorrowingTransactionTypes {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface StatusProcess {
+  id: number;
+  description: string;
+}

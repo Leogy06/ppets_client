@@ -1,4 +1,9 @@
-import { Department, Employee, Item } from "@/types/global_types";
+import {
+  Department,
+  Employee,
+  Item,
+  StatusProcess,
+} from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -13,6 +18,7 @@ export const apiSlice = createApi({
     "Items",
     "ItemCategories",
     "BorrowingTransaction",
+    "StatusProcess",
   ],
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -178,6 +184,12 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["BorrowingTransaction"],
     }),
+
+    //status
+    getStatusProcess: builder.query<StatusProcess[], void>({
+      query: () => "/status_process",
+      providesTags: ["StatusProcess"],
+    }),
   }),
 });
 
@@ -216,4 +228,7 @@ export const {
   useGetBorrowingTransactionByBorrowerQuery,
   useGetBorrowingTransactionByOwnerQuery,
   useEditBorrowingTransactionMutation,
+
+  //status process
+  useGetStatusProcessQuery,
 } = apiSlice;
