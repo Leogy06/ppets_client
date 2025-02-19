@@ -53,6 +53,10 @@ const LoginPage = () => {
     }
   }, [user, router]);
 
+  if (isLoading) {
+    return <div className="animate-pulse">Loading...</div>;
+  }
+
   return (
     <div className="flex items-center justify-center h-[38rem] p-4">
       <form

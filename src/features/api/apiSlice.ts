@@ -163,6 +163,21 @@ export const apiSlice = createApi({
       }),
       providesTags: ["BorrowingTransaction"],
     }),
+
+    getBorrowingTransactionByOwner: builder.query({
+      query: (owner) => ({
+        url: `/borrowing?owner=${owner}`,
+      }),
+      providesTags: ["BorrowingTransaction"],
+    }),
+    editBorrowingTransaction: builder.mutation({
+      query: ({ borrowId, updateEntry }) => ({
+        url: `borrowing/update?borrowId=${borrowId}`,
+        method: "PUT",
+        body: { status: updateEntry },
+      }),
+      invalidatesTags: ["BorrowingTransaction"],
+    }),
   }),
 });
 
@@ -199,4 +214,6 @@ export const {
   //borrowing transaction
   useAddBorrowingTransactionMutation,
   useGetBorrowingTransactionByBorrowerQuery,
+  useGetBorrowingTransactionByOwnerQuery,
+  useEditBorrowingTransactionMutation,
 } = apiSlice;

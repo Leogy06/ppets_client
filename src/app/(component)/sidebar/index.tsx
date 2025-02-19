@@ -8,8 +8,10 @@ import {
   Houseboat,
   Inventory,
   KeyRounded,
+  ListAltOutlined,
   Logout,
   MoveToInboxOutlined,
+  PanToolAltSharp,
   People,
   RequestQuoteOutlined,
 } from "@mui/icons-material";
@@ -69,14 +71,19 @@ const navigations = [
 
 const managerNavigations = [
   {
-    label: "Dashboard",
-    icon: <Dashboard />,
+    label: "Items",
+    icon: <PanToolAltSharp />,
     path: "/manager",
   },
   {
     label: "Distribute Item",
     icon: <DifferenceOutlined />,
     path: "/manager/lend_items",
+  },
+  {
+    label: "Item Requests",
+    icon: <ListAltOutlined />,
+    path: "/manager/borrowing_history",
   },
   {
     label: "Category Item",

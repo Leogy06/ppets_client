@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { Paper } from "@mui/material";
 
 const ManagerLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -16,7 +17,7 @@ const ManagerLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isLoading, router, user]);
 
-  return <>{children}</>;
+  return <Paper className="p-4">{children}</Paper>;
 };
 
 export default ManagerLayout;

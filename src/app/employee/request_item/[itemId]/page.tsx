@@ -11,9 +11,10 @@ import {
   useGetItemsByIdQuery,
 } from "@/features/api/apiSlice";
 import { BorrowingTransactionTypes } from "@/types/global_types";
+import { handleError } from "@/utils/errorHandler";
 import { Modal } from "@mui/material";
-import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const ConfirmModal = ({
   open,
@@ -38,6 +39,8 @@ const ConfirmModal = ({
 };
 
 const RequestForm = () => {
+  //router
+  const router = useRouter();
   const { itemId } = useParams();
   const parsedItemId = Number(itemId);
 
@@ -56,9 +59,9 @@ const RequestForm = () => {
   const [requestItemForm, setRequestItemForm] = useState<
     Partial<BorrowingTransactionTypes>
   >({
-    borrowedItem: itemDetails?.id,
-    borrower: empDetails?.ID,
-    owner: itemDetails?.accountable_emp,
+    borrowedItem: 0,
+    borrower: 0,
+    owner: 0,
     quantity: 0,
     status: 1,
     remarks: "",
@@ -87,15 +90,41 @@ const RequestForm = () => {
   const handleSubmitApi = async () => {
     try {
       const result = await addTransaction({
-        borrowedItems: requestItemForm,
+        borrowedItems: [
+          {
+            id: requestItemForm.borrowedItem, // Item ID
+            quantity: requestItemForm.quantity,
+            status: requestItemForm.status,
+            remarks: requestItemForm.remarks,
+          },
+        ],
         borrower: empDetails?.ID,
         owner: itemDetails?.accountable_emp,
       }).unwrap();
-      console.log("result ", result);
+
+      openSnackbar(result?.message ?? "Successfully created.", "success");
+      router.push("/employee/request_item");
     } catch (error) {
       console.error(error);
+
+      const errMsg = handleError(error, "Unable to create transaction");
+      openSnackbar(errMsg, "error");
     }
   };
+
+  useEffect(() => {
+    if (itemDetails && empDetails) {
+      setRequestItemForm((prevForm) => {
+        const updatedForm = {
+          ...prevForm,
+          owner: itemDetails.accountable_emp,
+          borrower: empDetails.ID,
+          borrowedItem: itemDetails.id,
+        };
+        return updatedForm;
+      });
+    }
+  }, [itemDetails, empDetails]);
 
   return (
     <>

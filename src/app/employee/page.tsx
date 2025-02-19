@@ -1,16 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useGetBorrowingTransactionByBorrowerQuery } from "@/features/api/apiSlice";
 import { useAuth } from "@/context/AuthContext";
+import { Employee as EmployeeProps } from "@/types/global_types";
 
 const Employee = () => {
   const { empDetails } = useAuth();
-  const { data, isLoading } = useGetBorrowingTransactionByBorrowerQuery({
-    empId: empDetails?.ID,
-  });
+  const { data: borrowingTransactions, isLoading } =
+    useGetBorrowingTransactionByBorrowerQuery({
+      empId: empDetails?.ID,
+    });
 
   const columns: GridColDef[] = [
     {
@@ -22,9 +24,13 @@ const Employee = () => {
     },
     { field: "quantity", headerName: "Quantity", width: 70 },
     {
-      field: "LASTNAME",
-      headerName: "Last name",
+      field: "ownerEmp",
+      headerName: "Owner",
       width: 180,
+      valueGetter: (params: EmployeeProps) =>
+        `${params ? params.LASTNAME : "Unknown"}, ${
+          params.FIRSTNAME ?? "Unknown"
+        } ${params.MIDDLENAME ?? ""} ${params.SUFFIX ?? ""}`,
     },
 
     {
@@ -49,11 +55,17 @@ const Employee = () => {
     },
   ];
 
+  useEffect(() => {
+    if (borrowingTransactions) {
+      console.log("transactions: ", borrowingTransactions);
+    }
+  }, [borrowingTransactions]);
+
   return (
     <>
       <PageHeader pageHead="Borrowing History" />
       <DataGrid
-        rows={data}
+        rows={borrowingTransactions}
         columns={columns}
         loading={isLoading}
         sx={{ height: 400 }}
