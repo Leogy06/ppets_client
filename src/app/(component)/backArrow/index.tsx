@@ -6,7 +6,7 @@ const BackArrow = ({ backTo }: { backTo: string }) => {
   const router = useRouter();
   return (
     <button
-      className="p-4 hover:bg-gray-200 rounded-full"
+      className="hover:text-gray-500 "
       onClick={() => router.push(backTo)}
     >
       <ArrowBack />

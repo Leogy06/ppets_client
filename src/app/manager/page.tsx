@@ -3,10 +3,11 @@
 import { useAuth } from "@/context/AuthContext";
 import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import { useRouter } from "next/navigation";
+import { ItemCategory, ItemStatus } from "@/types/global_types";
 
 const ManagerPage = () => {
   const { user } = useAuth();
@@ -49,12 +50,20 @@ const ManagerPage = () => {
       type: "number",
       editable: true,
     },
-    { field: "status", headerName: "STATUS", width: 75, editable: true },
     {
-      field: "category_item",
+      field: "itemStatusDetails",
+      headerName: "STATUS",
+      width: 90,
+      valueGetter: (params: ItemStatus) =>
+        params?.DESCRIPTION.toUpperCase() ?? "Unknown Status.",
+    },
+    {
+      field: "categoryItemDetails",
       headerName: "CATEGORY",
       width: 250,
       editable: true,
+      valueGetter: (params: ItemCategory) =>
+        params?.description ?? "Unknown Item Category",
     },
     {
       field: "createdAt",
@@ -71,6 +80,12 @@ const ManagerPage = () => {
       valueGetter: (params) => (params ? new Date(params) : null),
     },
   ];
+
+  useEffect(() => {
+    if (ownedItems) {
+      console.log("owned items ", ownedItems);
+    }
+  }, [ownedItems]);
 
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;

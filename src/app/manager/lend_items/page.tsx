@@ -23,7 +23,7 @@ const LendItem = () => {
     {
       field: "MIDDLENAME",
       headerName: "Middle Name",
-      width: 75,
+      width: 120,
       valueGetter: (params) => params || "",
     },
     { field: "SUFFIX", headerName: "Suffix", width: 180 },

@@ -77,3 +77,8 @@ export interface StatusProcess {
   id: number;
   description: string;
 }
+
+export interface ItemStatus {
+  ID: number;
+  DESCRIPTION: string;
+}

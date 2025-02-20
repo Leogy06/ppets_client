@@ -65,9 +65,12 @@ const LendEmployee = () => {
     empDetails?.ID as number
   );
 
+  //number
+  const empId = Number(id);
+
   // the employee that will borrow
   const { data: fetchedEmp, isLoading: isEmpLdng } =
-    useGetEmployeeByIdQuery(id);
+    useGetEmployeeByIdQuery(empId);
 
   const [checkoutItems, setCheckoutItems] = useState<Item[]>([]);
 
@@ -168,7 +171,7 @@ const LendEmployee = () => {
 
   return (
     <div className="flex flex-col gap-4 overflow-auto max-h-[48rem]">
-      <div className="flex items-baseline">
+      <div className="flex items-baseline gap-4">
         <BackArrow backTo="/manager/lend_items" />
         <PageHeader pageHead="Lending Items" />
       </div>
