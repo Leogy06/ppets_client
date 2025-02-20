@@ -43,7 +43,7 @@ const BorrowingHistory = () => {
         updateEntry: status,
       }).unwrap();
 
-      console.log("result ", result);
+      // console.log("result ", result);
     } catch (error) {
       console.error("Unable to edit the transaction.", error);
       handleError(error, "Unable to edit the transaction.");
@@ -116,7 +116,7 @@ const BorrowingHistory = () => {
                 params.row.status === 4
               }
               color="secondary"
-              onClick={() => handleEditBorrowTransaction(params.row.id, 4)}
+              onClick={() => handleEditBorrowTransaction(params.row.id, 3)}
             />
           </div>
         );
@@ -125,11 +125,11 @@ const BorrowingHistory = () => {
   ];
 
   //console logging effect
-  useEffect(() => {
-    if (borrowingLogs) {
-      console.log("Borrowing logs ", borrowingLogs);
-    }
-  }, [borrowingLogs]);
+  // useEffect(() => {
+  //   if (borrowingLogs) {
+  //     console.log("Borrowing logs ", borrowingLogs);
+  //   }
+  // }, [borrowingLogs]);
 
   return (
     <>
