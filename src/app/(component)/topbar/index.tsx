@@ -1,9 +1,11 @@
 import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { setIsDarkMode, setIsSideBarCollapse } from "@/state";
-import { DarkMode, LightMode, Menu } from "@mui/icons-material";
+import { DarkMode, LightMode, Menu, Notifications } from "@mui/icons-material";
 import React from "react";
 import { useDispatch } from "react-redux";
+import logo_img from "@/assets/images/adts.png";
+import Image from "next/image";
 
 const Topbar = () => {
   const dispatch = useDispatch();
@@ -32,12 +34,20 @@ const Topbar = () => {
         <button onClick={openSidebar}>
           <Menu />
         </button>
+        <div className="flex items-center gap-4">
+          <Image src={logo_img} alt="adts-logo" className="h-10 w-auto" />
+          <span className="hidden md:block text-base font-semibold">
+            Asset Distribution and Tracking System
+          </span>
+        </div>
       </div>
       <div className="flex items-center gap-4">
-        <button onClick={toggleDarkMode}>
+        <button onClick={toggleDarkMode} className=" hover:text-gray-500">
           {isDarkMode ? <DarkMode /> : <LightMode />}
         </button>
-        <span className="hover:text-gray-500">{empDetails?.FIRSTNAME}</span>
+        <button className=" hover:text-gray-500">
+          <Notifications />
+        </button>
       </div>
     </div>
   ) : null;
