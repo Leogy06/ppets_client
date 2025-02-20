@@ -63,7 +63,7 @@ const RequestForm = () => {
     borrower: 0,
     owner: 0,
     quantity: 0,
-    status: 1,
+    status: 2,
     remarks: "",
   });
 
