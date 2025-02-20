@@ -3,9 +3,16 @@
 import React, { useEffect } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useGetBorrowingTransactionByBorrowerQuery } from "@/features/api/apiSlice";
+import {
+  useEditBorrowingTransactionMutation,
+  useGetBorrowingTransactionByBorrowerQuery,
+  useGetStatusProcessQuery,
+} from "@/features/api/apiSlice";
 import { useAuth } from "@/context/AuthContext";
-import { Employee as EmployeeProps } from "@/types/global_types";
+import { Employee as EmployeeProps, Item } from "@/types/global_types";
+import DefaultButton from "@/app/(component)/buttonDefault";
+import { useSnackbar } from "@/context/GlobalSnackbar";
+import { handleError } from "@/utils/errorHandler";
 
 const Employee = () => {
   const { empDetails } = useAuth();
@@ -14,12 +21,41 @@ const Employee = () => {
       empId: empDetails?.ID,
     });
 
+  //editing borrow transaction
+  const [editBorrowingTransaction] = useEditBorrowingTransactionMutation();
+
+  //process status
+  const { data: processStatus, isLoading: isPrcsStsLdng } =
+    useGetStatusProcessQuery();
+
+  //snackbar
+  const { openSnackbar } = useSnackbar();
+
+  const handleClickCancel = async (borrowId: number, status: number) => {
+    if (status === 0) {
+      openSnackbar("Status should not be zoer or null", "error");
+    }
+
+    try {
+      const result = await editBorrowingTransaction({
+        borrowId,
+        updateEntry: status,
+      });
+
+      console.log("result ", result);
+    } catch (error) {
+      console.error("Unable to cancel the requested item.", error);
+      const errMsg = handleError(error, "Unable to cancel the requested item.");
+      openSnackbar(errMsg, "error");
+    }
+  };
+
   const columns: GridColDef[] = [
     {
-      field: "name",
+      field: "borrowedItemDetails",
       headerName: "Item",
       width: 180,
-      valueGetter: (params: { name: string }) =>
+      valueGetter: (params: Item) =>
         params ? params.name : "Unable to get name",
     },
     { field: "quantity", headerName: "Quantity", width: 70 },
@@ -45,13 +81,28 @@ const Employee = () => {
       headerName: "Borrowing Status",
       width: 180,
       valueGetter: (params) =>
-        params === 1
-          ? "Pending"
-          : params === 2
-          ? "Approved"
-          : params === 3
-          ? "Returned"
-          : "Unknown status",
+        !isPrcsStsLdng &&
+        processStatus
+          ?.find((status) => status.id === params)
+          ?.description.toUpperCase(),
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div className="flex items-center gap-2">
+            <DefaultButton
+              btnText="cancel"
+              color="secondary"
+              title="Cancel Requested Item."
+              onClick={() => handleClickCancel(params.row.id, 4)}
+              disabled={params.row.status === 4}
+            />
+          </div>
+        );
+      },
     },
   ];
 
