@@ -9,10 +9,11 @@ import {
   useGetBorrowingTransactionByOwnerQuery,
   useGetStatusProcessQuery,
 } from "@/features/api/apiSlice";
-import { Employee } from "@/types/global_types";
+import { Employee, Item } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
+import { Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect } from "react";
 
 const BorrowingHistory = () => {
   const { empDetails } = useAuth();
@@ -50,7 +51,16 @@ const BorrowingHistory = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "borrowedItem", headerName: "Borrowed Item", width: 180 },
+    {
+      field: "borrowedItemDetails",
+      headerName: "Borrowed Item",
+      width: 180,
+      renderCell: (params) => {
+        const { name, description } = params.row.borrowedItemDetails;
+
+        return <Tooltip title={<>{description}</>}>{name}</Tooltip>;
+      },
+    },
     {
       field: "borrowerEmp",
       headerName: "Requestor",
@@ -113,6 +123,13 @@ const BorrowingHistory = () => {
       },
     },
   ];
+
+  //console logging effect
+  useEffect(() => {
+    if (borrowingLogs) {
+      console.log("Borrowing logs ", borrowingLogs);
+    }
+  }, [borrowingLogs]);
 
   return (
     <>
