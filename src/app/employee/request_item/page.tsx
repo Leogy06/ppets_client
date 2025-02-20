@@ -55,6 +55,7 @@ const RequestItem = () => {
             onClick={() =>
               router.push(`/employee/request_item/${params.row.id}`)
             }
+            disabled={params.row.quantity === 0}
           />
         );
       },
