@@ -31,6 +31,7 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
 import { useAuth } from "@/context/AuthContext";
+import { getGreeting } from "@/utils/greeting";
 
 //global sidebar
 //navigations
@@ -107,21 +108,14 @@ const employeeNavigations = [
 ];
 
 const SideBarHeader = () => {
+  const { empDetails } = useAuth();
+
   return (
     /**Side bar header */
-    <div className="flex items-center justify-center gap-2 p-1">
-      <Image src={ibs_logo} priority alt="ibs-logo" className="h-12 w-auto" />
-      <div className="flex flex-col items-center justify-center text-base ">
-        <div className={`flex items-baseline text-inherit  ms-0`}>
-          <h3 className="text-lg font-bold text-green-500">I</h3>nventory
-        </div>{" "}
-        <div className={`flex items-baseline text-inherit ms-6`}>
-          <h3 className="text-lg font-bold text-blue-500">B</h3>orrowing
-        </div>{" "}
-        <div className={`flex items-baseline text-inherit  ms-12`}>
-          <h3 className="text-lg font-bold text-yellow-500">S</h3>ystem
-        </div>
-      </div>
+    <div className="flex items-center justify-center gap-2 p-8">
+      <span className="text-base font-semibold">
+        {getGreeting()} {empDetails?.FIRSTNAME}
+      </span>
     </div>
   );
 };
