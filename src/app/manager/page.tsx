@@ -1,12 +1,16 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
+import {
+  useEditItemMutation,
+  useGetItemsByOwnerQuery,
+} from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import { useRouter } from "next/navigation";
+import { Item } from "@/types/global_types";
 
 const ManagerPage = () => {
   const { user } = useAuth();
@@ -17,8 +21,12 @@ const ManagerPage = () => {
     isLoading,
     isError,
   } = useGetItemsByOwnerQuery(user?.emp_id);
+
+  //edit items
+  const [editItem] = useEditItemMutation();
+
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Item name", width: 230 },
+    { field: "name", headerName: "Item name", width: 230, editable: true },
     {
       field: "description",
       headerName: "Description",
@@ -72,6 +80,20 @@ const ManagerPage = () => {
     },
   ];
 
+  //edit tow
+  const handleRowEdit = async (newRow: Item) => {
+    const { id, ...updatedFields } = newRow;
+
+    try {
+      await editItem({ id, data: updatedFields });
+
+      return { ...newRow };
+    } catch (error) {
+      console.error("Unable to Edit Item. ", error);
+      return { ...ownedItems.find((row: Item) => row.id === id) };
+    }
+  };
+
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;
   }
@@ -79,7 +101,6 @@ const ManagerPage = () => {
   return (
     <>
       <PageHeader pageHead="Items in Custody" />
-
       <div className="mb-4 flex justify-end">
         <DefaultButton
           btnText="add item"
@@ -90,6 +111,7 @@ const ManagerPage = () => {
         columns={columns}
         rows={ownedItems}
         loading={isLoading}
+        processRowUpdate={(newRow) => handleRowEdit(newRow)}
         slotProps={{
           loadingOverlay: {
             variant: "linear-progress",
