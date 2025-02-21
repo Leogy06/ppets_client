@@ -6,11 +6,15 @@ import {
   useGetItemsByOwnerQuery,
 } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 import { Item } from "@/types/global_types";
+=======
+import { ItemCategory, ItemStatus } from "@/types/global_types";
+>>>>>>> 7e742b3fb3bcc171e849caf4035f289341800960
 
 const ManagerPage = () => {
   const { user } = useAuth();
@@ -57,12 +61,20 @@ const ManagerPage = () => {
       type: "number",
       editable: true,
     },
-    { field: "status", headerName: "STATUS", width: 75, editable: true },
     {
-      field: "category_item",
+      field: "itemStatusDetails",
+      headerName: "STATUS",
+      width: 90,
+      valueGetter: (params: ItemStatus) =>
+        params?.DESCRIPTION.toUpperCase() ?? "Unknown Status.",
+    },
+    {
+      field: "categoryItemDetails",
       headerName: "CATEGORY",
       width: 250,
       editable: true,
+      valueGetter: (params: ItemCategory) =>
+        params?.description ?? "Unknown Item Category",
     },
     {
       field: "createdAt",
@@ -80,6 +92,7 @@ const ManagerPage = () => {
     },
   ];
 
+<<<<<<< HEAD
   //edit tow
   const handleRowEdit = async (newRow: Item) => {
     const { id, ...updatedFields } = newRow;
@@ -93,6 +106,13 @@ const ManagerPage = () => {
       return { ...ownedItems.find((row: Item) => row.id === id) };
     }
   };
+=======
+  useEffect(() => {
+    if (ownedItems) {
+      console.log("owned items ", ownedItems);
+    }
+  }, [ownedItems]);
+>>>>>>> 7e742b3fb3bcc171e849caf4035f289341800960
 
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;

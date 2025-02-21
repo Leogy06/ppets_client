@@ -64,7 +64,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Employees"],
     }),
-    getEmployeeById: builder.query<Employee, string>({
+    getEmployeeById: builder.query<Employee, number>({
       query: (empId) => `/employees/${empId}`,
       providesTags: ["Employees"],
     }),
