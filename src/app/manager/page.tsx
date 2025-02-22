@@ -10,7 +10,7 @@ import React from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import { useRouter } from "next/navigation";
-import { Item } from "@/types/global_types";
+import { Item, ItemCategory, ItemStatus } from "@/types/global_types";
 
 const ManagerPage = () => {
   const { user } = useAuth();
