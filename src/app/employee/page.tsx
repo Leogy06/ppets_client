@@ -33,16 +33,16 @@ const Employee = () => {
 
   const handleClickCancel = async (borrowId: number, status: number) => {
     if (status === 0) {
-      openSnackbar("Status should not be zoer or null", "error");
+      openSnackbar("Status should not be zero or null", "error");
+
+      return;
     }
 
     try {
-      const result = await editBorrowingTransaction({
+      await editBorrowingTransaction({
         borrowId,
         updateEntry: status,
       });
-
-      console.log("result ", result);
     } catch (error) {
       console.error("Unable to cancel the requested item.", error);
       const errMsg = handleError(error, "Unable to cancel the requested item.");
@@ -97,8 +97,13 @@ const Employee = () => {
               btnText="cancel"
               color="secondary"
               title="Cancel Requested Item."
-              onClick={() => handleClickCancel(params.row.id, 4)}
-              disabled={params.row.status === 4}
+              onClick={() => handleClickCancel(params.row.id, 3)}
+              disabled={
+                params.row.status === 4 ||
+                params.row.status === 3 ||
+                params.row.status === 1 ||
+                params.row.status === 5
+              }
             />
           </div>
         );

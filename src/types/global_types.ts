@@ -71,6 +71,7 @@ export interface BorrowingTransactionTypes {
   remarks: string;
   createdAt: Date;
   updatedAt: Date;
+  name?: string; //item name, not include in db, but in form
 }
 
 export interface StatusProcess {
@@ -81,4 +82,11 @@ export interface StatusProcess {
 export interface ItemStatus {
   ID: number;
   DESCRIPTION: string;
+}
+
+export interface NotificationProps {
+  ID: number;
+  MESSAGE: string;
+  createdAt: Date;
+  READ: number;
 }

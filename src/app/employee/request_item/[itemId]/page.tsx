@@ -65,6 +65,7 @@ const RequestForm = () => {
     quantity: 0,
     status: 2,
     remarks: "",
+    name: "",
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,6 +97,7 @@ const RequestForm = () => {
             quantity: requestItemForm.quantity,
             status: requestItemForm.status,
             remarks: requestItemForm.remarks,
+            name: requestItemForm.name,
           },
         ],
         borrower: empDetails?.ID,
@@ -120,6 +122,7 @@ const RequestForm = () => {
           owner: itemDetails.accountable_emp,
           borrower: empDetails.ID,
           borrowedItem: itemDetails.id,
+          name: itemDetails.name,
         };
         return updatedForm;
       });

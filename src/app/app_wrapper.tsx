@@ -7,6 +7,7 @@ import { GlobalSnackbarProvider } from "@/context/GlobalSnackbar";
 import { AuthProvider } from "@/context/AuthContext";
 import Sidebar from "@/app/(component)/sidebar";
 import Topbar from "@/app/(component)/topbar";
+import SocketProvider from "./provider/SocketProvider";
 
 //for darkmode
 //snackbar
@@ -40,6 +41,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
               isDarkMode ? "dark" : "light"
             }`}
           >
+            <SocketProvider />
             <Sidebar />
             <Topbar />
             <div className="p-4">{children}</div>

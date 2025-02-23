@@ -19,6 +19,7 @@ export const apiSlice = createApi({
     "ItemCategories",
     "BorrowingTransaction",
     "StatusProcess",
+    "Notifications",
   ],
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -182,13 +183,39 @@ export const apiSlice = createApi({
         method: "PUT",
         body: { status: updateEntry },
       }),
-      invalidatesTags: ["BorrowingTransaction"],
+      invalidatesTags: ["BorrowingTransaction", "Items"],
     }),
 
     //status
     getStatusProcess: builder.query<StatusProcess[], void>({
       query: () => "/status_process",
       providesTags: ["StatusProcess"],
+    }),
+
+    //notifications
+    //get notification
+    getNotification: builder.query({
+      query: ({ empId, limit }) =>
+        `/notification?empId=${empId}&limit=${limit}`,
+      providesTags: ["Notifications"],
+    }),
+    //add notificaitonks
+    addNotification: builder.mutation({
+      query: (data) => ({
+        url: "/notification",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Notifications"],
+    }),
+    //edit notification
+    editNotification: builder.mutation({
+      query: ({ notifId, editEntries }) => ({
+        url: `/notification?notifId=${notifId}`,
+        method: "PUT",
+        body: editEntries,
+      }),
+      invalidatesTags: ["Notifications"],
     }),
   }),
 });
@@ -231,4 +258,8 @@ export const {
 
   //status process
   useGetStatusProcessQuery,
+
+  //notification
+  useGetNotificationQuery,
+  useEditNotificationMutation,
 } = apiSlice;

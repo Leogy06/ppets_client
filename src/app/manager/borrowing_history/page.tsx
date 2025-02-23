@@ -9,11 +9,11 @@ import {
   useGetBorrowingTransactionByOwnerQuery,
   useGetStatusProcessQuery,
 } from "@/features/api/apiSlice";
-import { Employee, Item } from "@/types/global_types";
+import { Employee } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useEffect } from "react";
+import React from "react";
 
 const BorrowingHistory = () => {
   const { empDetails } = useAuth();
@@ -38,7 +38,7 @@ const BorrowingHistory = () => {
     }
 
     try {
-      const result = await editBorrowingTransaction({
+      await editBorrowingTransaction({
         borrowId,
         updateEntry: status,
       }).unwrap();
@@ -95,7 +95,7 @@ const BorrowingHistory = () => {
     {
       field: "Actions",
       headerName: "Actions",
-      width: 200,
+      width: 300,
       renderCell: (params) => {
         return (
           <div className="flex gap-2 items-center p-1">
@@ -105,7 +105,8 @@ const BorrowingHistory = () => {
               disabled={
                 params.row.status === 1 ||
                 params.row.status === 3 ||
-                params.row.status === 4
+                params.row.status === 4 ||
+                params.row.status === 5
               }
             />
             <DefaultButton
@@ -113,10 +114,24 @@ const BorrowingHistory = () => {
               disabled={
                 params.row.status === 1 ||
                 params.row.status === 3 ||
-                params.row.status === 4
+                params.row.status === 4 ||
+                params.row.status === 5
               }
               color="secondary"
               onClick={() => handleEditBorrowTransaction(params.row.id, 3)}
+            />{" "}
+            {/** return item to owner */}
+            <DefaultButton
+              btnText="return"
+              color="success"
+              title="Return the Item"
+              onClick={() => handleEditBorrowTransaction(params.row.id, 5)}
+              disabled={
+                params.row.status === 4 ||
+                params.row.status === 3 ||
+                params.row.status === 2 ||
+                params.row.status === 5
+              }
             />
           </div>
         );
