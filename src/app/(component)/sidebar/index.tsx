@@ -13,6 +13,7 @@ import {
   MoveToInboxOutlined,
   PanToolAltSharp,
   People,
+  RequestPageOutlined,
   RequestQuoteOutlined,
 } from "@mui/icons-material";
 import {
@@ -54,9 +55,9 @@ const navigations = [
     path: "/admin/inventory",
   },
   {
-    label: "Manager",
-    icon: <KeyRounded />,
-    path: "/admin/manager",
+    label: "Requests",
+    icon: <RequestPageOutlined />,
+    path: "/admin/requests",
   },
   {
     label: "Department",
@@ -113,9 +114,8 @@ const SideBarHeader = () => {
   return (
     /**Side bar header */
     <div className="flex items-center justify-center gap-2 p-8">
-      <span className="text-base font-semibold">
-        {getGreeting()} {empDetails?.FIRSTNAME}
-      </span>
+      {getGreeting()}
+      <span className="text-base font-semibold">{empDetails?.FIRSTNAME}</span>
     </div>
   );
 };

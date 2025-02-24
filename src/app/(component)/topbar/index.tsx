@@ -211,7 +211,7 @@ const Topbar = () => {
         </button>
         <NotificationCard
           isOpen={isOpen}
-          notifications={realTimeNotification}
+          notifications={[...realTimeNotification, ...(notifications || [])]}
           isLoading={isNtfLoadng}
           addNotifLimit={handleAddNotifLimit}
           handleReadNotification={handleReadNotification}

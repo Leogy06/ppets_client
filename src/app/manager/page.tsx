@@ -109,12 +109,6 @@ const ManagerPage = () => {
   return (
     <>
       <PageHeader pageHead="Items in Custody" />
-      <div className="mb-4 flex justify-end">
-        <DefaultButton
-          btnText="add item"
-          onClick={() => router.push("/manager/add_item")}
-        />
-      </div>
       <DataGrid
         columns={columns}
         rows={ownedItems}

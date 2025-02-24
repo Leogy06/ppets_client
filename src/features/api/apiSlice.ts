@@ -156,6 +156,11 @@ export const apiSlice = createApi({
     }),
 
     //borrowing
+    //get borrowing by dpt id
+    getBorrowingTransactionByDpt: builder.query({
+      query: (dptId) => `/borrowing/byDpt?departmentId=${dptId}`,
+      providesTags: ["BorrowingTransaction"],
+    }),
     addBorrowingTransaction: builder.mutation({
       query: ({ borrowedItems, borrower, owner }) => ({
         url: `/borrowing?owner=${owner}&borrower=${borrower}`,
@@ -255,6 +260,7 @@ export const {
   useGetBorrowingTransactionByBorrowerQuery,
   useGetBorrowingTransactionByOwnerQuery,
   useEditBorrowingTransactionMutation,
+  useGetBorrowingTransactionByDptQuery,
 
   //status process
   useGetStatusProcessQuery,

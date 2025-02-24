@@ -25,6 +25,9 @@ const LoginPage = () => {
   //auth context
   const { loginUser, user, isLoading } = useAuth();
 
+  //use states
+  const [isPageLoad, setIsPageLoad] = useState(false);
+
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loginUser(loginForm);
@@ -53,11 +56,16 @@ const LoginPage = () => {
     }
   }, [user, router]);
 
+  //show loading page when fetching
+  useEffect(() => {
+    setIsPageLoad(true);
+  }, []);
+
   if (isLoading) {
     return <div className="animate-pulse">Loading...</div>;
   }
 
-  return (
+  return isPageLoad ? (
     <div className="flex items-center justify-center h-[38rem] p-4">
       <form
         onSubmit={handleSubmitForm}
@@ -113,6 +121,8 @@ const LoginPage = () => {
         </Button>
       </form>
     </div>
+  ) : (
+    <div className="animate-pulse">Loading....</div>
   );
 };
 

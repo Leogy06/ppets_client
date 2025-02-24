@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import { useAuth } from "@/context/AuthContext";
+import { Paper } from "@mui/material";
 
 const AdminPageLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -24,9 +25,9 @@ const AdminPageLayout = ({ children }: { children: React.ReactNode }) => {
       {isLoading ? (
         <div className="animate-pulse">Loading...</div>
       ) : (
-        <>
-          <div className="p-4 flex flex-col overflow-auto">{children}</div>
-        </>
+        <Paper className="p-4">
+          {children}
+        </Paper>
       )}
     </>
   );
