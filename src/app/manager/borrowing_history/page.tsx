@@ -13,7 +13,7 @@ import { Employee } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { Modal, Paper, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const ConfirmApproved = ({
   open,

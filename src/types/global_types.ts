@@ -90,3 +90,8 @@ export interface NotificationProps {
   createdAt: Date;
   READ: number;
 }
+
+export interface BorrowingStatusProps {
+  id: number;
+  description: string;
+}
