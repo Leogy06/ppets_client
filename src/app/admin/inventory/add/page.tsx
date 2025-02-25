@@ -1,9 +1,13 @@
 "use client";
+import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useAddItemMutation,
+  useGetEmployeesQuery,
   useGetItemCategoriesQuery,
 } from "@/features/api/apiSlice";
+import { Employee, Item } from "@/types/global_types";
+import { handleError } from "@/utils/errorHandler";
 import {
   Autocomplete,
   Button,
@@ -18,17 +22,7 @@ interface ConfirmationModalProps {
   open: boolean;
   onClose: () => void;
   submit: (e: React.FormEvent<HTMLFormElement>) => void;
-  itemForm: {
-    name: string;
-    description: string;
-    quantity: number;
-    ics: string;
-    are_no: string;
-    prop_no: string;
-    serial_no: string;
-    value: number;
-    category_item: number;
-  };
+  itemForm: Item;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -48,7 +42,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <p>Name:</p> {itemForm.name}
         </h3>
         <p className="text-sm text-gray-500 pb-3 flex gap-1">
-          <p>Description:</p> {itemForm.description}
+          <span>Description:</span> {itemForm.description}
         </p>
         <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
           <p className="">Quantity:</p>
@@ -71,8 +65,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <p>{itemForm.serial_no}</p>
         </div>
         <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
-          <p className="">Value:</p>
-          <p>{itemForm.value}</p>
+          <p className="">Unit Value:</p>
+          <p>{itemForm.unit_value}</p>
         </div>
         <div className="flex gap-2 text-sm text-gray-500 border-b pb-2">
           <p className="">Category:</p>
@@ -92,8 +86,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               !itemForm.name ||
               !itemForm.description ||
               !itemForm.quantity ||
-              !itemForm.serial_no ||
-              !itemForm.value ||
+              !itemForm.unit_value ||
               !itemForm.category_item
             }
           >
@@ -107,6 +100,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 };
 
 const AddItem = () => {
+  const { user, empDetails } = useAuth();
+
+  //item form use state
   const [itemForm, setItemForm] = useState({
     name: "",
     description: "",
@@ -115,8 +111,11 @@ const AddItem = () => {
     are_no: "",
     prop_no: "",
     serial_no: "",
-    value: 0,
+    unit_value: 0,
     category_item: 0,
+    added_by: Number(user?.id),
+    OWNER_EMP: 0,
+    belong_dpt: empDetails?.CURRENT_DPT_ID,
   });
   const {
     data: itemCategories,
@@ -130,6 +129,10 @@ const AddItem = () => {
 
   const { openSnackbar } = useSnackbar();
 
+  const { data: employees, isLoading: isEmpLdng } = useGetEmployeesQuery(
+    empDetails?.CURRENT_DPT_ID ?? 0
+  );
+
   //modal confirmation
   const [openModal, setOpenModal] = useState(false);
 
@@ -141,13 +144,32 @@ const AddItem = () => {
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result = await addItem(itemForm);
 
-    if (isError) {
-      console.error("Unable to submit item: ", result);
-      openSnackbar("Unable to add the item.", "error");
-    } else {
-      openSnackbar("Item has been added.", "success");
+    try {
+      const result = await addItem(itemForm).unwrap();
+
+      openSnackbar("Item Added successfully", "success");
+
+      console.log("result ", result);
+      setItemForm({
+        name: "",
+        description: "",
+        quantity: 0,
+        ics: "",
+        are_no: "",
+        prop_no: "",
+        serial_no: "",
+        unit_value: 0,
+        category_item: 0,
+        added_by: Number(user?.id),
+        OWNER_EMP: 0,
+        belong_dpt: empDetails?.CURRENT_DPT_ID,
+      });
+      router.push("/admin/inventory");
+    } catch (error) {
+      console.error("Unable to save the Item");
+      const errMsg = handleError(error, "Unable to save the Item");
+      openSnackbar(errMsg, "error");
     }
   };
 
@@ -235,8 +257,8 @@ const AddItem = () => {
             fullWidth
           />
           <TextField
-            name="value"
-            label="Value"
+            name="unit_value"
+            label="Unit Value"
             onChange={handleChangeForm}
             disabled={isItemLding}
             type="number"
@@ -245,12 +267,33 @@ const AddItem = () => {
             fullWidth
           />
 
-          <TextField //change pani
-            name="emp_owner"
-            label="Owner"
-            onChange={handleChangeForm}
-            disabled={isItemLding}
-            fullWidth
+          <Autocomplete //owner
+            disablePortal
+            options={employees || []}
+            getOptionLabel={(option: Employee) =>
+              `${option.LASTNAME} ${option.FIRSTNAME} ${
+                option.MIDDLENAME ?? ""
+              } ${option.SUFFIX ?? ""}` || ""
+            }
+            loading={isItmCatRdy}
+            loadingText={<CircularProgress size={20} />}
+            sx={{ width: "100%" }}
+            onChange={(_, newValue) => {
+              if (newValue) {
+                setItemForm((prevForm) => ({
+                  ...prevForm,
+                  OWNER_EMP: newValue.ID,
+                }));
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Recieving employee"
+                variant="filled"
+                disabled={isEmpLdng}
+              />
+            )}
           />
 
           <Autocomplete

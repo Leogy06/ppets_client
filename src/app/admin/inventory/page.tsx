@@ -6,7 +6,7 @@ import {
   useEditItemMutation,
   useGetItemsQuery,
 } from "@/features/api/apiSlice";
-import { Item } from "@/types/global_types";
+import { Employee, Item } from "@/types/global_types";
 import { Button, Modal, Paper } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
@@ -106,10 +106,15 @@ const Inventory = () => {
       editable: true,
     },
     {
-      field: "emp_ownder",
+      field: "ownerEmpDetails",
       headerName: "Owner",
       width: 170,
-      valueGetter: (params) => (params ? params : "Not owned"),
+      valueGetter: (params: Employee) =>
+        params
+          ? `${params.LASTNAME} ${params.FIRSTNAME} ${
+              params?.MIDDLENAME ?? ""
+            } ${params.SUFFIX ?? ""}`
+          : "Not owned.",
     },
     { field: "ics", headerName: "ICS#", width: 170, editable: true },
     { field: "are_no", headerName: "ARE#", width: 130, editable: true },
@@ -179,6 +184,13 @@ const Inventory = () => {
     openSnackbar("Item(s) deleted successfully.", "success");
   };
 
+  //log items
+  // useEffect(() => {
+  //   if (items) {
+  //     console.log("items ", items);
+  //   }
+  // }, [items]);
+
   if (isItmRdy) {
     return <div className="animate-pulse text-lg">Loading...</div>;
   }
@@ -195,7 +207,7 @@ const Inventory = () => {
           rows={items}
           loading={isItmRdy}
           processRowUpdate={(newRow) => handleRowEdit(newRow)}
-          checkboxSelection
+          checkboxSelection // wala pa ni
           onRowSelectionModelChange={(rowSelectionModal) =>
             handleSelection(rowSelectionModal as number[])
           }

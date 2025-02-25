@@ -5,6 +5,7 @@ import {
   useGetDepartmentQuery,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
+import { Employee } from "@/types/global_types";
 import { DifferenceOutlined, PostAddOutlined } from "@mui/icons-material";
 import { Autocomplete, Paper, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -43,7 +44,7 @@ const Distribution = () => {
     {
       field: "actions",
       headerName: "Actions",
-      flex: 1,
+      width: 180,
       renderCell: (params) => (
         <div className="flex gap-2">
           <DefaultButton
@@ -59,6 +60,9 @@ const Distribution = () => {
             btnIcon={<DifferenceOutlined />}
             title="Add multiple items"
             placement="right"
+            onClick={() =>
+              router.push(`/admin/distributions/distributes/${params.id}`)
+            }
           />
         </div>
       ),
@@ -92,7 +96,12 @@ const Distribution = () => {
         <DataGrid
           getRowId={(params) => params.ID}
           columns={columns}
-          rows={employees}
+          rows={employees?.map((emp: Employee) => ({
+            ...emp,
+            fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
+              emp.MIDDLENAME ?? ""
+            }`,
+          }))}
         />
       </Paper>
     </>

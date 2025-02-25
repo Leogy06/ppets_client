@@ -116,6 +116,7 @@ const Requests = () => {
     {
       field: "borrowedItemDetails",
       headerName: "Item name",
+
       width: 120,
       renderCell: (params) => {
         return (
@@ -132,14 +133,25 @@ const Requests = () => {
       field: "quantity",
       headerName: "Quantity",
       type: "number",
-      width: 70,
+      width: 90,
     },
     {
       field: "statusDetails",
       headerName: "Status",
       valueGetter: (params: BorrowingStatusProps) =>
         params?.description.toUpperCase() ?? "Unknown or Invalid",
+      cellClassName: (params) =>
+        params.row.status === 1
+          ? "cell-approved"
+          : params.row.status === 2
+          ? "cell-pending"
+          : params.row.status === 3
+          ? "cell-rejected"
+          : params.row.status === 4
+          ? "cell-cancel"
+          : "cell-unknown",
     },
+
     {
       field: "ownerEmp",
       headerName: "Item Owner",
@@ -186,7 +198,7 @@ const Requests = () => {
         return (
           <div className="flex gap-1">
             <DefaultButton
-              color="secondary"
+              color="error"
               btnText="reject"
               variant="text"
               onClick={() => handleOpenModalConfirmation(params.row.id, 3)}
@@ -200,6 +212,7 @@ const Requests = () => {
             <DefaultButton
               btnText="approve"
               onClick={() => handleOpenModalConfirmation(params.row.id, 1)}
+              color="success"
               disabled={
                 params.row.status === 1 ||
                 params.row.status === 3 ||
@@ -228,10 +241,16 @@ const Requests = () => {
     <>
       <PageHeader pageHead="Requests" />
       <DataGrid
-        sx={{ height: 400 }}
         columns={columns}
         rows={borrowingTransactions}
         disableRowSelectionOnClick
+        sx={{
+          height: 400,
+          "& .cell-approved": { backgroundColor: "#90ee90 ", color: "#333" }, // Light green
+          "& .cell-rejected": { backgroundColor: "#ffccbc", color: "#333" }, // Light red
+          "& .cell-pending": { backgroundColor: "#adff2f", color: "#333" }, // green yellow
+          "& .cell-cancel": { backgroundColor: "#d8bfd8", color: "#333" }, // thirstle: purple
+        }}
       />
       <ConfirmModalApprove
         open={openModal}

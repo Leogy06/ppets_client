@@ -120,7 +120,7 @@ export const apiSlice = createApi({
       providesTags: ["Items"],
     }),
     //get items by department
-    getItemsDepartment: builder.query({
+    getItemsDepartment: builder.query<Item[], number>({
       query: (department) => `/item/byDepartment/${department}`,
       providesTags: ["Items"],
     }),

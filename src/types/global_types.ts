@@ -17,10 +17,11 @@ export interface Item {
   class_no?: string;
   acct_code?: string;
   unit_value: number;
-  accountable_emp: number | null;
+  accountable_emp?: number | null;
   remarks?: string;
   added_by: number | null;
   category_item: number | null;
+  OWNER_EMP: number | null;
 }
 
 export interface ItemCategory {
@@ -39,7 +40,7 @@ export interface User {
 
 export interface Employee {
   ID: number;
-  CURRENT_DPT_ID: number;
+  CURRENT_DPT_ID: number | null;
   FIRSTNAME: string;
   LASTNAME: string;
   MIDDLENAME: string;

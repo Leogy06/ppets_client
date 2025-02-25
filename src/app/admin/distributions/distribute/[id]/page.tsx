@@ -85,7 +85,7 @@ const Distribute = () => {
       </div>
       <form
         onSubmit={handleSubmit}
-        className="flex gap-4 flex-col w-full md:w-96"
+        className="flex gap-4 flex-col w-full md:w-96 h-[42rem] overflow-auto"
       >
         <TextField
           label="Name"
@@ -180,18 +180,19 @@ const Distribute = () => {
           loading={isCatItmLdng}
           loadingText={<CircularProgress size={20} />}
         />
-        <DefaultButton
-          btnText="Distribute"
-          type="submit"
-          disabled={isAddItmLdng}
-        />
-
-        <DefaultButton
-          btnText="Cancel"
-          type="reset"
-          variant="text"
-          onClick={() => router.push("/admin/distribute")}
-        />
+        <div className="flex gap-4 justify-center md:justify-end">
+          <DefaultButton
+            btnText="Distribute"
+            type="submit"
+            disabled={isAddItmLdng}
+          />
+          <DefaultButton
+            btnText="Cancel"
+            type="reset"
+            variant="text"
+            onClick={() => router.push("/admin/distribute")}
+          />
+        </div>
         {/**Added by should comming from session */}
       </form>
     </div>

@@ -149,7 +149,6 @@ const LendEmployee = () => {
 
   const handleSubmitItems = async () => {
     try {
-      console.log({ checkoutItems, borrower: id, owner: empDetails?.ID });
       const result = await addBorrowingTransaction({
         borrowedItems: checkoutItems,
         borrower: id,

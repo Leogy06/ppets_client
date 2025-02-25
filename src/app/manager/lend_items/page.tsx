@@ -33,7 +33,7 @@ const LendItem = () => {
       renderCell: (params) => (
         <DefaultButton
           btnIcon={<DifferenceOutlined />}
-          title="Lend Items"
+          title="Lend Item"
           onClick={() => router.push(`/manager/lend_items/${params.row.ID}`)}
         />
       ),

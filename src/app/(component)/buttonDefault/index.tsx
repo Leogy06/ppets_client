@@ -1,4 +1,5 @@
-import { Button, Tooltip } from "@mui/material";
+import { Theme } from "@emotion/react";
+import { Button, SxProps, Tooltip } from "@mui/material";
 import React from "react";
 
 interface DefaultButtonProps {
@@ -7,11 +8,12 @@ interface DefaultButtonProps {
   onClick?: () => void;
   type?: "submit" | "button" | "reset";
   disabled?: boolean;
-  color?: "primary" | "success" | "secondary";
+  color?: "primary" | "success" | "secondary" | "error";
   title?: string;
   placement?: "left" | "top" | "right";
   btnIcon?: React.ReactNode;
   secondIcon?: React.ReactNode;
+  sx?: SxProps<Theme>;
 }
 
 const DefaultButton: React.FC<DefaultButtonProps> = ({
@@ -25,9 +27,13 @@ const DefaultButton: React.FC<DefaultButtonProps> = ({
   btnIcon,
   placement = "left",
   secondIcon,
+  sx = {},
 }) => {
   return (
-    <Tooltip title={title} placement={placement}>
+    <Tooltip
+      title={<div className="text-base">{title}</div>}
+      placement={placement}
+    >
       <span>
         <Button
           color={color}
@@ -36,6 +42,7 @@ const DefaultButton: React.FC<DefaultButtonProps> = ({
           type={type}
           disabled={disabled}
           className="flex items-center gap-1"
+          sx={sx}
         >
           {btnIcon}
           {secondIcon}
