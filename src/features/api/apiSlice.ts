@@ -222,6 +222,8 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Notifications"],
     }),
+
+    //the distributed item
   }),
 });
 
