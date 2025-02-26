@@ -3,6 +3,7 @@ import {
   Employee,
   Item,
   StatusProcess,
+  UndistributedItem,
 } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
@@ -20,6 +21,7 @@ export const apiSlice = createApi({
     "BorrowingTransaction",
     "StatusProcess",
     "Notifications",
+    "UndistributedItem",
   ],
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -223,7 +225,19 @@ export const apiSlice = createApi({
       invalidatesTags: ["Notifications"],
     }),
 
-    //the distributed item
+    //the not item
+    createUndistributedItem: builder.mutation({
+      query: (data) => ({
+        url: "/api/item",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["UndistributedItem"],
+    }),
+    getUnDistributeItem: builder.query<UndistributedItem[], number>({
+      query: (deptID) => `/api/item?DEPARTMENT_ID=${deptID}`,
+      providesTags: ["UndistributedItem"],
+    }),
   }),
 });
 
@@ -243,7 +257,7 @@ export const {
   //departments
   useGetDepartmentQuery,
 
-  //item
+  //item(distrubuted)
   useGetItemsQuery,
   useAddItemMutation,
   useEditItemMutation,
@@ -270,4 +284,8 @@ export const {
   //notification
   useGetNotificationQuery,
   useEditNotificationMutation,
+
+  //item(not distrbuted)
+  useCreateUndistributedItemMutation,
+  useGetUnDistributeItemQuery,
 } = apiSlice;

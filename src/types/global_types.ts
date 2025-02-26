@@ -96,3 +96,19 @@ export interface BorrowingStatusProps {
   id: number;
   description: string;
 }
+
+export interface UndistributedItem {
+  ID: number;
+  ITEM_NAME: string;
+  DESCRIPTION: string;
+  STOCK_QUANTITY: number;
+  UNIT_VALUE: number;
+  TOTAL_VALUE: number;
+  SERIAL_NO: string;
+  PROP_NO: string;
+  REMARKS: string;
+  DEPARTMENT_ID: number;
+  RECIEVED_AT: Date;
+  updatedAt: Date;
+  createdAt: Date;
+}

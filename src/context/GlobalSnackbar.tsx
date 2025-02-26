@@ -43,7 +43,7 @@ export const GlobalSnackbarProvider: React.FC<{ children: ReactNode }> = ({
       {open && (
         <Snackbar open={open} onClose={closeSnackbar} autoHideDuration={6000}>
           <Alert
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", fontSize: 24 }}
             severity={severitySnack}
             variant="filled"
           >
