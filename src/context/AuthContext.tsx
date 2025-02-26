@@ -63,6 +63,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     router.push("/");
   };
 
+  if (isLoading) return "Loading...";
+
   return (
     <AuthContext.Provider
       value={{ user, logoutUser, loginUser, isLoading, empDetails }}

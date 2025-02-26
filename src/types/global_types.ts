@@ -40,7 +40,7 @@ export interface User {
 
 export interface Employee {
   ID: number;
-  CURRENT_DPT_ID: number | null;
+  CURRENT_DPT_ID: number;
   FIRSTNAME: string;
   LASTNAME: string;
   MIDDLENAME: string;

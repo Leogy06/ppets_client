@@ -1,27 +1,26 @@
 "use client";
 
 import DefaultButton from "@/app/(component)/buttonDefault";
+import { useAuth } from "@/context/AuthContext";
 import {
   useGetDepartmentQuery,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
 import { Employee } from "@/types/global_types";
 import { DifferenceOutlined, PostAddOutlined } from "@mui/icons-material";
-import { Autocomplete, Paper, TextField } from "@mui/material";
+import { Autocomplete, Paper } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const Distribution = () => {
   const router = useRouter();
-  const [department, setDepartment] = useState(1);
+  const { empDetails } = useAuth();
   const {
     data: employees,
     isLoading,
     isError,
-  } = useGetEmployeesQuery(department);
-
-  const { data: departments } = useGetDepartmentQuery();
+  } = useGetEmployeesQuery(Number(empDetails?.CURRENT_DPT_ID));
 
   const columns: GridColDef[] = [
     {
@@ -34,35 +33,16 @@ const Distribution = () => {
         } ${params.row.SUFFIX || ""}`,
     },
     {
-      field: "CURRENT_DPT_ID",
-      headerName: "Department",
-      width: 300,
-      valueGetter: (params) =>
-        departments?.find((department) => department.ID === params)
-          ?.DEPARTMENT_NAME || "Unknown Department",
-    },
-    {
       field: "actions",
       headerName: "Actions",
       width: 180,
       renderCell: (params) => (
         <div className="flex gap-2">
           <DefaultButton
-            btnIcon={<PostAddOutlined />}
-            title="Distribute one item"
-            color="secondary"
-            placement="left"
-            onClick={() =>
-              router.push(`/admin/distributions/distribute/${params.id}`)
-            }
-          />
-          <DefaultButton
             btnIcon={<DifferenceOutlined />}
-            title="Add multiple items"
+            title="Distribute Item"
             placement="right"
-            onClick={() =>
-              router.push(`/admin/distributions/distributes/${params.id}`)
-            }
+            onClick={() => router.push(`/admin/distributions/${params.row.ID}`)}
           />
         </div>
       ),
@@ -74,24 +54,6 @@ const Distribution = () => {
   if (isError) return <div>Error fetching data...</div>;
   return (
     <>
-      <Autocomplete
-        className="w-full md:w-96 mb-4"
-        options={departments || []}
-        getOptionLabel={(option) => option.DEPARTMENT_NAME || ""}
-        value={
-          departments && department
-            ? departments?.find((d) => d.ID === department) || null
-            : null
-        }
-        onChange={(_, newValue) => {
-          if (newValue) {
-            setDepartment(newValue.ID);
-          }
-        }}
-        renderInput={(params) => (
-          <TextField {...params} label="Select Department" variant="outlined" />
-        )}
-      />
       <Paper sx={{ height: 520 }}>
         <DataGrid
           getRowId={(params) => params.ID}
