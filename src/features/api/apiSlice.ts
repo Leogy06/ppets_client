@@ -238,6 +238,13 @@ export const apiSlice = createApi({
       query: (deptID) => `/api/item?DEPARTMENT_ID=${deptID}`,
       providesTags: ["UndistributedItem"],
     }),
+    deleteUndistributedItem: builder.mutation({
+      query: ({ itemId, action }) => ({
+        url: `/api/item/${itemId}/${action}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["UndistributedItem"],
+    }),
   }),
 });
 
@@ -288,4 +295,5 @@ export const {
   //item(not distrbuted)
   useCreateUndistributedItemMutation,
   useGetUnDistributeItemQuery,
+  useDeleteUndistributedItemMutation,
 } = apiSlice;

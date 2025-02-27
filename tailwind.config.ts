@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 import { createThemes } from "tw-colors";
 import colors from "tailwindcss/colors";
+import plugin from "tailwindcss/plugin";
 
 const basedColors = [
   "gray",
@@ -68,5 +69,17 @@ export default {
       },
     },
   },
-  plugins: [createThemes(themes)],
+  plugins: [
+    createThemes(themes),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".dead-center": {
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        },
+      });
+    }),
+  ],
 } satisfies Config;

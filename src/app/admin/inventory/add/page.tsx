@@ -7,28 +7,67 @@ import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import { useCreateUndistributedItemMutation } from "@/features/api/apiSlice";
 import { UndistributedItem } from "@/types/global_types";
+import { dateFormmater } from "@/utils/date_formmater";
 import { handleError } from "@/utils/errorHandler";
-import { AddBoxOutlined } from "@mui/icons-material";
-import { Modal, TextField } from "@mui/material";
+import { AddBoxOutlined, Inventory2Outlined } from "@mui/icons-material";
+import { Modal } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+
+//day js
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const ConfirmSubmitModal = ({
   open,
   onClose,
   onSubmit,
+  itemForm,
 }: {
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
+  itemForm: Partial<UndistributedItem>;
 }) => {
   return (
     <Modal open={open}>
-      <div className=" bg-white p-4 gap-4  rounded-lg border border-gray-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col">
-        <h1 className="text-center text-base font-semibold">
-          Confirm Add Item?{" "}
+      <div className=" bg-white p-4 gap-4  rounded-lg border border-gray-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center w-9/12">
+        <h1 className="text-center text-lg font-semibold">
+          <Inventory2Outlined />
+          Summary
         </h1>
-        <div className="flex gap-4">
+        <hr />
+        {itemForm && (
+          <div className="flex flex-col gap-2">
+            <span className="flex gap-4">
+              Item name | <p className="font-semibold">{itemForm.ITEM_NAME}</p>
+            </span>
+            <span className="flex gap-4">
+              Description |{" "}
+              <p className="font-semibold">{itemForm.DESCRIPTION}</p>
+            </span>
+            <span className="flex gap-4">
+              Unit value |{" "}
+              <p className="font-semibold">₱ {itemForm.UNIT_VALUE}</p>
+            </span>
+            <span className="flex gap-4">
+              Stock | <p className="font-semibold">{itemForm.STOCK_QUANTITY}</p>
+            </span>
+            <span className="flex gap-4">
+              Date Received |
+              <p className="font-semibold">
+                {dateFormmater(itemForm.RECEIVED_AT || null, "YYYY-DD-MM")}
+              </p>
+            </span>
+            <span className="flex gap-4">
+              Prop | <p className="font-semibold">{itemForm.PROP_NO}</p>
+            </span>
+            <span className="flex gap-4">
+              Serial | <p className="font-semibold">{itemForm.SERIAL_NO}</p>
+            </span>
+          </div>
+        )}
+        <div className="flex gap-4 justify-center">
           <DefaultButton
             onClick={onClose}
             btnText="cancel"
@@ -73,6 +112,7 @@ const AddItem = () => {
     REMARKS: "",
     SERIAL_NO: "",
     PROP_NO: "",
+    RECEIVED_AT: null,
     DEPARTMENT_ID: Number(empDetails?.CURRENT_DPT_ID),
   });
 
@@ -87,7 +127,6 @@ const AddItem = () => {
       !itemForm.DESCRIPTION ||
       !itemForm.STOCK_QUANTITY ||
       !itemForm.UNIT_VALUE ||
-      !itemForm.REMARKS ||
       !itemForm.SERIAL_NO ||
       !itemForm.PROP_NO
     ) {
@@ -96,20 +135,6 @@ const AddItem = () => {
     }
 
     setIsModalOpen(true);
-  };
-
-  //close modal
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setItemForm({
-      ITEM_NAME: "",
-      DESCRIPTION: "",
-      STOCK_QUANTITY: 0,
-      UNIT_VALUE: 0,
-      REMARKS: "",
-      SERIAL_NO: "",
-      PROP_NO: "",
-    });
   };
 
   //handles
@@ -166,16 +191,30 @@ const AddItem = () => {
         <DefaultTextField
           name="UNIT_VALUE"
           label="Unit value"
+          placeholder="Per piece"
           type="number"
           value={itemForm.UNIT_VALUE ? itemForm.UNIT_VALUE.toString() : ""}
           onChange={handleChangeItemForm}
         />
         <DefaultTextField
           name="REMARKS"
-          label="Remarls"
+          label="Remarks"
           value={itemForm.REMARKS}
+          required={false}
+          placeholder="optional"
           onChange={handleChangeItemForm}
         />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Received on"
+            onChange={(newDate) =>
+              setItemForm((prevForm) => ({
+                ...prevForm,
+                RECEIVED_AT: newDate ? newDate.toDate() : null,
+              }))
+            }
+          />
+        </LocalizationProvider>
         <DefaultTextField
           name="SERIAL_NO"
           label="SERIAL #"
@@ -193,6 +232,7 @@ const AddItem = () => {
             btnText="submit"
             type="submit"
             title="Proceed confirm"
+            disabled={isLoading}
           />
         </div>
       </form>
@@ -201,6 +241,7 @@ const AddItem = () => {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitItemForm}
+        itemForm={itemForm}
       />
     </>
   );

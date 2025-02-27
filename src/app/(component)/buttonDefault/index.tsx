@@ -10,7 +10,7 @@ interface DefaultButtonProps {
   disabled?: boolean;
   color?: "primary" | "success" | "secondary" | "error";
   title?: string;
-  placement?: "left" | "top" | "right";
+  placement?: "left" | "top" | "right" | "bottom";
   btnIcon?: React.ReactNode;
   secondIcon?: React.ReactNode;
   sx?: SxProps<Theme>;

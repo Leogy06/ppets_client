@@ -107,8 +107,9 @@ export interface UndistributedItem {
   SERIAL_NO: string;
   PROP_NO: string;
   REMARKS: string;
+  DELETE: number;
   DEPARTMENT_ID: number;
-  RECIEVED_AT: Date;
+  RECEIVED_AT: Date | null;
   updatedAt: Date;
   createdAt: Date;
 }

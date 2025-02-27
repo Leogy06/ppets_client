@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 export const dateFormmater = (
-  date: string | Date,
+  date: null | Date,
   format = "YYYY-MM-DD hh:mm:a"
 ): string => {
   if (!date) {
