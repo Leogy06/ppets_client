@@ -6,15 +6,14 @@ import {
   useGetItemsByOwnerQuery,
 } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "@/app/(component)/pageheader";
-import DefaultButton from "@/app/(component)/buttonDefault";
 import { useRouter } from "next/navigation";
-import { Item, ItemCategory, ItemStatus } from "@/types/global_types";
+import { Item, UndistributedItem } from "@/types/global_types";
+import DefaultButton from "../(component)/buttonDefault";
 
 const ManagerPage = () => {
   const { user } = useAuth();
-  const router = useRouter();
 
   const {
     data: ownedItems,
@@ -25,66 +24,65 @@ const ManagerPage = () => {
   //edit items
   const [editItem] = useEditItemMutation();
 
+  //use states
+
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Item name", width: 230, editable: true },
     {
-      field: "description",
-      headerName: "Description",
-      width: 250,
-      editable: true,
+      field: "itemDetails",
+      headerName: "Item",
+      valueGetter: (params: UndistributedItem) => params.ITEM_NAME,
+      width: 180,
     },
     {
       field: "quantity",
-      headerName: "Quantity on hand",
-      width: 250,
-      type: "number",
-      editable: true,
+      headerName: "Quantity",
+      renderCell: (params) =>
+        `${params.row.quantity} / ${
+          params.row.ORIGINAL_QUANTITY ?? " Unknown"
+        }`,
     },
-    { field: "ics", headerName: "ICS#", width: 170, editable: true },
-    { field: "are_no", headerName: "ARE#", width: 130, editable: true },
-    { field: "prop_no", headerName: "PROP#", width: 120, editable: true },
     {
       field: "unit_value",
-      headerName: "Unit Value",
-      width: 90,
+      headerName: "Unit value",
       type: "number",
-      editable: true,
+      width: 78,
     },
     {
       field: "total_value",
-      headerName: "Total Value",
+      headerName: "Total value",
       width: 90,
-      type: "number",
-      editable: true,
     },
     {
-      field: "itemStatusDetails",
-      headerName: "STATUS",
-      width: 90,
-      valueGetter: (params: ItemStatus) =>
-        params?.DESCRIPTION.toUpperCase() ?? "Unknown Status.",
+      field: "DISTRIBUTED_ON",
+      headerName: "Distrbuted on",
+      width: 180,
+      valueGetter: (params) => (params ? new Date(params) : "--"),
     },
     {
-      field: "categoryItemDetails",
-      headerName: "CATEGORY",
-      width: 250,
-      editable: true,
-      valueGetter: (params: ItemCategory) =>
-        params?.description ?? "Unknown Item Category",
+      field: "DISTRIBUTED_BY",
+      headerName: "Distributed by",
+      width: 120,
     },
     {
-      field: "createdAt",
-      headerName: "Added at",
-      width: 150,
-      type: "dateTime",
-      valueGetter: (params) => (params ? new Date(params) : null),
+      field: "remarks",
+      headerName: "Remarks",
+      width: 200,
     },
     {
-      field: "updatedAt",
-      headerName: "Updated at",
-      width: 150,
-      type: "dateTime",
-      valueGetter: (params) => (params ? new Date(params) : null),
+      field: "Actions",
+      headerName: "Actions",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div>
+            <DefaultButton
+              btnText="Lend"
+              color="secondary"
+              title="Lend this Item"
+            />
+          </div>
+        );
+      },
     },
   ];
 
@@ -102,17 +100,25 @@ const ManagerPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (ownedItems) {
+      console.log("owned items ", ownedItems);
+    }
+  }, [ownedItems]);
+
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;
   }
 
   return (
     <>
-      <PageHeader pageHead="Items in Custody" />
+      <PageHeader pageHead="Items" />
+
       <DataGrid
         columns={columns}
         rows={ownedItems}
         loading={isLoading}
+        getRowId={(params) => params.id}
         processRowUpdate={(newRow) => handleRowEdit(newRow)}
         slotProps={{
           loadingOverlay: {

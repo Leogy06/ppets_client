@@ -43,6 +43,7 @@ export const apiSlice = createApi({
       query: (department) => `/employees?department=${department}`,
       providesTags: ["Employees"],
     }),
+
     addEmployee: builder.mutation({
       query: (data) => ({
         url: "/employees",
@@ -135,6 +136,15 @@ export const apiSlice = createApi({
         body: ids,
       }),
       invalidatesTags: ["Items"],
+    }),
+
+    getItemsNotOwned: builder.query<
+      Item[],
+      { empId: number; departmentId: number }
+    >({
+      query: ({ empId, departmentId }) =>
+        `/item/notOwned/${empId}?departmentId=${departmentId}`,
+      providesTags: ["Items"],
     }),
 
     //item category
@@ -276,6 +286,7 @@ export const {
   useGetItemsByOwnerQuery,
   useGetItemsDepartmentQuery,
   useGetItemsByIdQuery,
+  useGetItemsNotOwnedQuery,
 
   //item-category
   useGetItemCategoriesQuery,
