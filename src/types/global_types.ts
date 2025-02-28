@@ -6,9 +6,10 @@ export interface ErrorParams {
 //item props
 export interface Item {
   id?: number;
+  ITEM_ID: number | null;
   name: string;
   description?: string;
-  quantity: number;
+  quantity: number | null;
   ics?: string;
   are_no: string;
   prop_no: string;
@@ -22,6 +23,7 @@ export interface Item {
   added_by: number | null;
   category_item: number | null;
   OWNER_EMP: number | null;
+  DISTRIBUTED_BY: number;
 }
 
 export interface ItemCategory {
@@ -98,7 +100,7 @@ export interface BorrowingStatusProps {
 }
 
 export interface UndistributedItem {
-  ID: number;
+  ID: number | null;
   ITEM_NAME: string;
   DESCRIPTION: string;
   STOCK_QUANTITY: number;

@@ -245,6 +245,10 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["UndistributedItem"],
     }),
+    getUndistributedItemById: builder.query<UndistributedItem, number>({
+      query: (itemId) => `/api/item/${itemId}`,
+      providesTags: ["UndistributedItem"],
+    }),
   }),
 });
 
@@ -296,4 +300,5 @@ export const {
   useCreateUndistributedItemMutation,
   useGetUnDistributeItemQuery,
   useDeleteUndistributedItemMutation,
+  useGetUndistributedItemByIdQuery,
 } = apiSlice;

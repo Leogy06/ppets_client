@@ -3,15 +3,14 @@
 import DefaultButton from "@/app/(component)/buttonDefault";
 import { useAuth } from "@/context/AuthContext";
 import {
-  useGetDepartmentQuery,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
 import { Employee } from "@/types/global_types";
-import { DifferenceOutlined, PostAddOutlined } from "@mui/icons-material";
-import { Autocomplete, Paper } from "@mui/material";
+import { DifferenceOutlined } from "@mui/icons-material";
+import {  Paper } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 
 const Distribution = () => {
   const router = useRouter();

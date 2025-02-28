@@ -5,9 +5,7 @@ import {
   CategoryOutlined,
   Dashboard,
   DifferenceOutlined,
-  Houseboat,
   Inventory,
-  KeyRounded,
   ListAltOutlined,
   Logout,
   MoveToInboxOutlined,
@@ -27,8 +25,6 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import ibs_logo from "@/assets/ibs_logo.png";
-import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
 import { useAuth } from "@/context/AuthContext";
@@ -58,11 +54,6 @@ const navigations = [
     label: "Requests",
     icon: <RequestPageOutlined />,
     path: "/admin/requests",
-  },
-  {
-    label: "Department",
-    icon: <Houseboat />,
-    path: "/admin/department",
   },
   {
     label: "Distributions",

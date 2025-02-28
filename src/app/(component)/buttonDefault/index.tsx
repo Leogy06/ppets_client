@@ -29,27 +29,32 @@ const DefaultButton: React.FC<DefaultButtonProps> = ({
   secondIcon,
   sx = {},
 }) => {
-  return (
+  const button = (
+    <span>
+      <Button
+        color={color}
+        variant={variant}
+        onClick={onClick}
+        type={type}
+        disabled={disabled}
+        className="flex items-center gap-1"
+        sx={sx}
+      >
+        {btnIcon}
+        {secondIcon}
+        {btnText}
+      </Button>
+    </span>
+  );
+  return title ? (
     <Tooltip
-      title={<div className="text-base">{title}</div>}
+      title={<div className="text-base">{title && title}</div>}
       placement={placement}
     >
-      <span>
-        <Button
-          color={color}
-          variant={variant}
-          onClick={onClick}
-          type={type}
-          disabled={disabled}
-          className="flex items-center gap-1"
-          sx={sx}
-        >
-          {btnIcon}
-          {secondIcon}
-          {btnText}
-        </Button>
-      </span>
+      {button}
     </Tooltip>
+  ) : (
+    button
   );
 };
 

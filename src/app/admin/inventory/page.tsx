@@ -27,80 +27,68 @@ interface ItemId {
   id: number | null;
 }
 
-const ConfirmDelete = ({
+const ConfirmModal = ({
   open,
   onClose,
   handleDeleteItem,
   isLoading,
+  itemShow,
 }: {
   open: boolean;
   onClose: () => void;
   handleDeleteItem: (param: number) => void;
   isLoading: boolean;
+  itemShow: number;
 }) => {
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
-        <h1 className="text-lg font-bold mb-8">Confirm Delete Item?</h1>
-        <div className="flex flex-col gap-4"></div>
-        <div className="flex gap-2 justify-center">
-          <DefaultButton
-            btnIcon={<Cancel />}
-            onClick={onClose}
-            title="Abort delete"
-            variant="outlined"
-            color="error"
-            placement="top"
-            disabled={isLoading}
-          />
-          <DefaultButton
-            btnIcon={<Check />}
-            onClick={() => handleDeleteItem(1)}
-            title="Proceed delete item"
-            placement="top"
-            disabled={isLoading}
-          />
+      {itemShow === 0 ? (
+        <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
+          <h1 className="text-lg font-bold mb-8">Confirm Delete Item?</h1>
+          <div className="flex flex-col gap-4"></div>
+          <div className="flex gap-2 justify-center">
+            <DefaultButton
+              btnIcon={<Cancel />}
+              onClick={onClose}
+              title="Abort delete"
+              variant="outlined"
+              color="error"
+              placement="top"
+              disabled={isLoading}
+            />
+            <DefaultButton
+              btnIcon={<Check />}
+              onClick={() => handleDeleteItem(1)}
+              title="Proceed delete item"
+              placement="top"
+              disabled={isLoading}
+            />
+          </div>
         </div>
-      </div>
-    </Modal>
-  );
-};
-
-const ConfirmRestore = ({
-  open,
-  onClose,
-  handleDeleteItem,
-  isLoading,
-}: {
-  open: boolean;
-  onClose: () => void;
-  handleDeleteItem: (param: number) => void;
-  isLoading: boolean;
-}) => {
-  return (
-    <Modal open={open} onClose={onClose}>
-      <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
-        <h1 className="text-lg font-bold mb-8">Confirm Restore Item?</h1>
-        <div className="flex flex-col gap-4"></div>
-        <div className="flex gap-2 justify-center">
-          <DefaultButton
-            btnIcon={<Cancel />}
-            onClick={onClose}
-            title="Abort restore"
-            variant="outlined"
-            color="error"
-            placement="top"
-            disabled={isLoading}
-          />
-          <DefaultButton
-            btnIcon={<Check />}
-            onClick={() => handleDeleteItem(0)}
-            title="Proceed restore item"
-            placement="top"
-            disabled={isLoading}
-          />
+      ) : (
+        <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
+          <h1 className="text-lg font-bold mb-8">Confirm Restore Item?</h1>
+          <div className="flex flex-col gap-4"></div>
+          <div className="flex gap-2 justify-center">
+            <DefaultButton
+              btnIcon={<Cancel />}
+              onClick={onClose}
+              title="Abort restore"
+              variant="outlined"
+              color="error"
+              placement="top"
+              disabled={isLoading}
+            />
+            <DefaultButton
+              btnIcon={<Check />}
+              onClick={() => handleDeleteItem(0)}
+              title="Proceed restore item"
+              placement="top"
+              disabled={isLoading}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </Modal>
   );
 };
@@ -113,8 +101,8 @@ const InventorySelectDropDown = ({
   itemShows: number;
 }) => {
   const options = [
-    { id: 1, label: "Available Items" },
-    { id: 2, label: "Deleted Items" },
+    { id: 0, label: "Available Items" },
+    { id: 1, label: "Deleted Items" },
   ];
 
   return (
@@ -185,6 +173,9 @@ const Inventory = () => {
       openSnackbar("Item id is required to proceed.", "info");
       return;
     }
+
+    console.log("action ", action);
+
     try {
       const result = await deleteItem({ itemId, action }).unwrap();
       openSnackbar(result.message ?? "Item deleted.", "info");
@@ -238,7 +229,7 @@ const Inventory = () => {
     {
       field: "Actions",
       renderCell: (params) => {
-        return itemShows === 1 ? (
+        return itemShows === 0 ? (
           <DefaultButton
             title="Delete Item"
             btnIcon={<Delete />}
@@ -246,7 +237,7 @@ const Inventory = () => {
             variant="text"
             onClick={() => handleOpenModal(params.row.ID)}
           />
-        ) : (
+        ) : itemShows === 1 ? (
           <DefaultButton
             title="Restore Item"
             btnIcon={<ArrowUpward />}
@@ -254,6 +245,8 @@ const Inventory = () => {
             variant="text"
             onClick={() => handleOpenModal(params.row.ID)}
           />
+        ) : (
+          "Unknown action"
         );
       },
     },
@@ -262,8 +255,8 @@ const Inventory = () => {
   //items to show
   const rows =
     undistributtedItems?.filter((item) => {
-      if (itemShows === 1) return item.DELETE !== 1;
-      if (itemShows === 2) return item.DELETE !== 0;
+      if (itemShows === 0) return item.DELETE !== 1;
+      if (itemShows === 1) return item.DELETE !== 0;
       return item.DELETE !== 1;
     }) || [];
 
@@ -309,17 +302,12 @@ const Inventory = () => {
         getRowId={(params) => params.ID}
         loading={isUndistributeLoading}
       />
-      <ConfirmDelete
+      <ConfirmModal
         open={openModal}
         onClose={handleCloseModal}
         handleDeleteItem={handleDeleteItem}
         isLoading={isDeleteLoading}
-      />
-      <ConfirmRestore
-        open={openModal}
-        onClose={handleCloseModal}
-        handleDeleteItem={handleDeleteItem}
-        isLoading={isDeleteLoading}
+        itemShow={itemShows}
       />
     </>
   );
