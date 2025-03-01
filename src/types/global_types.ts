@@ -45,7 +45,7 @@ export interface User {
 }
 
 export interface Employee {
-  ID: number;
+  ID: number | null;
   CURRENT_DPT_ID: number;
   FIRSTNAME: string;
   LASTNAME: string;
@@ -79,6 +79,7 @@ export interface BorrowingTransactionTypes {
   createdAt: Date;
   updatedAt: Date;
   name?: string; //item name, not include in db, but in form
+  DPT_ID: number | null;
 }
 
 export interface StatusProcess {

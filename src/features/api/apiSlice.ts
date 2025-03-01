@@ -167,10 +167,10 @@ export const apiSlice = createApi({
       }),
     }),
 
-    //borrowing
+    //transaction
     //get borrowing by dpt id
     getBorrowingTransactionByDpt: builder.query({
-      query: (dptId) => `/borrowing/byDpt?departmentId=${dptId}`,
+      query: (dptId) => `/transaction/byDpt?departmentId=${dptId}`,
       providesTags: ["BorrowingTransaction"],
     }),
     addBorrowingTransaction: builder.mutation({
@@ -196,11 +196,20 @@ export const apiSlice = createApi({
     }),
     editBorrowingTransaction: builder.mutation({
       query: ({ borrowId, updateEntry }) => ({
-        url: `borrowing/update?borrowId=${borrowId}`,
+        url: `/borrowing/update?borrowId=${borrowId}`,
         method: "PUT",
         body: { status: updateEntry },
       }),
       invalidatesTags: ["BorrowingTransaction", "Items"],
+    }),
+    //lend transaciton
+    createLendTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction/lend",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Items", "BorrowingTransaction"],
     }),
 
     //status
@@ -299,6 +308,8 @@ export const {
   useGetBorrowingTransactionByOwnerQuery,
   useEditBorrowingTransactionMutation,
   useGetBorrowingTransactionByDptQuery,
+  //lend
+  useCreateLendTransactionMutation,
 
   //status process
   useGetStatusProcessQuery,
