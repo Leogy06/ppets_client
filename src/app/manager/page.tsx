@@ -1,16 +1,13 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import {
-  useEditItemMutation,
-  useGetItemsByOwnerQuery,
-} from "@/features/api/apiSlice";
+import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PageHeader from "@/app/(component)/pageheader";
-import { useRouter } from "next/navigation";
-import { Item, UndistributedItem } from "@/types/global_types";
+import { UndistributedItem } from "@/types/global_types";
 import DefaultButton from "../(component)/buttonDefault";
+import { useRouter } from "next/navigation";
 
 const ManagerPage = () => {
   const { user } = useAuth();
@@ -21,8 +18,8 @@ const ManagerPage = () => {
     isError,
   } = useGetItemsByOwnerQuery(user?.emp_id);
 
-  //edit items
-  const [editItem] = useEditItemMutation();
+  // use router
+  const router = useRouter();
 
   //use states
 
@@ -67,6 +64,7 @@ const ManagerPage = () => {
       field: "remarks",
       headerName: "Remarks",
       width: 200,
+      valueGetter: (params) => params ?? "--",
     },
     {
       field: "Actions",
@@ -79,6 +77,7 @@ const ManagerPage = () => {
               btnText="Lend"
               color="secondary"
               title="Lend this Item"
+              onClick={() => router.push(`/manager/lend/${params.row.id}`)}
             />
           </div>
         );
@@ -86,25 +85,11 @@ const ManagerPage = () => {
     },
   ];
 
-  //edit tow
-  const handleRowEdit = async (newRow: Item) => {
-    const { id, ...updatedFields } = newRow;
-
-    try {
-      await editItem({ id, data: updatedFields });
-
-      return { ...newRow };
-    } catch (error) {
-      console.error("Unable to Edit Item. ", error);
-      return { ...ownedItems.find((row: Item) => row.id === id) };
-    }
-  };
-
-  useEffect(() => {
-    if (ownedItems) {
-      console.log("owned items ", ownedItems);
-    }
-  }, [ownedItems]);
+  // useEffect(() => {
+  //   if (ownedItems) {
+  //     console.log("owned items ", ownedItems);
+  //   }
+  // }, [ownedItems]);
 
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;
@@ -113,20 +98,7 @@ const ManagerPage = () => {
   return (
     <>
       <PageHeader pageHead="Items" />
-
-      <DataGrid
-        columns={columns}
-        rows={ownedItems}
-        loading={isLoading}
-        getRowId={(params) => params.id}
-        processRowUpdate={(newRow) => handleRowEdit(newRow)}
-        slotProps={{
-          loadingOverlay: {
-            variant: "linear-progress",
-            noRowsVariant: "linear-progress",
-          },
-        }}
-      />
+      <DataGrid rows={ownedItems} columns={columns} loading={isLoading} />
     </>
   );
 };

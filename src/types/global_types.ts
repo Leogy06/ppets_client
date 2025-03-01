@@ -27,6 +27,7 @@ export interface Item {
   DISTRIBUTED_ON: number;
   itemDetails: UndistributedItem;
   total_value: number;
+  ORIGINAL_QUANTITY: number;
 }
 
 export interface ItemCategory {

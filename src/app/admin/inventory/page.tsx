@@ -147,7 +147,7 @@ const Inventory = () => {
   const [itemId, setItemId] = useState<ItemId["id"]>(null);
 
   //item row shows
-  const [itemShows, setItemShows] = useState<number>(1);
+  const [itemShows, setItemShows] = useState<number>(0);
 
   //open inventory dropdown
   const [isOpen, setIsOpen] = useState(false);
@@ -279,7 +279,7 @@ const Inventory = () => {
           <PageHeader pageHead="Inventory" icon={Inventory2Outlined} />
           <button
             className="hover:text-gray-500 "
-            onClick={() => setIsOpen(true)}
+            onClick={() => setIsOpen((prevState) => !prevState)}
           >
             <ArrowDropDown fontSize="medium" />
           </button>

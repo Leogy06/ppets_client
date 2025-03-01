@@ -5,9 +5,9 @@ import {
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
 import { dateFormmater } from "@/utils/date_formmater";
-import { Button, Modal, Paper } from "@mui/material";
+import { Button, Modal } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -16,6 +16,8 @@ import {
   ErrorParams,
 } from "@/types/global_types";
 import { useAuth } from "@/context/AuthContext";
+import PageHeader from "@/app/(component)/pageheader";
+import { People } from "@mui/icons-material";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -179,12 +181,12 @@ const Employee = () => {
     }
   };
 
-  //use effect
-  useEffect(() => {
-    if (employees) {
-      console.log("employees ", employees);
-    }
-  }, [employees]);
+  // //use effect
+  // useEffect(() => {
+  //   if (employees) {
+  //     console.log("employees ", employees);
+  //   }
+  // }, [employees]);
 
   if (isEmployeeRdy) {
     return <p className="animate-pulse">Loading...</p>;
@@ -195,8 +197,9 @@ const Employee = () => {
   }
 
   return (
-    <>
-      <div className=" flex justify-end mb-4">
+    <div className="flex flex-col max-h-[520px]">
+      <div className=" flex justify-between mb-4">
+        <PageHeader pageHead="Employees" icon={People} />
         {selectedRows.length > 0 && (
           <Button
             variant="contained"
@@ -207,19 +210,17 @@ const Employee = () => {
           </Button>
         )}
       </div>
-      <Paper sx={{ height: 400, width: "100%", marginBottom: "1rem" }}>
-        <DataGrid
-          rows={employees}
-          columns={columns}
-          processRowUpdate={(newRow) => handleRowEdit(newRow)}
-          checkboxSelection
-          getRowId={(row) => row.ID}
-          onRowSelectionModelChange={(rowSelectionModel) =>
-            handleSelectionChange(rowSelectionModel as number[])
-          }
-        />
-      </Paper>
-      <div className="flex justify-end">
+      <DataGrid
+        rows={employees}
+        columns={columns}
+        processRowUpdate={(newRow) => handleRowEdit(newRow)}
+        checkboxSelection
+        getRowId={(row) => row.ID}
+        onRowSelectionModelChange={(rowSelectionModel) =>
+          handleSelectionChange(rowSelectionModel as number[])
+        }
+      />
+      <div className="flex justify-end mt-4">
         <Button
           variant="contained"
           onClick={() => router.push("/admin/employee/add_employee")}
@@ -234,7 +235,7 @@ const Employee = () => {
         deleteEmployees={handleDeleteEmployees}
         onClose={() => setOpenDltConfMdl(false)}
       />
-    </>
+    </div>
   );
 };
 
