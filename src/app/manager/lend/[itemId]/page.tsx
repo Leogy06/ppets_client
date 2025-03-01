@@ -40,6 +40,13 @@ const LendModal = ({
     setIsModalOpen(true);
   };
 
+  //also close child modal when parent modal is close
+  useEffect(() => {
+    if (!open) {
+      setIsModalOpen(false);
+    }
+  }, [open]);
+
   return (
     <DefaultModal open={open} onClose={onClose}>
       <div className="flex flex-col gap-4 w-full ">
@@ -72,6 +79,7 @@ const LendModal = ({
           </div>
         </form>
       </div>
+
       {/**Confirm lend modal */}
       <DefaultModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="flex flex-col gap-4">
@@ -169,7 +177,7 @@ const LendItem = () => {
 
       console.log("result lend ", result);
 
-      openSnackbar("Lend form was submitted. ", "success");
+      openSnackbar("Lend item was submitted. ", "success");
       setIsModalOpen(false);
     } catch (error) {
       console.error("unexpected error occured. ", error);
