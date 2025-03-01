@@ -113,9 +113,12 @@ const DistributionModal = ({
 
   const handleSubmitApi = async () => {
     try {
-      const result = await addItem(itemForm).unwrap();
+      await addItem(itemForm).unwrap();
 
-      console.log("result ", result);
+      openSnackbar("Item distributed!", "success");
+
+      setOpenChildOpen(false);
+      onClose();
     } catch (error) {
       console.error("Unable to submit item. ", error);
       const errMsg = handleError(error, "Unable to submit item.");
@@ -126,9 +129,13 @@ const DistributionModal = ({
 
   useEffect(() => {
     if (itemDetails) {
-      console.log("item details ", itemDetails);
+      setItemForm((prevForm) => ({
+        ...prevForm,
+        ITEM_ID: itemDetails.ID,
+        DISTRIBUTED_BY: empDetails?.ID,
+      }));
     } else {
-      console.log("no items found");
+      console.log("Unable to set item details. ");
     }
   }, [itemDetails]);
 

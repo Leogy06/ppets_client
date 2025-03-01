@@ -12,6 +12,7 @@ import {
   PanToolAltSharp,
   People,
   RequestPageOutlined,
+  RequestPageRounded,
   RequestQuoteOutlined,
 } from "@mui/icons-material";
 import {
@@ -69,19 +70,9 @@ const managerNavigations = [
     path: "/manager",
   },
   {
-    label: "Distribute Item",
-    icon: <DifferenceOutlined />,
-    path: "/manager/lend_items",
-  },
-  {
-    label: "Item Requests",
-    icon: <ListAltOutlined />,
-    path: "/manager/borrowing_history",
-  },
-  {
-    label: "Category Item",
-    icon: <CategoryOutlined />,
-    path: "/manager/item_category",
+    label: "Request",
+    icon: <RequestPageRounded />,
+    path: "/manager/request_item",
   },
 ];
 

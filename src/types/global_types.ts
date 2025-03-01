@@ -24,6 +24,9 @@ export interface Item {
   category_item: number | null;
   OWNER_EMP: number | null;
   DISTRIBUTED_BY: number;
+  DISTRIBUTED_ON: number;
+  itemDetails: UndistributedItem;
+  total_value: number;
 }
 
 export interface ItemCategory {
