@@ -15,7 +15,6 @@ import {
 import { Employee, Item, UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { CancelOutlined, Check, CompareArrows } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useParams } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -113,12 +112,13 @@ const DistributionModal = ({
 
   const handleSubmitApi = async () => {
     try {
-      await addItem(itemForm).unwrap();
+      const result = await addItem(itemForm).unwrap();
 
       openSnackbar("Item distributed!", "success");
 
       setOpenChildOpen(false);
       onClose();
+      console.log("result ", result);
     } catch (error) {
       console.error("Unable to submit item. ", error);
       const errMsg = handleError(error, "Unable to submit item.");
@@ -137,7 +137,7 @@ const DistributionModal = ({
     } else {
       console.log("Unable to set item details. ");
     }
-  }, [itemDetails]);
+  }, [itemDetails, empDetails?.ID]);
 
   return (
     <DefaultModal open={open} onClose={onClose}>
@@ -277,7 +277,7 @@ const Distribute = () => {
       headerName: "Quantity",
       width: 95,
       renderCell: (params) =>
-        `${params.row.STOCK_QUANTITY}/${params.row.ORIGINAL_STOCK}`,
+        `${params.row.STOCK_QUANTITY}/${params.row.ORIGINAL_QUANTITY}`,
     },
     { field: "DESCRIPTION", headerName: "Description", width: 140 },
     { field: "UNIT_VALUE", headerName: "Unit value", width: 95 },
@@ -291,17 +291,12 @@ const Distribute = () => {
       renderCell: (params) => {
         return (
           <div className="flex gap-1">
-            <Tooltip
-              placement="left"
-              title={<span className="text-base">Distribute this item</span>}
-            >
-              <button
-                className="hover:text-gray-300"
-                onClick={() => handleOpenModal(params.row.ID)}
-              >
-                <CompareArrows fontSize="large" />
-              </button>
-            </Tooltip>
+            <DefaultButton
+              onClick={() => handleOpenModal(params.row.ID)}
+              disabled={params.row.STOCK_QUANTITY <= 0}
+              btnIcon={<CompareArrows />}
+              title="Distribute this item"
+            />
           </div>
         );
       },
