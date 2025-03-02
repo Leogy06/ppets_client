@@ -1,4 +1,5 @@
 import {
+  BorrowingTransactionTypes,
   Department,
   Employee,
   Item,
@@ -212,6 +213,23 @@ export const apiSlice = createApi({
       invalidatesTags: ["Items", "BorrowingTransaction"],
     }),
 
+    //approve transaction
+    approveTransaction: builder.mutation({
+      query: (transactionId) => ({
+        url: `/transaction/approve/${transactionId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["BorrowingTransaction"],
+    }),
+    //reject
+    rejectTransaction: builder.mutation({
+      query: (transactionId: BorrowingTransactionTypes["id"]) => ({
+        url: `/transaction/reject/${transactionId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["BorrowingTransaction"],
+    }),
+
     //status
     getStatusProcess: builder.query<StatusProcess[], void>({
       query: () => "/status_process",
@@ -302,7 +320,7 @@ export const {
   useAddCategoryItemMutation,
   useEditCategoryItemMutation,
 
-  //borrowing transaction
+  //transactions
   useAddBorrowingTransactionMutation,
   useGetBorrowingTransactionByBorrowerQuery,
   useGetBorrowingTransactionByOwnerQuery,
@@ -310,6 +328,10 @@ export const {
   useGetBorrowingTransactionByDptQuery,
   //lend
   useCreateLendTransactionMutation,
+  //approve
+  useApproveTransactionMutation,
+  //reject
+  useRejectTransactionMutation,
 
   //status process
   useGetStatusProcessQuery,

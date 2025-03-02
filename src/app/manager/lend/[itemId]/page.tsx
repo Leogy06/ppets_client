@@ -130,7 +130,7 @@ const LendItem = () => {
 
   //use state
   const [lendForm, setLendForm] = useState<Partial<BorrowingTransactionTypes>>({
-    borrowedItem: Number(itemId),
+    borrowedItem: null,
     borrower: null,
     owner: empDetails?.ID,
     quantity: 1,
@@ -202,9 +202,13 @@ const LendItem = () => {
   //     }
   //   }, [employees]);
 
+  //setting the default value form
   useEffect(() => {
     if (itemDetails) {
-      console.log("itemDetails ", itemDetails);
+      setLendForm((prevForm) => ({
+        ...prevForm,
+        borrowedItem: itemDetails.ITEM_ID, //set borrowed item
+      }));
     }
   }, [itemDetails]);
 
