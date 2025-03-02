@@ -141,7 +141,7 @@ export const apiSlice = createApi({
 
     getItemsNotOwned: builder.query<
       Item[],
-      { empId: number; departmentId: number }
+      { empId: number | undefined; departmentId: number | undefined }
     >({
       query: ({ empId, departmentId }) =>
         `/item/notOwned/${empId}?departmentId=${departmentId}`,
@@ -184,14 +184,14 @@ export const apiSlice = createApi({
     }),
     getBorrowingTransactionByBorrower: builder.query({
       query: ({ empId }) => ({
-        url: `/borrowing/borrower?empId=${empId}`,
+        url: `/transaction/borrower?empId=${empId}`,
       }),
       providesTags: ["BorrowingTransaction"],
     }),
 
     getBorrowingTransactionByOwner: builder.query({
       query: (owner) => ({
-        url: `/borrowing?owner=${owner}`,
+        url: `/transaction?owner=${owner}`,
       }),
       providesTags: ["BorrowingTransaction"],
     }),

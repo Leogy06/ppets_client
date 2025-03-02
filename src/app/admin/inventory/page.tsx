@@ -11,7 +11,7 @@ import {
 import { handleError } from "@/utils/errorHandler";
 import {
   AddBoxOutlined,
-  ArrowDropDown,
+  ArrowDropDownCircle,
   ArrowUpward,
   Cancel,
   Check,
@@ -275,13 +275,13 @@ const Inventory = () => {
   return (
     <>
       <div className="flex justify-between mb-4">
-        <div className="flex items-start relative">
+        <div className="flex gap-2 items-start relative">
           <PageHeader pageHead="Inventory" icon={Inventory2Outlined} />
           <button
             className="hover:text-gray-500 "
             onClick={() => setIsOpen((prevState) => !prevState)}
           >
-            <ArrowDropDown fontSize="medium" />
+            <ArrowDropDownCircle fontSize="medium" />
           </button>
           {isOpen && (
             <InventorySelectDropDown

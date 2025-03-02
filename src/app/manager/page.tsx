@@ -1,16 +1,49 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useGetItemsByOwnerQuery } from "@/features/api/apiSlice";
+import {
+  useGetItemsByOwnerQuery,
+  useGetItemsNotOwnedQuery,
+} from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import { UndistributedItem } from "@/types/global_types";
 import DefaultButton from "../(component)/buttonDefault";
 import { useRouter } from "next/navigation";
+import { ArrowDropDownCircleSharp } from "@mui/icons-material";
+
+//dropdown item to show
+const ItemDropDown = ({
+  itemShow,
+  handleSelectItemShow,
+}: {
+  itemShow: number;
+  handleSelectItemShow: (param: number) => void;
+}) => {
+  const options = [
+    { id: 1, label: "Owned Items" },
+    { id: 2, label: "Not owned Items" },
+  ];
+  return (
+    <div className="absolute z-50 left-16 -right-40 top-4 mt-2 bg-white border border-gray-300 rounded-md shadow-md w-44">
+      {options.map((option) => (
+        <button
+          key={option.id}
+          onClick={() => handleSelectItemShow(option.id)}
+          className={`block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 ${
+            itemShow === option.id ? "bg-gray-200" : "bg-white"
+          }`}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const ManagerPage = () => {
-  const { user } = useAuth();
+  const { user, empDetails } = useAuth();
 
   const {
     data: ownedItems,
@@ -18,10 +51,29 @@ const ManagerPage = () => {
     isError,
   } = useGetItemsByOwnerQuery(user?.emp_id);
 
+  const { data: notOwnedItems, isLoading: isNotOwnedItemLoading } =
+    useGetItemsNotOwnedQuery({
+      empId: user?.emp_id,
+      departmentId: empDetails?.CURRENT_DPT_ID,
+    });
+
   // use router
   const router = useRouter();
 
   //use states
+  //which item, 1: owned items 2: unowned items
+  const [itemShow, setItemShow] = useState(1);
+
+  const [openDropdownItem, setOpenDropdownItem] = useState(false);
+
+  const itemToShow = useMemo(() => {
+    if (itemShow === 1 && notOwnedItems) {
+      return ownedItems;
+    }
+    if (itemShow === 2 && notOwnedItems) {
+      return notOwnedItems;
+    }
+  }, [ownedItems, itemShow, notOwnedItems]);
 
   const columns: GridColDef[] = [
     {
@@ -85,6 +137,14 @@ const ManagerPage = () => {
     },
   ];
 
+  const handleSelectionDropdown = () => {
+    setOpenDropdownItem((prevState) => !prevState);
+  };
+
+  const handleSelectItemShow = (itemShowOption: number) => {
+    setItemShow(itemShowOption);
+  };
+
   // useEffect(() => {
   //   if (ownedItems) {
   //     console.log("owned items ", ownedItems);
@@ -97,8 +157,23 @@ const ManagerPage = () => {
 
   return (
     <>
-      <PageHeader pageHead="Items" />
-      <DataGrid rows={ownedItems} columns={columns} loading={isLoading} />
+      <div className="flex gap-2 items-start relative">
+        <PageHeader pageHead="Items" />
+        <button onClick={handleSelectionDropdown}>
+          <ArrowDropDownCircleSharp />
+        </button>
+        {openDropdownItem && (
+          <ItemDropDown
+            itemShow={itemShow}
+            handleSelectItemShow={handleSelectItemShow}
+          />
+        )}
+      </div>
+      <DataGrid
+        rows={itemToShow}
+        columns={columns}
+        loading={isLoading || isNotOwnedItemLoading}
+      />
     </>
   );
 };
