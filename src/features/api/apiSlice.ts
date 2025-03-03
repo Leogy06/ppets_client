@@ -182,6 +182,8 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["BorrowingTransaction", "Items"],
     }),
+
+    //get request by borrower
     getBorrowingTransactionByBorrower: builder.query({
       query: ({ empId }) => ({
         url: `/transaction/borrower?empId=${empId}`,

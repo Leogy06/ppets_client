@@ -1,0 +1,119 @@
+"use client";
+
+import PageHeader from "@/app/(component)/pageheader";
+import { useAuth } from "@/context/AuthContext";
+import {
+  useGetBorrowingTransactionByBorrowerQuery,
+  useGetBorrowingTransactionByOwnerQuery,
+} from "@/features/api/apiSlice";
+import { ArrowDropDownCircle } from "@mui/icons-material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import React, { useEffect, useMemo, useState } from "react";
+
+const RequestDropDown = ({
+  requestShow,
+  handleRequestToShow,
+}: {
+  requestShow: number;
+  handleRequestToShow: (param: number) => void;
+}) => {
+  const options = [
+    { id: 1, label: "See who request your item(s)" },
+    { id: 2, label: "See item(s) you requested." },
+  ];
+  return (
+    <div className="absolute rounded-lg z-50 right-72 top-8 left-auto w-44 bg-white border border-gray-300">
+      {options.map((option) => (
+        <button
+          key={option.id}
+          onClick={() => handleRequestToShow(option.id)}
+          className={`block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 ${
+            requestShow === option.id ? "bg-gray-200" : "bg-white"
+          }`}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+const RequestItem = () => {
+  //use auth
+  const { empDetails } = useAuth();
+
+  //use get requests related to this user
+  const { data: itemRequests, isLoading: itemRequestsLoading } =
+    useGetBorrowingTransactionByOwnerQuery(empDetails?.ID);
+
+  //use get requests by this user they want to borrow
+
+  const { data: itemRequestsBorrow, isLoading: isRequestBorrowLoading } =
+    useGetBorrowingTransactionByBorrowerQuery({
+      empId: empDetails?.ID,
+    });
+
+  //request drop down
+  const [openRequestDropdown, setOpenRequestDropdown] = useState(false);
+
+  //show rows of request
+  const [requestShow, setRequestShow] = useState(1);
+
+  const handleToggleRequestDropdown = () => {
+    setOpenRequestDropdown((prevState) => !prevState);
+  };
+
+  //handle request to show
+  const handleRequestToShow = (itemShownumber: number) => {
+    setRequestShow(itemShownumber);
+  };
+
+  //column grid
+  const column: GridColDef[] = [];
+
+  useEffect(() => {
+    if (itemRequests) {
+      console.log("Requests ", itemRequests);
+    }
+  }, [itemRequests]);
+
+  useEffect(() => {
+    if (itemRequestsBorrow) {
+      console.log("borrow request ", itemRequestsBorrow);
+    }
+  }, [itemRequestsBorrow]);
+
+  //row request to show
+  const requestRowsToShow = useMemo(() => {
+    if (requestShow === 1) {
+      return itemRequests;
+    }
+    if (requestShow === 2) {
+      return itemRequestsBorrow;
+    }
+  }, [itemRequests, itemRequestsBorrow, requestShow]);
+
+  return (
+    <>
+      <div className="flex gap-1 items-start relative">
+        <PageHeader pageHead="Request Item" />
+        <button onClick={handleToggleRequestDropdown}>
+          <ArrowDropDownCircle />
+        </button>
+        {openRequestDropdown && (
+          <RequestDropDown
+            requestShow={requestShow}
+            handleRequestToShow={handleRequestToShow}
+          />
+        )}
+      </div>
+      <DataGrid
+        rows={requestRowsToShow}
+        columns={column}
+        loading={itemRequestsLoading || isRequestBorrowLoading}
+      />
+    </>
+  );
+};
+
+export default RequestItem;
