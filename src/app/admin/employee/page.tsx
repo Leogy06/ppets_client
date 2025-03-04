@@ -2,24 +2,22 @@
 import {
   useDeleteEmployeesMutation,
   useEditEmployeeMutation,
-  useGetDepartmentQuery,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
 import { dateFormmater } from "@/utils/date_formmater";
-import {
-  Autocomplete,
-  Button,
-  CircularProgress,
-  Modal,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { Button, Modal } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import { Employee as EmployeeProps, ErrorParams } from "@/types/global_types";
+import {
+  Department,
+  Employee as EmployeeProps,
+  ErrorParams,
+} from "@/types/global_types";
 import { useAuth } from "@/context/AuthContext";
+import PageHeader from "@/app/(component)/pageheader";
+import { People } from "@mui/icons-material";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -78,7 +76,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 };
 
 const Employee = () => {
-  const { user } = useAuth();
+  const { user, empDetails } = useAuth();
 
   //router
   const router = useRouter();
@@ -87,7 +85,6 @@ const Employee = () => {
   //use snackbar
   const { openSnackbar } = useSnackbar();
   //department filter
-  const [departmentID, setDepartmentID] = useState(1);
 
   //get employees
 
@@ -95,10 +92,7 @@ const Employee = () => {
     data: employees,
     isLoading: isEmployeeRdy,
     isError: isEmployeeErr,
-  } = useGetEmployeesQuery(departmentID);
-
-  //get department
-  const { data: departments, isLoading: isDptRdy } = useGetDepartmentQuery();
+  } = useGetEmployeesQuery(Number(empDetails?.CURRENT_DPT_ID));
 
   //edit employee
   const [editEmployee] = useEditEmployeeMutation();
@@ -127,12 +121,10 @@ const Employee = () => {
     },
     { field: "SUFFIX", headerName: "Suffix", width: 100, editable: true },
     {
-      field: "CURRENT_DPT_ID",
+      field: "departmentDetails",
       headerName: "Department",
       width: 180,
-      valueGetter: (params) =>
-        departments?.find((department) => department.ID === params)
-          ?.DESCRIPTION,
+      valueGetter: (params: Department) => params.DEPARTMENT_NAME ?? "--",
     },
     { field: "CREATED_BY", headerName: "Added by", width: 150 },
     {
@@ -140,7 +132,7 @@ const Employee = () => {
       headerName: "Created When",
       width: 200,
       type: "date",
-      valueFormatter: (param) => dateFormmater(param as string),
+      valueFormatter: (param) => dateFormmater(param),
     },
     { field: "UPDATED_BY", headerName: "Updated By", width: 150 },
     {
@@ -148,7 +140,7 @@ const Employee = () => {
       headerName: "Updated When",
       width: 200,
       type: "date",
-      valueFormatter: (param) => dateFormmater(param as string),
+      valueFormatter: (param) => dateFormmater(param),
     },
   ];
 
@@ -189,6 +181,13 @@ const Employee = () => {
     }
   };
 
+  // //use effect
+  // useEffect(() => {
+  //   if (employees) {
+  //     console.log("employees ", employees);
+  //   }
+  // }, [employees]);
+
   if (isEmployeeRdy) {
     return <p className="animate-pulse">Loading...</p>;
   }
@@ -198,30 +197,10 @@ const Employee = () => {
   }
 
   return (
-    <>
-      <div className=" flex justify-end mb-4">
-        {isDptRdy ? (
-          <span className="animate-pulse text-gray-300">
-            Loading department options...
-          </span>
-        ) : selectedRows.length <= 0 ? (
-          <Autocomplete
-            className="w-full md:w-96"
-            options={departments || []}
-            getOptionLabel={(option) => option.DEPARTMENT_NAME || ""}
-            value={departments?.find((d) => d.ID === departmentID) || null}
-            onChange={(_, newValue) => {
-              if (newValue) {
-                setDepartmentID(newValue.ID);
-              }
-            }}
-            renderInput={(params) => (
-              <TextField {...params} label="Department ID" variant="outlined" />
-            )}
-            loading={isDptRdy}
-            loadingText={<CircularProgress size={20} />}
-          />
-        ) : (
+    <div className="flex flex-col max-h-[520px]">
+      <div className=" flex justify-between mb-4">
+        <PageHeader pageHead="Employees" icon={People} />
+        {selectedRows.length > 0 && (
           <Button
             variant="contained"
             color="error"
@@ -231,19 +210,17 @@ const Employee = () => {
           </Button>
         )}
       </div>
-      <Paper sx={{ height: 400, width: "100%", marginBottom: "1rem" }}>
-        <DataGrid
-          rows={employees}
-          columns={columns}
-          processRowUpdate={(newRow) => handleRowEdit(newRow)}
-          checkboxSelection
-          getRowId={(row) => row.ID}
-          onRowSelectionModelChange={(rowSelectionModel) =>
-            handleSelectionChange(rowSelectionModel as number[])
-          }
-        />
-      </Paper>
-      <div className="flex justify-end">
+      <DataGrid
+        rows={employees}
+        columns={columns}
+        processRowUpdate={(newRow) => handleRowEdit(newRow)}
+        checkboxSelection
+        getRowId={(row) => row.ID}
+        onRowSelectionModelChange={(rowSelectionModel) =>
+          handleSelectionChange(rowSelectionModel as number[])
+        }
+      />
+      <div className="flex justify-end mt-4">
         <Button
           variant="contained"
           onClick={() => router.push("/admin/employee/add_employee")}
@@ -258,7 +235,7 @@ const Employee = () => {
         deleteEmployees={handleDeleteEmployees}
         onClose={() => setOpenDltConfMdl(false)}
       />
-    </>
+    </div>
   );
 };
 

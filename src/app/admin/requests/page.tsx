@@ -5,25 +5,33 @@ import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
-  useEditBorrowingTransactionMutation,
+  useApproveTransactionMutation,
   useGetBorrowingTransactionByDptQuery,
+  useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
-import { BorrowingStatusProps, Employee } from "@/types/global_types";
+import {
+  BorrowingStatusProps,
+  BorrowingTransactionTypes,
+  Employee,
+  UndistributedItem,
+} from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { Modal, Paper, Tooltip } from "@mui/material";
+import { Cancel } from "@mui/icons-material";
+import { Modal, Paper } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useState } from "react";
 
+//confirm approve modal
 const ConfirmModalApprove = ({
   open,
   close,
-  handleEditBorrowTransaction,
-  status,
+  handleApproveTransaction,
+  isLoading,
 }: {
   open: boolean;
   close: () => void;
-  handleEditBorrowTransaction: () => void;
-  status: number;
+  handleApproveTransaction: () => void;
+  isLoading: boolean;
 }) => {
   return (
     <Modal open={open} onClose={close}>
@@ -36,18 +44,63 @@ const ConfirmModalApprove = ({
             padding: "1rem",
           }}
         >
-          <h1 className="text-lg font-semibold text-center">
-            {status === 1
-              ? "Confirm Approved"
-              : status === 3
-              ? "Reject Request"
-              : "Unknow Request"}
-          </h1>
+          <h1 className="text-lg font-semibold text-center">Aprrove Lend?</h1>
           <div className="flex gap-1 items-baseline justify-center">
-            <DefaultButton btnText="cancel" variant="text" onClick={close} />
+            <DefaultButton
+              btnText="cancel"
+              variant="text"
+              onClick={close}
+              disabled={isLoading}
+            />
             <DefaultButton
               btnText="confirm"
-              onClick={handleEditBorrowTransaction}
+              onClick={handleApproveTransaction}
+              disabled={isLoading}
+            />
+          </div>
+        </Paper>
+      </div>
+    </Modal>
+  );
+};
+
+//confirm reject modal
+const ConfirmModalReject = ({
+  open,
+  close,
+  handleRejectTransaction,
+  isLoading,
+}: {
+  open: boolean;
+  close: () => void;
+  handleRejectTransaction: () => void;
+  isLoading: boolean;
+}) => {
+  return (
+    <Modal open={open} onClose={close}>
+      <div className="flex flex-col h-full items-center justify-center">
+        <Paper
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "2rem",
+            padding: "1rem",
+          }}
+        >
+          <h1 className="text-lg font-semibold text-center flex items-center gap-1 justify-center">
+            <Cancel color="error" /> Reject Lend?
+          </h1>
+          <div className="flex gap-1 items-baseline justify-center">
+            <DefaultButton
+              btnText="cancel"
+              variant="text"
+              onClick={close}
+              disabled={isLoading}
+            />
+            <DefaultButton
+              btnText="confirm"
+              onClick={handleRejectTransaction}
+              disabled={isLoading}
             />
           </div>
         </Paper>
@@ -61,73 +114,100 @@ const Requests = () => {
   const { empDetails } = useAuth();
   const { data: borrowingTransactions, isLoading } =
     useGetBorrowingTransactionByDptQuery(empDetails?.CURRENT_DPT_ID);
-  //use edit borrow transaciton
-  const [editBorrowingTransaction] = useEditBorrowingTransactionMutation();
 
   //snackbar
   const { openSnackbar } = useSnackbar();
 
+  //use approve transaction
+  const [approveTransaction, { isLoading: isApproveLoading }] =
+    useApproveTransactionMutation();
+
+  //use reject transaction
+  const [rejectTransaction, { isLoading: isRejectloading }] =
+    useRejectTransactionMutation();
+
   //states
-  //edit form
-  const [editItemForm, setEditItemForm] = useState({
-    status: 0,
-    itemId: 0,
-  });
-  //modal
-  const [openModal, setOpenModal] = useState(false);
+  //open modal approve
+  const [openModalApprove, setOpenModalApprove] = useState(false);
+
+  //open modal reject
+  const [openModalReject, setOpenModalReject] = useState(false);
+
+  //transaction id state
+  const [transactionId, setTransactionId] =
+    useState<BorrowingTransactionTypes["id"]>(null);
 
   //handles
-  //items
-  const handleOpenModalConfirmation = (itemId: number, status: number) => {
-    setOpenModal(true);
-    setEditItemForm({
-      itemId,
-      status,
-    });
+  //handle open modal
+  const handleOpenModalConfirmationApprove = (
+    transactionId: BorrowingTransactionTypes["id"]
+  ) => {
+    setTransactionId(transactionId);
+    setOpenModalApprove(true);
   };
 
-  //close modal
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setEditItemForm({ status: 0, itemId: 0 });
+  //close modal approve
+  const handleCloseModalApprove = () => {
+    setTransactionId(null);
+    setOpenModalApprove(false);
   };
 
-  //handle edit
-  const handleEditBorrowTransaction = async () => {
-    if (editItemForm.status === 0 || editItemForm.itemId === 0) {
-      openSnackbar("Status or Itemid should not be zero or null. ", "error");
-      return;
-    }
+  //handle open modal reject
+  const handleOpenModalConfirmationReject = (
+    transactionId: BorrowingTransactionTypes["id"]
+  ) => {
+    setTransactionId(transactionId);
+    setOpenModalReject(true);
+  };
+
+  //close modal reject
+  const handleCloseModalReject = () => {
+    setTransactionId(null);
+    setOpenModalReject(false);
+  };
+
+  //handle approve transaction
+  const handleApproveTransaction = async () => {
     try {
-      await editBorrowingTransaction({
-        borrowId: editItemForm.itemId,
-        updateEntry: editItemForm.status,
-      }).unwrap();
+      const result = await approveTransaction(transactionId).unwrap();
 
-      handleCloseModal();
+      console.log("approve result ", result);
+
+      openSnackbar(result.message ?? "Transaction approved. ", "success");
+      handleCloseModalApprove();
     } catch (error) {
-      console.error("Unable to edit borrow transaction. ", error);
-      handleError(error, "Unable to edit borrow transaction. ");
+      console.error("Unable to approve transaction.", error);
+
+      const errMsg = handleError(error, "Unable to approve transaction.");
+      openSnackbar(errMsg, "error");
+    }
+  };
+
+  //handle reject transaction
+  const handleRejectTransaction = async () => {
+    try {
+      const result = await rejectTransaction(transactionId).unwrap();
+
+      console.log("reject result ", result);
+
+      openSnackbar(result.message ?? "Transaction rejected. ", "success");
+      handleCloseModalReject();
+    } catch (error) {
+      console.error("Unable to Reject transaction.", error);
+
+      const errMsg = handleError(error, "Unable to reject transaction.");
+      openSnackbar(errMsg, "error");
     }
   };
 
   //colums
   const columns: GridColDef[] = [
     {
-      field: "borrowedItemDetails",
+      field: "itemDetails",
       headerName: "Item name",
 
       width: 120,
-      renderCell: (params) => {
-        return (
-          <Tooltip
-            title={params.row.borrowedItemDetails.description}
-            placement="top-start"
-          >
-            <span>{params.row.borrowedItemDetails.name}</span>
-          </Tooltip>
-        );
-      },
+      valueGetter: (params: UndistributedItem) => params?.ITEM_NAME ?? "--",
     },
     {
       field: "quantity",
@@ -146,9 +226,9 @@ const Requests = () => {
           : params.row.status === 2
           ? "cell-pending"
           : params.row.status === 3
-          ? "cell-rejected"
-          : params.row.status === 4
           ? "cell-cancel"
+          : params.row.status === 4
+          ? "cell-rejected"
           : "cell-unknown",
     },
 
@@ -200,8 +280,8 @@ const Requests = () => {
             <DefaultButton
               color="error"
               btnText="reject"
-              variant="text"
-              onClick={() => handleOpenModalConfirmation(params.row.id, 3)}
+              variant="outlined"
+              onClick={() => handleOpenModalConfirmationReject(params.row.id)}
               disabled={
                 params.row.status === 1 ||
                 params.row.status === 3 ||
@@ -211,7 +291,7 @@ const Requests = () => {
             />
             <DefaultButton
               btnText="approve"
-              onClick={() => handleOpenModalConfirmation(params.row.id, 1)}
+              onClick={() => handleOpenModalConfirmationApprove(params.row.id)}
               color="success"
               disabled={
                 params.row.status === 1 ||
@@ -247,16 +327,22 @@ const Requests = () => {
         sx={{
           height: 400,
           "& .cell-approved": { backgroundColor: "#90ee90 ", color: "#333" }, // Light green
-          "& .cell-rejected": { backgroundColor: "#ffccbc", color: "#333" }, // Light red
-          "& .cell-pending": { backgroundColor: "#adff2f", color: "#333" }, // green yellow
+          "& .cell-rejected": { backgroundColor: "#d0312d", color: "#fff" }, // Light red
+          "& .cell-pending": { backgroundColor: "#fcf4a3", color: "#333" }, // green yellow
           "& .cell-cancel": { backgroundColor: "#d8bfd8", color: "#333" }, // thirstle: purple
         }}
       />
       <ConfirmModalApprove
-        open={openModal}
-        close={handleCloseModal}
-        handleEditBorrowTransaction={handleEditBorrowTransaction}
-        status={editItemForm.status}
+        open={openModalApprove}
+        close={handleCloseModalApprove}
+        handleApproveTransaction={handleApproveTransaction}
+        isLoading={isApproveLoading}
+      />
+      <ConfirmModalReject
+        open={openModalReject}
+        close={handleCloseModalReject}
+        handleRejectTransaction={handleRejectTransaction}
+        isLoading={isRejectloading}
       />
     </>
   );

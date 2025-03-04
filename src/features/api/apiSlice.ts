@@ -1,4 +1,5 @@
 import {
+  BorrowingTransactionTypes,
   Department,
   Employee,
   Item,
@@ -140,7 +141,7 @@ export const apiSlice = createApi({
 
     getItemsNotOwned: builder.query<
       Item[],
-      { empId: number; departmentId: number }
+      { empId: number | undefined; departmentId: number | undefined }
     >({
       query: ({ empId, departmentId }) =>
         `/item/notOwned/${empId}?departmentId=${departmentId}`,
@@ -167,10 +168,10 @@ export const apiSlice = createApi({
       }),
     }),
 
-    //borrowing
+    //transaction
     //get borrowing by dpt id
     getBorrowingTransactionByDpt: builder.query({
-      query: (dptId) => `/borrowing/byDpt?departmentId=${dptId}`,
+      query: (dptId) => `/transaction/byDpt?departmentId=${dptId}`,
       providesTags: ["BorrowingTransaction"],
     }),
     addBorrowingTransaction: builder.mutation({
@@ -181,26 +182,54 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["BorrowingTransaction", "Items"],
     }),
+
+    //get request by borrower
     getBorrowingTransactionByBorrower: builder.query({
       query: ({ empId }) => ({
-        url: `/borrowing/borrower?empId=${empId}`,
+        url: `/transaction/borrower?empId=${empId}`,
       }),
       providesTags: ["BorrowingTransaction"],
     }),
 
     getBorrowingTransactionByOwner: builder.query({
       query: (owner) => ({
-        url: `/borrowing?owner=${owner}`,
+        url: `/transaction?owner=${owner}`,
       }),
       providesTags: ["BorrowingTransaction"],
     }),
     editBorrowingTransaction: builder.mutation({
       query: ({ borrowId, updateEntry }) => ({
-        url: `borrowing/update?borrowId=${borrowId}`,
+        url: `/borrowing/update?borrowId=${borrowId}`,
         method: "PUT",
         body: { status: updateEntry },
       }),
       invalidatesTags: ["BorrowingTransaction", "Items"],
+    }),
+    //lend transaciton
+    createLendTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction/lend",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Items", "BorrowingTransaction"],
+    }),
+
+    //approve transaction
+    approveTransaction: builder.mutation({
+      query: (transactionId) => ({
+        url: `/transaction/approve/${transactionId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["BorrowingTransaction"],
+    }),
+    //reject
+    rejectTransaction: builder.mutation({
+      query: (transactionId: BorrowingTransactionTypes["id"]) => ({
+        url: `/transaction/reject/${transactionId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["BorrowingTransaction"],
     }),
 
     //status
@@ -293,12 +322,18 @@ export const {
   useAddCategoryItemMutation,
   useEditCategoryItemMutation,
 
-  //borrowing transaction
+  //transactions
   useAddBorrowingTransactionMutation,
   useGetBorrowingTransactionByBorrowerQuery,
   useGetBorrowingTransactionByOwnerQuery,
   useEditBorrowingTransactionMutation,
   useGetBorrowingTransactionByDptQuery,
+  //lend
+  useCreateLendTransactionMutation,
+  //approve
+  useApproveTransactionMutation,
+  //reject
+  useRejectTransactionMutation,
 
   //status process
   useGetStatusProcessQuery,

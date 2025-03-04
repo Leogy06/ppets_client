@@ -2,11 +2,8 @@
 
 import {
   AccountTreeOutlined,
-  CategoryOutlined,
   Dashboard,
-  DifferenceOutlined,
   Inventory,
-  ListAltOutlined,
   Logout,
   MoveToInboxOutlined,
   PanToolAltSharp,
@@ -63,6 +60,7 @@ const navigations = [
   },
 ];
 
+//employee
 const managerNavigations = [
   {
     label: "Items",
@@ -72,7 +70,7 @@ const managerNavigations = [
   {
     label: "Request",
     icon: <RequestPageRounded />,
-    path: "/manager/request_item",
+    path: "/manager/request",
   },
 ];
 

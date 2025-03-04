@@ -27,6 +27,7 @@ export interface Item {
   DISTRIBUTED_ON: number;
   itemDetails: UndistributedItem;
   total_value: number;
+  ORIGINAL_QUANTITY: number;
 }
 
 export interface ItemCategory {
@@ -44,7 +45,7 @@ export interface User {
 }
 
 export interface Employee {
-  ID: number;
+  ID: number | null;
   CURRENT_DPT_ID: number;
   FIRSTNAME: string;
   LASTNAME: string;
@@ -68,8 +69,8 @@ export interface Department {
 }
 
 export interface BorrowingTransactionTypes {
-  id: number;
-  borrowedItem: number;
+  id: number | null;
+  borrowedItem: number | null;
   borrower: number | null;
   owner: number | null;
   quantity: number | null;
@@ -78,6 +79,7 @@ export interface BorrowingTransactionTypes {
   createdAt: Date;
   updatedAt: Date;
   name?: string; //item name, not include in db, but in form
+  DPT_ID: number | null;
 }
 
 export interface StatusProcess {
