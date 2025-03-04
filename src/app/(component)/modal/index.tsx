@@ -10,7 +10,7 @@ const DefaultModal = ({
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  className: string;
+  className?: string;
 }) => {
   return (
     <Modal open={open} onClose={onClose}>

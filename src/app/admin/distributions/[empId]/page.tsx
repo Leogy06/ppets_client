@@ -1,9 +1,11 @@
 "use client";
 
+import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
+import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -29,8 +31,16 @@ const ConfirmDistribute = ({
   onClose: () => void;
   handleSubmit: () => void;
 }) => {
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
   return (
-    <DefaultModal open={open} onClose={onClose}>
+    <DefaultModal
+      open={open}
+      onClose={onClose}
+      className={`${
+        isDarkMode ? "bg-white text-black" : "bg-black text-white"
+      }`}
+    >
       <div className="flex flex-col gap-4 items-center">
         <h1 className="text-lg font-semibold">Confirm distribute?</h1>
         <div className="flex gap-1">
@@ -69,6 +79,10 @@ const DistributionModal = ({
   //use snackbar
   const { openSnackbar } = useSnackbar();
 
+  //use darkmode
+
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
   //add item
   const [addItem, { isLoading: isItemAddLoading }] = useAddItemMutation();
 
@@ -82,7 +96,7 @@ const DistributionModal = ({
     acct_code: "",
     accountable_emp: receiverId,
     remarks: "",
-    DISTRIBUTED_BY: empDetails?.ID,
+    DISTRIBUTED_BY: Number(empDetails?.ID),
   });
 
   //for child modal
@@ -112,13 +126,12 @@ const DistributionModal = ({
 
   const handleSubmitApi = async () => {
     try {
-      const result = await addItem(itemForm).unwrap();
+      await addItem(itemForm).unwrap();
 
       openSnackbar("Item distributed!", "success");
 
       setOpenChildOpen(false);
       onClose();
-      console.log("result ", result);
     } catch (error) {
       console.error("Unable to submit item. ", error);
       const errMsg = handleError(error, "Unable to submit item.");
@@ -132,7 +145,7 @@ const DistributionModal = ({
       setItemForm((prevForm) => ({
         ...prevForm,
         ITEM_ID: itemDetails.ID,
-        DISTRIBUTED_BY: empDetails?.ID,
+        DISTRIBUTED_BY: Number(empDetails?.ID),
       }));
     } else {
       console.log("Unable to set item details. ");
@@ -140,11 +153,16 @@ const DistributionModal = ({
   }, [itemDetails, empDetails?.ID]);
 
   return (
-    <DefaultModal open={open} onClose={onClose}>
+    <DefaultModal
+      open={open}
+      onClose={onClose}
+      className={` ${
+        isDarkMode ? "bg-gray-50 text-black" : "bg-gray-900 text-white"
+      }`}
+    >
       <form onSubmit={handleSubmit} className="w-full h-full">
         <div className="flex flex-col gap-4">
           <h1 className="text-lg font-semibold">Finalize the Distribution</h1>
-
           {itemDetails && !isLoading && (
             <div className="flex flex-col gap-4">
               <span className="flex gap-1 items-center">
@@ -177,7 +195,6 @@ const DistributionModal = ({
               </span>
             </div>
           )}
-
           <DefaultTextField
             name="quantity"
             label="Quantity"
@@ -306,17 +323,20 @@ const Distribute = () => {
   return (
     <div className="flex flex-col gap-4 h-[400px]">
       <PageHeader pageHead="Select an item to distribute" />
-      <div className="flex gap-2 mb-2">
-        <h1 className="text-base font-semibold">Receiver: </h1>
-        {!isEmpRecLoading && empReceiver && (
-          <div className="text-base">
-            <span className=" underline underline-offset-4">
-              {empReceiver.LASTNAME}, {empReceiver.FIRSTNAME}{" "}
-              {empReceiver.SUFFIX ?? ""}
-              {empReceiver.MIDDLENAME ?? ""}
-            </span>
-          </div>
-        )}
+      <div className="flex gap-2 mb-2 justify-between">
+        <BackArrow backTo="/admin/distributions" />
+        <div className="flex gap-2">
+          <h1 className="text-base font-semibold">Receiver: </h1>
+          {!isEmpRecLoading && empReceiver && (
+            <div className="text-base">
+              <span className=" underline underline-offset-4">
+                {empReceiver.LASTNAME}, {empReceiver.FIRSTNAME}{" "}
+                {empReceiver.SUFFIX ?? ""}
+                {empReceiver.MIDDLENAME ?? ""}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
       <DataGrid
         rows={undistributedItems}
