@@ -10,7 +10,10 @@ import {
   useEditNotificationMutation,
   useGetNotificationQuery,
 } from "@/features/api/apiSlice";
-import { NotificationProps } from "@/types/global_types";
+import {
+  NotificationProps,
+  NotificationPropsOther,
+} from "@/types/global_types";
 import { Paper } from "@mui/material";
 import { dateFormmater } from "@/utils/date_formmater";
 import { socket } from "@/hooks/useSocket";
@@ -28,7 +31,10 @@ const NotificationCard = ({
   addNotifLimit: () => void;
   handleReadNotification: (param: number) => void;
 }) => {
+  console.log("notificaitons ", notifications);
+
   if (!isOpen) return null;
+
   return (
     <Paper className="absolute flex flex-col h-96 overflow-auto w-96 bg-white rounded-lg p-4 -bottom-32 z-50 right-0 top-full  left-auto">
       {isLoading ? (
@@ -39,7 +45,6 @@ const NotificationCard = ({
           {notifications.length === 0 ? (
             <span className="text-center">Nothing to show</span>
           ) : (
-            !isLoading &&
             notifications.map((n) => (
               <li key={n.ID} className={`border-b-2 flex flex-col p-2`}>
                 <span className="mb-2 text-sm font-semibold">{n.MESSAGE}</span>
@@ -123,14 +128,29 @@ const Topbar = () => {
 
   //get new notificaiton
   useEffect(() => {
-    const handleNewNotification = (notification: NotificationProps) => {
-      setRealTimeNotification((prev) => [notification, ...prev]);
+    const handleNotification = (newNotification: NotificationPropsOther) => {
+      console.log("new notificaiton ", newNotification);
+
+      const notificationData =
+        newNotification.ownerNotification ||
+        newNotification.adminNotification ||
+        (newNotification as unknown as NotificationProps);
+
+      setRealTimeNotification((prev) => {
+        const updatedNotifications: NotificationProps[] = [
+          notificationData,
+          ...prev,
+        ];
+        console.log("updated notificaitons ", updatedNotifications);
+
+        return updatedNotifications;
+      });
     };
 
-    socket.on("notification", handleNewNotification);
+    socket.on("send-notification", handleNotification);
 
     return () => {
-      socket.off("notification", handleNewNotification);
+      socket.off("send-notification", handleNotification);
     };
   }, []);
 
@@ -211,7 +231,10 @@ const Topbar = () => {
         </button>
         <NotificationCard
           isOpen={isOpen}
-          notifications={[...realTimeNotification, ...(notifications || [])]}
+          notifications={[
+            ...(realTimeNotification || []),
+            ...(notifications || []),
+          ]}
           isLoading={isNtfLoadng}
           addNotifLimit={handleAddNotifLimit}
           handleReadNotification={handleReadNotification}

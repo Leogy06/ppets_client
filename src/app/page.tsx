@@ -7,6 +7,7 @@ import ibs_logo from "@/assets/ibs_logo.png";
 import lgu_logo from "@/assets/lgu_logo.png";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { socket } from "@/hooks/useSocket";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -23,10 +24,7 @@ const LoginPage = () => {
   };
 
   //auth context
-  const { loginUser, user, isLoading } = useAuth();
-
-  //use states
-  const [isPageLoad, setIsPageLoad] = useState(false);
+  const { loginUser, user, isLoading, empDetails } = useAuth();
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,14 +56,16 @@ const LoginPage = () => {
 
   //show loading page when fetching
   useEffect(() => {
-    setIsPageLoad(true);
-  }, []);
+    if (empDetails) {
+      socket.emit("registerUser", empDetails.ID);
+    }
+  }, [empDetails]);
 
   if (isLoading) {
     return <div className="animate-pulse">Loading...</div>;
   }
 
-  return isPageLoad ? (
+  return (
     <div className="flex items-center justify-center h-[38rem] p-4">
       <form
         onSubmit={handleSubmitForm}
@@ -121,8 +121,6 @@ const LoginPage = () => {
         </Button>
       </form>
     </div>
-  ) : (
-    <div className="animate-pulse">Loading....</div>
   );
 };
 
