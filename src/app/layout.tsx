@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IBS",
-  description: "Inventory, and Borrowing System",
+  title: "ADTS",
+  description: "Asset Distribution and Tracking System",
 };
 
 export default function RootLayout({
