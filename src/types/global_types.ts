@@ -99,6 +99,18 @@ export interface NotificationProps {
   READ: number;
 }
 
+export interface NotificationPropsOther {
+  ownerNotification?: NotificationProps;
+  adminNotification?: NotificationProps;
+  ID?: number;
+  MESSAGE?: string;
+  READ?: number;
+  FOR_EMP?: number;
+  TRANSACTION_ID?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface BorrowingStatusProps {
   id: number;
   description: string;
