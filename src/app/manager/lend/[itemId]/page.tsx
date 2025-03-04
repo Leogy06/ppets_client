@@ -5,6 +5,7 @@ import DefaultButton from "@/app/(component)/buttonDefault";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
+import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -32,6 +33,10 @@ const LendModal = ({
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   loading: boolean;
 }) => {
+  //use get darkmode state
+
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
   //confirm lend modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -48,7 +53,13 @@ const LendModal = ({
   }, [open]);
 
   return (
-    <DefaultModal open={open} onClose={onClose}>
+    <DefaultModal
+      open={open}
+      onClose={onClose}
+      className={`${
+        isDarkMode ? "bg-white text-black" : "bg-black text-white"
+      }`}
+    >
       <div className="flex flex-col gap-4 w-full ">
         <h1 className="font-semibold text-lg text-center">Finalized Lend</h1>
         <form
@@ -81,7 +92,13 @@ const LendModal = ({
       </div>
 
       {/**Confirm lend modal */}
-      <DefaultModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <DefaultModal
+        className={`${
+          isDarkMode ? "bg-white text-black" : "bg-black text-white"
+        }`}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      >
         <div className="flex flex-col gap-4">
           <h1 className="text-center font-semibold text-lg">Confirm Lend?</h1>
           <div className="flex gap-1">

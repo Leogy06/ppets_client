@@ -1,11 +1,13 @@
 "use client";
 
 import PageHeader from "@/app/(component)/pageheader";
+import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import {
   useGetBorrowingTransactionByBorrowerQuery,
   useGetBorrowingTransactionByOwnerQuery,
 } from "@/features/api/apiSlice";
+import { StatusProcess, UndistributedItem } from "@/types/global_types";
 import { ArrowDropDownCircle } from "@mui/icons-material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useEffect, useMemo, useState } from "react";
@@ -22,7 +24,9 @@ const RequestDropDown = ({
     { id: 2, label: "See item(s) you requested." },
   ];
   return (
-    <div className="absolute rounded-lg z-50 right-72 top-8 left-auto w-44 bg-white border border-gray-300">
+    <div
+      className={`absolute rounded-lg z-50 top-8 left-0 w-44 bg-white border border-gray-300`}
+    >
       {options.map((option) => (
         <button
           key={option.id}
@@ -69,7 +73,30 @@ const RequestItem = () => {
   };
 
   //column grid
-  const column: GridColDef[] = [];
+  const column: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 50 },
+    {
+      field: "itemDetails",
+      headerName: "Requesting Item",
+      valueGetter: (params: UndistributedItem) => params.ITEM_NAME,
+      width: 200,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 70,
+    },
+    {
+      field: "statusDetails",
+      headerName: "Status",
+      valueGetter: (params: StatusProcess) => params.description.toUpperCase(),
+    },
+    {
+      field: "remarks",
+      headerName: "Remarks",
+      width: 200,
+    },
+  ];
 
   useEffect(() => {
     if (itemRequests) {
