@@ -7,20 +7,23 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useApproveTransactionMutation,
   useGetBorrowingTransactionByDptQuery,
-  usePreviewPDFQueryQuery,
   useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
 import {
   BorrowingStatusProps,
   BorrowingTransactionTypes,
   Employee,
+  Item,
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { Cancel, DownloadOutlined, Preview } from "@mui/icons-material";
+import { Cancel, Preview } from "@mui/icons-material";
 import { Modal, Paper, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 
 //confirm approve modal
 const ConfirmModalApprove = ({
@@ -127,14 +130,6 @@ const Requests = () => {
   const [rejectTransaction, { isLoading: isRejectloading }] =
     useRejectTransactionMutation();
 
-  //pdf kit
-
-  const {
-    data: pdfDoc,
-    isLoading: isPDFDocLoading,
-    refetch: refetchPDFDoc,
-  } = usePreviewPDFQueryQuery({});
-
   //states
   //open modal approve
   const [openModalApprove, setOpenModalApprove] = useState(false);
@@ -212,21 +207,28 @@ const Requests = () => {
   //colums
   const columns: GridColDef[] = [
     {
+      field: "id",
+      headerName: "Transaction ID",
+      width: 100,
+    },
+    {
       field: "quantity",
       headerName: "Quantity",
-      width: 70,
+      width: 80,
     },
     {
       field: "itemDetails",
       headerName: "Item name",
-      width: 120,
+      width: 180,
       valueGetter: (params: UndistributedItem) => params?.ITEM_NAME ?? "--",
     },
     {
-      field: "quantity",
-      headerName: "Quantity",
-      type: "number",
-      width: 90,
+      field: "distributedItem",
+      headerName: "Date Acquired",
+      width: 180,
+      type: "dateTime",
+      valueGetter: (params: Item) =>
+        params?.DISTRIBUTED_ON ? new Date(params.DISTRIBUTED_ON) : null,
     },
     {
       field: "statusDetails",
@@ -319,30 +321,22 @@ const Requests = () => {
     },
   ];
 
-  const handlePreviewPDF = async () => {
+  //render transaction pdf
+  const handlePDFPreview = async () => {
     try {
-      const { data } = await refetchPDFDoc(); //manually trigger the api call
+      const response = await axios.get(`${baseURL}/api/pdfkit`, {
+        responseType: "blob",
+      });
 
-      if (data) {
-        const pdfURL = URL.createObjectURL(
-          new Blob([data], {
-            type: "application/pdf",
-          })
-        );
-        window.open(pdfURL, "_blank"); //open pdf url preview
-      }
+      //crete blob pdf response
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const pdfURL = URL.createObjectURL(blob);
+
+      window.open(pdfURL, "_blank");
     } catch (error) {
-      console.error("Failed to load PDF preview. ", error);
+      console.error("Failed to preview PDF. ", error);
     }
   };
-
-  //create a map to finalized the transaction downloadable for PDF
-
-  const borrowingMapped = useMemo(() => {
-    return borrowingTransactions.map((b: BorrowingTransactionTypes) => ({
-      ...b,
-    }));
-  }, [borrowingTransactions]);
 
   //console log the borrow transactions
   useEffect(() => {
@@ -360,7 +354,7 @@ const Requests = () => {
       <div className="flex justify-between items-start">
         <PageHeader pageHead="Requests" />
         <Tooltip title={<span className="text-lg">Preview PDF</span>}>
-          <button onClick={handlePreviewPDF}>
+          <button onClick={handlePDFPreview}>
             <Preview />
           </button>
         </Tooltip>

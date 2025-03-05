@@ -24,7 +24,7 @@ export interface Item {
   category_item: number | null;
   OWNER_EMP: number | null;
   DISTRIBUTED_BY: number;
-  DISTRIBUTED_ON: number;
+  DISTRIBUTED_ON: Date;
   itemDetails: UndistributedItem;
   total_value: number;
   ORIGINAL_QUANTITY: number;
@@ -70,7 +70,7 @@ export interface Department {
 
 export interface BorrowingTransactionTypes {
   id: number | null;
-  borrowedItem: number | null;
+  borrowedItem: number;
   borrower: number | null;
   owner: number | null;
   quantity: number | null;
@@ -125,6 +125,7 @@ export interface UndistributedItem {
   UNIT_VALUE: number;
   TOTAL_VALUE: number;
   SERIAL_NO: string;
+  PIC_NO: string;
   PROP_NO: string;
   REMARKS: string;
   DELETE: number;

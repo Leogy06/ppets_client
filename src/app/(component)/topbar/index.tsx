@@ -31,8 +31,6 @@ const NotificationCard = ({
   addNotifLimit: () => void;
   handleReadNotification: (param: number) => void;
 }) => {
-  console.log("notificaitons ", notifications);
-
   if (!isOpen) return null;
 
   return (
@@ -129,8 +127,6 @@ const Topbar = () => {
   //get new notificaiton
   useEffect(() => {
     const handleNotification = (newNotification: NotificationPropsOther) => {
-      console.log("new notificaiton ", newNotification);
-
       const notificationData =
         newNotification.ownerNotification ||
         newNotification.adminNotification ||
@@ -141,7 +137,6 @@ const Topbar = () => {
           notificationData,
           ...prev,
         ];
-        console.log("updated notificaitons ", updatedNotifications);
 
         return updatedNotifications;
       });

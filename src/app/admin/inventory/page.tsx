@@ -21,7 +21,7 @@ import {
 import { Modal } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 interface ItemId {
   id: number | null;
@@ -253,12 +253,16 @@ const Inventory = () => {
   ];
 
   //items to show
-  const rows =
-    undistributtedItems?.filter((item) => {
-      if (itemShows === 0) return item.DELETE !== 1;
-      if (itemShows === 1) return item.DELETE !== 0;
-      return item.DELETE !== 1;
-    }) || [];
+
+  const rows = useMemo(
+    () =>
+      undistributtedItems?.filter((item) => {
+        if (itemShows === 0) return item.DELETE !== 1;
+        if (itemShows === 1) return item.DELETE !== 0;
+        return item.DELETE !== 1;
+      }) || [],
+    [undistributtedItems, itemShows]
+  );
 
   //inventory dropdown handles
   const handleSelectOption = (option: number) => {

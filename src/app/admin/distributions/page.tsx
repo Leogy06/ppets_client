@@ -1,13 +1,16 @@
 "use client";
 
 import DefaultButton from "@/app/(component)/buttonDefault";
+import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
-import {
-  useGetEmployeesQuery,
-} from "@/features/api/apiSlice";
+import { useGetEmployeesQuery } from "@/features/api/apiSlice";
 import { Employee } from "@/types/global_types";
-import { DifferenceOutlined } from "@mui/icons-material";
-import {  Paper } from "@mui/material";
+import {
+  AccountTreeOutlined,
+  DifferenceOutlined,
+  List,
+} from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -53,18 +56,30 @@ const Distribution = () => {
   if (isError) return <div>Error fetching data...</div>;
   return (
     <>
-      <Paper sx={{ height: 520 }}>
-        <DataGrid
-          getRowId={(params) => params.ID}
-          columns={columns}
-          rows={employees?.map((emp: Employee) => ({
-            ...emp,
-            fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
-              emp.MIDDLENAME ?? ""
-            }`,
-          }))}
-        />
-      </Paper>
+      <div className="flex justify-between items-start">
+        <PageHeader pageHead="Distribution" icon={AccountTreeOutlined} />
+        <Tooltip
+          title={<span className="text-base">See Distributed Items</span>}
+        >
+          <button
+            className="hover:text-gray-500"
+            onClick={() => router.push("/admin/distributions/items")}
+          >
+            <List />
+          </button>
+        </Tooltip>
+      </div>
+      <DataGrid
+        getRowId={(params) => params.ID}
+        sx={{ height: 400 }}
+        columns={columns}
+        rows={employees?.map((emp: Employee) => ({
+          ...emp,
+          fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
+            emp.MIDDLENAME ?? ""
+          }`,
+        }))}
+      />
     </>
   );
 };

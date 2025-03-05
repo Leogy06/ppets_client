@@ -114,6 +114,7 @@ const AddItem = () => {
     PROP_NO: "",
     RECEIVED_AT: null,
     DEPARTMENT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    PIC_NO: "",
   });
 
   //modal
@@ -166,7 +167,10 @@ const AddItem = () => {
         <PageHeader pageHead="Add Item" icon={AddBoxOutlined} />
         <BackArrow backTo="/admin/inventory" />
       </div>
-      <form onSubmit={handleOpenModal} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleOpenModal}
+        className="flex flex-col gap-4 h-[32rem] overflow-auto px-4"
+      >
         <DefaultTextField
           name="ITEM_NAME"
           label="Item Name"
@@ -215,6 +219,12 @@ const AddItem = () => {
             }
           />
         </LocalizationProvider>
+        <DefaultTextField
+          name="PIC_NO"
+          label="PIC #"
+          value={itemForm.PIC_NO}
+          onChange={handleChangeItemForm}
+        />
         <DefaultTextField
           name="SERIAL_NO"
           label="SERIAL #"

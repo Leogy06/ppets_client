@@ -288,18 +288,6 @@ export const apiSlice = createApi({
       query: (itemId) => `/api/item/${itemId}`,
       providesTags: ["UndistributedItem"],
     }),
-
-    //pdf kit apis
-
-    previewPDFQuery: builder.query({
-      query: () => ({
-        url: "/api/pdfkit",
-        responseHandler: async (response) => response.blob(), //treat response as binary
-        cache: "no-cache",
-      }),
-      serializeQueryArgs: () => "",
-      keepUnusedDataFor: 0,
-    }),
   }),
 });
 
@@ -359,7 +347,4 @@ export const {
   useGetUnDistributeItemQuery,
   useDeleteUndistributedItemMutation,
   useGetUndistributedItemByIdQuery,
-
-  //pdf kit
-  usePreviewPDFQueryQuery,
 } = apiSlice;
