@@ -80,6 +80,7 @@ export interface BorrowingTransactionTypes {
   updatedAt: Date;
   name?: string; //item name, not include in db, but in form
   DPT_ID: number | null;
+  itemDetails: UndistributedItem;
 }
 
 export interface StatusProcess {

@@ -7,6 +7,7 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useApproveTransactionMutation,
   useGetBorrowingTransactionByDptQuery,
+  usePreviewPDFQueryQuery,
   useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
 import {
@@ -16,10 +17,10 @@ import {
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { Cancel } from "@mui/icons-material";
-import { Modal, Paper } from "@mui/material";
+import { Cancel, DownloadOutlined, Preview } from "@mui/icons-material";
+import { Modal, Paper, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 //confirm approve modal
 const ConfirmModalApprove = ({
@@ -126,6 +127,14 @@ const Requests = () => {
   const [rejectTransaction, { isLoading: isRejectloading }] =
     useRejectTransactionMutation();
 
+  //pdf kit
+
+  const {
+    data: pdfDoc,
+    isLoading: isPDFDocLoading,
+    refetch: refetchPDFDoc,
+  } = usePreviewPDFQueryQuery({});
+
   //states
   //open modal approve
   const [openModalApprove, setOpenModalApprove] = useState(false);
@@ -203,9 +212,13 @@ const Requests = () => {
   //colums
   const columns: GridColDef[] = [
     {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 70,
+    },
+    {
       field: "itemDetails",
       headerName: "Item name",
-
       width: 120,
       valueGetter: (params: UndistributedItem) => params?.ITEM_NAME ?? "--",
     },
@@ -306,12 +319,37 @@ const Requests = () => {
     },
   ];
 
+  const handlePreviewPDF = async () => {
+    try {
+      const { data } = await refetchPDFDoc(); //manually trigger the api call
+
+      if (data) {
+        const pdfURL = URL.createObjectURL(
+          new Blob([data], {
+            type: "application/pdf",
+          })
+        );
+        window.open(pdfURL, "_blank"); //open pdf url preview
+      }
+    } catch (error) {
+      console.error("Failed to load PDF preview. ", error);
+    }
+  };
+
+  //create a map to finalized the transaction downloadable for PDF
+
+  const borrowingMapped = useMemo(() => {
+    return borrowingTransactions.map((b: BorrowingTransactionTypes) => ({
+      ...b,
+    }));
+  }, [borrowingTransactions]);
+
   //console log the borrow transactions
-  // useEffect(() => {
-  //   if (borrowingTransactions) {
-  //     console.log("borrowing transactions ", borrowingTransactions);
-  //   }
-  // }, [borrowingTransactions]);
+  useEffect(() => {
+    if (borrowingTransactions) {
+      console.log("borrowing transactions ", borrowingTransactions);
+    }
+  }, [borrowingTransactions]);
 
   if (isLoading) {
     return <div className="animate-pulse">Loading...</div>;
@@ -319,7 +357,14 @@ const Requests = () => {
 
   return (
     <>
-      <PageHeader pageHead="Requests" />
+      <div className="flex justify-between items-start">
+        <PageHeader pageHead="Requests" />
+        <Tooltip title={<span className="text-lg">Preview PDF</span>}>
+          <button onClick={handlePreviewPDF}>
+            <Preview />
+          </button>
+        </Tooltip>
+      </div>
       <DataGrid
         columns={columns}
         rows={borrowingTransactions}
