@@ -95,7 +95,9 @@ const SideBarHeader = () => {
     /**Side bar header */
     <div className="flex items-center justify-center gap-2 p-8">
       {getGreeting()}
-      <span className="text-base font-semibold">{empDetails?.FIRSTNAME}</span>
+      <span className="text-base font-semibold">
+        {empDetails?.FIRSTNAME} {empDetails?.LASTNAME}
+      </span>
     </div>
   );
 };

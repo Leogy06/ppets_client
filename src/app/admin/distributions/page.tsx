@@ -13,7 +13,7 @@ import {
 import { Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Distribution = () => {
   const router = useRouter();
@@ -50,6 +50,20 @@ const Distribution = () => {
       ),
     },
   ];
+
+  //console log employees
+  useEffect(() => {
+    if (employees) {
+      console.log("Employees ", employees);
+    }
+  }, [employees]);
+
+  //console log dpt id
+  useEffect(() => {
+    if (empDetails) {
+      console.log("DPT id ", empDetails?.CURRENT_DPT_ID);
+    }
+  }, [empDetails]);
 
   if (isLoading) return <div>Loading...</div>;
 
