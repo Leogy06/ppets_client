@@ -47,11 +47,15 @@ export interface User {
 
 export interface Employee {
   ID: number | null;
+  ID_NUMBER: number;
+  DEPARTMENT_ID: number;
   CURRENT_DPT_ID: number;
   FIRSTNAME: string;
   LASTNAME: string;
   MIDDLENAME: string;
   SUFFIX: string;
+  CREATED_BY: number;
+  UPDATED_BY: number;
 }
 
 export interface Credentials {

@@ -1,35 +1,105 @@
 "use client";
 
+import DefaultButton from "@/app/(component)/buttonDefault";
+import DefaultModal from "@/app/(component)/modal";
+import PageHeader from "@/app/(component)/pageheader";
+import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import {
-  useAddEmployeeMutation,
-  useGetDepartmentQuery,
-} from "@/features/api/apiSlice";
-import {
-  Autocomplete,
-  Button,
-  CircularProgress,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
+import { useAddEmployeeMutation } from "@/features/api/apiSlice";
+import { Employee } from "@/types/global_types";
+import { People } from "@mui/icons-material";
+import { Button, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+//add employee confirmation
+
+const ConfirmAddEmployee = ({
+  open,
+  onClose,
+  onSubmit,
+  formData,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+  formData: Partial<Employee>;
+}) => {
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
+  return (
+    <DefaultModal
+      open={open}
+      onClose={onClose}
+      className={`${
+        isDarkMode ? "bg-white text-gray-900" : "bg-black text-gray-50"
+      }`}
+    >
+      <div className="flex flex-col gap-4 justify-center items-center">
+        <h1 className="font-semibold text-lg text-center">
+          Confirm Add Employee?
+        </h1>
+        {formData && (
+          <div className="flex flex-col gap-4">
+            <p>
+              Id number |
+              <span className="font-medium">{formData.ID_NUMBER}</span>
+            </p>
+            <p>
+              FIRSTNAME |
+              <span className="font-medium text-lg">{formData.FIRSTNAME}</span>
+            </p>
+            <p>
+              MIDDLENAME |
+              <span className="font-medium text-lg">
+                {formData.MIDDLENAME ?? "--"}
+              </span>
+            </p>
+            <p>
+              LASTNAME |
+              <span className="font-medium text-lg">{formData.LASTNAME}</span>
+            </p>
+            <p>
+              SUFFIX |
+              <span className="font-medium text-lg">
+                {formData.SUFFIX ?? "--"}
+              </span>
+            </p>
+            <p>
+              LASTNAME |
+              <span className="font-medium text-lg">{formData.LASTNAME}</span>
+            </p>
+          </div>
+        )}
+        <div className="flex gap-1">
+          <DefaultButton onClick={onClose} variant="text" btnText="cancel" />
+          <DefaultButton
+            onClick={onSubmit}
+            btnIcon="confirm"
+            title="Click to add."
+            placement="top"
+          />
+        </div>
+      </div>
+    </DefaultModal>
+  );
+};
+
 const AddEmployee = () => {
-  const { user } = useAuth();
+  const { user, empDetails } = useAuth();
   const router = useRouter();
 
   //use snackbar
   const { openSnackbar } = useSnackbar();
 
-  const [formValues, setFormValues] = useState({
-    ID_NUMBER: "",
+  const [formValues, setFormValues] = useState<Partial<Employee>>({
+    ID_NUMBER: 0,
     FIRSTNAME: "",
     MIDDLENAME: "",
     LASTNAME: "",
     SUFFIX: "",
-    DEPARTMENT_ID: "",
+    DEPARTMENT_ID: empDetails?.CURRENT_DPT_ID,
     CREATED_BY: user?.id,
     UPDATED_BY: user?.id,
   });
@@ -45,24 +115,22 @@ const AddEmployee = () => {
     });
   };
 
-  const handleChangeDepartment = (e: SelectChangeEvent) => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      DEPARTMENT_ID: e.target.value,
-    }));
-  };
+  //use state
+  //open confirmation add employee
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
-  //submit form
-
-  //get department
-  const { data: departments, isLoading: isDptRdy } = useGetDepartmentQuery();
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    setOpenConfirmation(true);
+  };
+
+  const handleSubmit = async () => {
     try {
       const result = await addEmployee(formValues).unwrap();
       openSnackbar(result?.message || "Employee Added", "success");
+      setOpenConfirmation(false);
+      router.push("/admin/employee");
     } catch (error) {
       console.error(error);
       const errorMessage = (error as { data: { message: string } }).data
@@ -73,9 +141,10 @@ const AddEmployee = () => {
 
   return (
     <>
+      <PageHeader pageHead="Add Employee" icon={People} />
       <div className="flex items-center justify-center w-full">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmitForm}
           className="flex flex-col gap-4 w-full md:w-96"
         >
           <TextField
@@ -107,27 +176,6 @@ const AddEmployee = () => {
             name="SUFFIX"
             onChange={handleInputChange}
           />
-
-          <Autocomplete
-            className="w-full md:w-96"
-            options={departments || []}
-            getOptionLabel={(option) => option.DEPARTMENT_NAME || ""}
-            onChange={(_, newValue) => {
-              if (newValue) {
-                handleChangeDepartment({
-                  target: {
-                    value: String(newValue.ID),
-                    name: "DEPARTMENT_ID",
-                  } as EventTarget & HTMLInputElement,
-                } as SelectChangeEvent);
-              }
-            }}
-            renderInput={(params) => (
-              <TextField {...params} label="Department ID" variant="outlined" />
-            )}
-            loading={isDptRdy}
-            loadingText={<CircularProgress size={20} />}
-          />
           <div className=" flex flex-col">
             <Button variant="contained" type="submit">
               Submit
@@ -138,6 +186,12 @@ const AddEmployee = () => {
           </div>
         </form>
       </div>
+      <ConfirmAddEmployee
+        open={openConfirmation}
+        onClose={() => setOpenConfirmation(false)}
+        onSubmit={handleSubmit}
+        formData={formValues}
+      />
     </>
   );
 };

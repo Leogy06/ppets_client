@@ -196,11 +196,11 @@ const Employee = () => {
   };
 
   // //use effect
-  // useEffect(() => {
-  //   if (employees) {
-  //     console.log("employees ", employees);
-  //   }
-  // }, [employees]);
+  useEffect(() => {
+    if (employees) {
+      console.log("employees ", employees);
+    }
+  }, [employees]);
 
   if (isEmployeeRdy) {
     return <p className="animate-pulse">Loading...</p>;
