@@ -52,18 +52,18 @@ const Distribution = () => {
   ];
 
   //console log employees
-  useEffect(() => {
-    if (employees) {
-      console.log("Employees ", employees);
-    }
-  }, [employees]);
+  // useEffect(() => {
+  //   if (employees) {
+  //     console.log("Employees ", employees);
+  //   }
+  // }, [employees]);
 
   //console log dpt id
-  useEffect(() => {
-    if (empDetails) {
-      console.log("DPT id ", empDetails?.CURRENT_DPT_ID);
-    }
-  }, [empDetails]);
+  // useEffect(() => {
+  //   if (empDetails) {
+  //     console.log("DPT id ", empDetails?.CURRENT_DPT_ID);
+  //   }
+  // }, [empDetails]);
 
   if (isLoading) return <div>Loading...</div>;
 
