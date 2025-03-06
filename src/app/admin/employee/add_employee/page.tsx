@@ -87,7 +87,7 @@ const ConfirmAddEmployee = ({
 };
 
 const AddEmployee = () => {
-  const { user, empDetails } = useAuth();
+  const { empDetails } = useAuth();
   const router = useRouter();
 
   //use snackbar
@@ -100,8 +100,8 @@ const AddEmployee = () => {
     LASTNAME: "",
     SUFFIX: "",
     DEPARTMENT_ID: empDetails?.CURRENT_DPT_ID,
-    CREATED_BY: user?.id,
-    UPDATED_BY: user?.id,
+    CREATED_BY: empDetails?.ID,
+    UPDATED_BY: empDetails?.ID,
   });
 
   //add employee

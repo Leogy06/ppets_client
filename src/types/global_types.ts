@@ -54,8 +54,8 @@ export interface Employee {
   LASTNAME: string;
   MIDDLENAME: string;
   SUFFIX: string;
-  CREATED_BY: number;
-  UPDATED_BY: number;
+  CREATED_BY: number | null;
+  UPDATED_BY: number | null;
 }
 
 export interface Credentials {

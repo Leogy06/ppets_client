@@ -140,7 +140,17 @@ const Employee = () => {
       width: 180,
       valueGetter: (params: Department) => params.DEPARTMENT_NAME ?? "--",
     },
-    { field: "CREATED_BY", headerName: "Added by", width: 150 },
+    {
+      field: "creator",
+      headerName: "Added by",
+      width: 200,
+      valueGetter: (creator: EmployeeProps) =>
+        creator
+          ? `${creator.LASTNAME} ${creator.FIRSTNAME} ${
+              creator.MIDDLENAME ?? ""
+            } ${creator.SUFFIX ?? ""}`
+          : "--",
+    },
     {
       field: "CREATED_WHEN",
       headerName: "Created When",
@@ -148,7 +158,17 @@ const Employee = () => {
       type: "date",
       valueFormatter: (param) => dateFormmater(param),
     },
-    { field: "UPDATED_BY", headerName: "Updated By", width: 150 },
+    {
+      field: "updater",
+      headerName: "Updated by",
+      width: 200,
+      valueGetter: (creator: EmployeeProps) =>
+        creator
+          ? `${creator.LASTNAME} ${creator.FIRSTNAME} ${
+              creator.MIDDLENAME ?? ""
+            } ${creator.SUFFIX ?? ""}`
+          : "--",
+    },
     {
       field: "UPDATED_WHEN",
       headerName: "Updated When",
@@ -196,11 +216,11 @@ const Employee = () => {
   };
 
   // //use effect
-  useEffect(() => {
-    if (employees) {
-      console.log("employees ", employees);
-    }
-  }, [employees]);
+  // useEffect(() => {
+  //   if (employees) {
+  //     console.log("employees ", employees);
+  //   }
+  // }, [employees]);
 
   if (isEmployeeRdy) {
     return <p className="animate-pulse">Loading...</p>;
