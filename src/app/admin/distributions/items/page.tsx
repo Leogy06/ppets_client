@@ -13,8 +13,6 @@ const DistributedItems = () => {
     useGetItemsDepartmentQuery(Number(empDetails?.CURRENT_DPT_ID));
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Item ID", width: 90 },
-    { field: "quantity", headerName: "Quantity", width: 130 },
     {
       field: "item_description",
       headerName: "Item Description",
@@ -29,6 +27,7 @@ const DistributedItems = () => {
         return <div>{itemName}</div>;
       },
     },
+    { field: "quantity", headerName: "Quantity", width: 130 },
     {
       field: "DISTRIBUTED_ON",
       headerName: "Date Acquired",

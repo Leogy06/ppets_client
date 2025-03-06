@@ -345,7 +345,7 @@ const Requests = () => {
   }
 
   return (
-    <>
+    <div className="flex flex-col h-[580px]">
       <div className="flex justify-between items-start">
         <PageHeader pageHead="Requests" />
         <Tooltip title={<span className="text-lg">Preview PDF</span>}>
@@ -359,7 +359,6 @@ const Requests = () => {
         rows={borrowingTransactions}
         disableRowSelectionOnClick
         sx={{
-          height: 400,
           "& .cell-approved": { backgroundColor: "#90ee90 ", color: "#333" }, // Light green
           "& .cell-rejected": { backgroundColor: "#d0312d", color: "#fff" }, // Light red
           "& .cell-pending": { backgroundColor: "#fcf4a3", color: "#333" }, // green yellow
@@ -378,7 +377,7 @@ const Requests = () => {
         handleRejectTransaction={handleRejectTransaction}
         isLoading={isRejectloading}
       />
-    </>
+    </div>
   );
 };
 

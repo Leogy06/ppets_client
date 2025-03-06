@@ -147,7 +147,7 @@ const LendItem = () => {
 
   //use state
   const [lendForm, setLendForm] = useState<Partial<BorrowingTransactionTypes>>({
-    borrowedItem: null,
+    borrowedItem: itemDetails?.id,
     borrower: null,
     owner: empDetails?.ID,
     quantity: 1,
@@ -190,6 +190,8 @@ const LendItem = () => {
   //submit api
   const handleSubmit = async () => {
     try {
+      console.log("Lend form ", lendForm);
+
       const result = await createLendTransaction(lendForm).unwrap();
 
       console.log("result lend ", result);
@@ -224,7 +226,7 @@ const LendItem = () => {
     if (itemDetails) {
       setLendForm((prevForm) => ({
         ...prevForm,
-        borrowedItem: itemDetails.ITEM_ID, //set borrowed item
+        borrowedItem: itemDetails.id, //set borrowed item
       }));
     }
   }, [itemDetails]);
