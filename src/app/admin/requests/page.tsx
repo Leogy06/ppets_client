@@ -207,11 +207,6 @@ const Requests = () => {
   //colums
   const columns: GridColDef[] = [
     {
-      field: "id",
-      headerName: "Transaction ID",
-      width: 100,
-    },
-    {
       field: "quantity",
       headerName: "Quantity",
       width: 80,
