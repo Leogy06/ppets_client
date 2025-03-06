@@ -28,6 +28,7 @@ export interface Item {
   itemDetails: UndistributedItem;
   total_value: number;
   ORIGINAL_QUANTITY: number;
+  accountableEmpDetails: Employee;
 }
 
 export interface ItemCategory {

@@ -27,6 +27,7 @@ const DistributedItems = () => {
         return <div>{itemName}</div>;
       },
     },
+
     { field: "quantity", headerName: "Quantity", width: 130 },
     {
       field: "DISTRIBUTED_ON",
@@ -74,7 +75,7 @@ const DistributedItems = () => {
       width: 130,
     },
     {
-      field: "accountable_emp",
+      field: "accountableEmpDetails",
       headerName: "Accountable Person",
       width: 180,
     },
@@ -92,7 +93,12 @@ const DistributedItems = () => {
       <DataGrid
         loading={isItemsLoading}
         columns={columns}
-        rows={distributedItems}
+        rows={distributedItems?.map((item) => ({
+          ...item,
+          accountableEmpDetails: `${item.accountableEmpDetails.FIRSTNAME.toUpperCase()} ${item.accountableEmpDetails.LASTNAME.toUpperCase()} ${
+            item.accountableEmpDetails?.MIDDLENAME?.toUpperCase() ?? ""
+          } ${item.accountableEmpDetails?.SUFFIX?.toUpperCase() ?? ""}`,
+        }))}
       />
     </>
   );

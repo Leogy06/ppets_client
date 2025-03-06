@@ -106,20 +106,34 @@ const Employee = () => {
 
   const columns: GridColDef[] = [
     { field: "ID_NUMBER", headerName: "ID number", width: 150, editable: true },
-    { field: "LASTNAME", headerName: "Last Name", width: 150, editable: true },
+    {
+      field: "LASTNAME",
+      headerName: "Last Name",
+      width: 150,
+      editable: true,
+      valueGetter: (params: string) => params.toUpperCase(),
+    },
     {
       field: "FIRSTNAME",
       headerName: "First Name",
       width: 150,
       editable: true,
+      valueGetter: (params: string) => params.toUpperCase(),
     },
     {
       field: "MIDDLENAME",
       headerName: "Middle Name",
       width: 150,
       editable: true,
+      valueGetter: (params: string) => (params ? params.toUpperCase() : ""),
     },
-    { field: "SUFFIX", headerName: "Suffix", width: 100, editable: true },
+    {
+      field: "SUFFIX",
+      headerName: "Suffix",
+      width: 100,
+      editable: true,
+      valueGetter: (params: string) => (params ? params.toUpperCase() : ""),
+    },
     {
       field: "departmentDetails",
       headerName: "Department",

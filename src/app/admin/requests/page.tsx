@@ -334,11 +334,11 @@ const Requests = () => {
   };
 
   //console log the borrow transactions
-  // useEffect(() => {
-  //   if (borrowingTransactions) {
-  //     console.log("borrowing transactions ", borrowingTransactions);
-  //   }
-  // }, [borrowingTransactions]);
+  useEffect(() => {
+    if (borrowingTransactions) {
+      console.log("borrowing transactions ", borrowingTransactions);
+    }
+  }, [borrowingTransactions]);
 
   if (isLoading) {
     return <div className="animate-pulse">Loading...</div>;
