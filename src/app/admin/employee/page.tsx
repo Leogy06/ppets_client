@@ -7,7 +7,7 @@ import {
 import { dateFormmater } from "@/utils/date_formmater";
 import { Button, Modal } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {

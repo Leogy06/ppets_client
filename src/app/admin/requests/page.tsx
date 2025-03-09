@@ -21,7 +21,7 @@ import { Cancel, Preview } from "@mui/icons-material";
 import { Modal, Paper, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 
@@ -334,11 +334,11 @@ const Requests = () => {
   };
 
   //console log the borrow transactions
-  // useEffect(() => {
-  //   if (borrowingTransactions) {
-  //     console.log("borrowing transactions ", borrowingTransactions);
-  //   }
-  // }, [borrowingTransactions]);
+  useEffect(() => {
+    if (borrowingTransactions) {
+      console.log("borrowing transactions ", borrowingTransactions);
+    }
+  }, [borrowingTransactions]);
 
   if (isLoading) {
     return <div className="animate-pulse">Loading...</div>;
