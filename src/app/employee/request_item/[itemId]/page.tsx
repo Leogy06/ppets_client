@@ -59,8 +59,8 @@ const RequestForm = () => {
   const [requestItemForm, setRequestItemForm] = useState<
     Partial<BorrowingTransactionTypes>
   >({
-    borrowedItem: 0,
-    borrower: 0,
+    item_id: 0,
+    borrower_emp_id: 0,
     owner: 0,
     quantity: 0,
     status: 2,
@@ -93,14 +93,14 @@ const RequestForm = () => {
       const result = await addTransaction({
         borrowedItems: [
           {
-            id: requestItemForm.borrowedItem, // Item ID
+            id: requestItemForm.item_id, // Item ID
             quantity: requestItemForm.quantity,
             status: requestItemForm.status,
             remarks: requestItemForm.remarks,
             name: requestItemForm.name,
           },
         ],
-        borrower: empDetails?.ID,
+        borrower_emp_id: empDetails?.ID,
         owner: itemDetails?.accountable_emp,
       }).unwrap();
 
@@ -120,8 +120,8 @@ const RequestForm = () => {
         const updatedForm = {
           ...prevForm,
           owner: itemDetails.accountable_emp,
-          borrower: empDetails.ID,
-          borrowedItem: itemDetails.id,
+          borrower_emp_id: empDetails.ID,
+          item_id: itemDetails.id,
           name: itemDetails.name,
         };
         return updatedForm;

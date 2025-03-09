@@ -21,7 +21,7 @@ import { Cancel, Preview } from "@mui/icons-material";
 import { Modal, Paper, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 
@@ -255,7 +255,7 @@ const Requests = () => {
       width: 180,
     },
     {
-      field: "borrowerEmp",
+      field: "borrower_emp_id",
       headerName: "Borrower",
       valueGetter: (params: Employee) => {
         return params

@@ -147,8 +147,8 @@ const LendItem = () => {
 
   //use state
   const [lendForm, setLendForm] = useState<Partial<BorrowingTransactionTypes>>({
-    borrowedItem: itemDetails?.id,
-    borrower: null,
+    item_id: itemDetails?.id,
+    borrower_emp_id: null,
     owner: empDetails?.ID,
     quantity: 1,
     DPT_ID: empDetails?.CURRENT_DPT_ID,
@@ -156,7 +156,7 @@ const LendItem = () => {
   });
 
   const handleOpenModal = (empId: number) => {
-    setLendForm((prevForm) => ({ ...prevForm, borrower: empId }));
+    setLendForm((prevForm) => ({ ...prevForm, borrower_emp_id: empId }));
     setIsModalOpen(true);
   };
 
