@@ -13,7 +13,6 @@ import {
   BorrowingStatusProps,
   BorrowingTransactionTypes,
   Employee,
-  Item,
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
