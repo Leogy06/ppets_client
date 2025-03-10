@@ -76,7 +76,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 };
 
 const Employee = () => {
-  const { user, empDetails } = useAuth();
+  const { empDetails } = useAuth();
 
   //router
   const router = useRouter();
@@ -183,7 +183,7 @@ const Employee = () => {
     const { ID, ...updatedFields } = newRow;
     try {
       await editEmployee({
-        data: { ...updatedFields, UPDATED_BY: user?.id },
+        data: { ...updatedFields, UPDATED_BY: empDetails?.ID },
         id: ID,
       });
 
