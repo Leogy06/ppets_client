@@ -173,9 +173,10 @@ const Requests = () => {
   //handle approve transaction
   const handleApproveTransaction = async () => {
     try {
-      const result = await approveTransaction(transactionId).unwrap();
-
-      console.log("approve result ", result);
+      const result = await approveTransaction({
+        transactionId,
+        approverId: empDetails?.ID,
+      }).unwrap();
 
       openSnackbar(result.message ?? "Transaction approved. ", "success");
       handleCloseModalApprove();
@@ -191,8 +192,6 @@ const Requests = () => {
   const handleRejectTransaction = async () => {
     try {
       const result = await rejectTransaction(transactionId).unwrap();
-
-      console.log("reject result ", result);
 
       openSnackbar(result.message ?? "Transaction rejected. ", "success");
       handleCloseModalReject();
@@ -219,14 +218,7 @@ const Requests = () => {
       headerName: "Quantity",
       width: 80,
     },
-    {
-      field: "distributedItem",
-      headerName: "Date Acquired",
-      width: 180,
-      type: "dateTime",
-      valueGetter: (params: Item) =>
-        params?.DISTRIBUTED_ON ? new Date(params.DISTRIBUTED_ON) : null,
-    },
+
     {
       field: "statusDetails",
       headerName: "Status",
@@ -249,7 +241,7 @@ const Requests = () => {
       headerName: "Item Owner",
       valueGetter: (params: Employee) => {
         return params
-          ? `${params.LASTNAME} ${params.FIRSTNAME} ${
+          ? `${params.LASTNAME}, ${params.FIRSTNAME} ${
               params.MIDDLENAME ?? ""
             } ${params.SUFFIX ?? ""}`
           : "Failed to Retrieved name";
@@ -257,11 +249,11 @@ const Requests = () => {
       width: 180,
     },
     {
-      field: "borrower_emp_id",
+      field: "borrowerEmp",
       headerName: "Borrower",
       valueGetter: (params: Employee) => {
         return params
-          ? `${params.LASTNAME ?? ""} ${params.FIRSTNAME ?? ""} ${
+          ? `${params.LASTNAME ?? ""}, ${params.FIRSTNAME ?? ""} ${
               params.MIDDLENAME ?? ""
             } ${params.SUFFIX ?? ""}`
           : "--";

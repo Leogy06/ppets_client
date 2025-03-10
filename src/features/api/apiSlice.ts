@@ -217,8 +217,8 @@ export const apiSlice = createApi({
 
     //approve transaction
     approveTransaction: builder.mutation({
-      query: (transactionId) => ({
-        url: `/transaction/approve/${transactionId}`,
+      query: ({ transactionId, approverId }) => ({
+        url: `/transaction/approve/${transactionId}/${approverId}`,
         method: "PUT",
       }),
       invalidatesTags: ["BorrowingTransaction"],
