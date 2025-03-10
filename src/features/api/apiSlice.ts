@@ -264,7 +264,7 @@ export const apiSlice = createApi({
       invalidatesTags: ["Notifications"],
     }),
 
-    //the not item
+    //the undistributed items item
     createUndistributedItem: builder.mutation({
       query: (data) => ({
         url: "/api/item",

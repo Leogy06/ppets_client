@@ -178,6 +178,7 @@ const RequestItem = () => {
         )}
       </div>
       <DataGrid
+        sx={{ height: 400 }}
         rows={requestRowsToShow}
         columns={column}
         loading={itemRequestsLoading || isRequestBorrowLoading}

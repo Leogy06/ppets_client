@@ -210,7 +210,9 @@ const Requests = () => {
       field: "itemDetails",
       headerName: "Item name",
       width: 180,
-      valueGetter: (params: UndistributedItem) => params?.ITEM_NAME ?? "--",
+      valueGetter: (params: UndistributedItem) => {
+        return params ? `${params.ITEM_NAME}` : "--";
+      },
     },
     {
       field: "quantity",
@@ -229,7 +231,7 @@ const Requests = () => {
       field: "statusDetails",
       headerName: "Status",
       valueGetter: (params: BorrowingStatusProps) =>
-        params?.description.toUpperCase() ?? "Unknown or Invalid",
+        params?.description.toUpperCase() ?? "--",
       cellClassName: (params) =>
         params.row.status === 1
           ? "cell-approved"
@@ -259,10 +261,10 @@ const Requests = () => {
       headerName: "Borrower",
       valueGetter: (params: Employee) => {
         return params
-          ? `${params.LASTNAME} ${params.FIRSTNAME} ${
+          ? `${params.LASTNAME ?? ""} ${params.FIRSTNAME ?? ""} ${
               params.MIDDLENAME ?? ""
             } ${params.SUFFIX ?? ""}`
-          : "Failed to Retrieved name";
+          : "--";
       },
       width: 180,
     },
@@ -345,7 +347,7 @@ const Requests = () => {
   }
 
   return (
-    <div className="flex flex-col h-[580px]">
+    <div className="flex flex-col h-[400px]">
       <div className="flex justify-between items-start">
         <PageHeader pageHead="Requests" />
         <Tooltip title={<span className="text-lg">Preview PDF</span>}>

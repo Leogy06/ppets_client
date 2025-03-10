@@ -153,11 +153,11 @@ const ManagerPage = () => {
     setItemShow(itemShowOption);
   };
 
-  useEffect(() => {
-    if (notOwnedItems) {
-      console.log("not owned items ", notOwnedItems);
-    }
-  }, [notOwnedItems]);
+  // useEffect(() => {
+  //   if (notOwnedItems) {
+  //     console.log("not owned items ", notOwnedItems);
+  //   }
+  // }, [notOwnedItems]);
 
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;

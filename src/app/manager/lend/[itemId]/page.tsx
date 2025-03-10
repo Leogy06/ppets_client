@@ -12,8 +12,13 @@ import {
   useCreateLendTransactionMutation,
   useGetEmployeesQuery,
   useGetItemsByIdQuery,
+  useGetUndistributedItemByIdQuery,
 } from "@/features/api/apiSlice";
-import { BorrowingTransactionTypes, Department } from "@/types/global_types";
+import {
+  BorrowingTransactionTypes,
+  Department,
+  Employee,
+} from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useParams } from "next/navigation";
@@ -135,8 +140,13 @@ const LendItem = () => {
     Number(empDetails?.CURRENT_DPT_ID)
   );
 
-  //use get item details
+  //use get item details (distributed)
   const { data: itemDetails } = useGetItemsByIdQuery(Number(itemId));
+
+  //get undistributed item by id
+  const { data: undistributedItemDetails } = useGetUndistributedItemByIdQuery(
+    Number(itemDetails?.ITEM_ID)
+  );
 
   //open modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -147,9 +157,9 @@ const LendItem = () => {
 
   //use state
   const [lendForm, setLendForm] = useState<Partial<BorrowingTransactionTypes>>({
-    distributed_item_id: itemDetails?.id,
+    distributed_item_id: Number(undistributedItemDetails?.ID),
     borrower_emp_id: null,
-    owner: empDetails?.ID,
+    owner_emp_id: empDetails?.ID,
     quantity: 1,
     DPT_ID: empDetails?.CURRENT_DPT_ID,
     remarks: "",
@@ -221,15 +231,20 @@ const LendItem = () => {
   //     }
   //   }, [employees]);
 
-  //setting the default value form
-  useEffect(() => {
-    if (itemDetails) {
-      setLendForm((prevForm) => ({
-        ...prevForm,
-        borrowedItem: itemDetails.id, //set borrowed item
-      }));
-    }
-  }, [itemDetails]);
+  // useEffect(() => {
+  //   if (undistributedItemDetails) {
+  //     console.log("undistributed item: ", undistributedItemDetails);
+  //   }
+  // }, [undistributedItemDetails]);
+
+  // useEffect(() => {
+  //   if (undistributedItemDetails) {
+  //     setLendForm((prevForm) => ({
+  //       ...prevForm,
+  //       distributed_item_id: Number(undistributedItemDetails.ID), //set borrowed item
+  //     }));
+  //   }
+  // }, [itemDetails]);
 
   return (
     <div className="flex flex-col">
@@ -263,7 +278,7 @@ const LendItem = () => {
       </div>
       <div className="h-[480px]">
         <DataGrid
-          rows={employees?.map((emp) => ({
+          rows={employees?.map((emp: Employee) => ({
             ...emp,
             fullName: `${emp.LASTNAME}, ${emp.FIRSTNAME} ${
               emp.MIDDLENAME ?? ""

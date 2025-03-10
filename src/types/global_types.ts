@@ -77,7 +77,7 @@ export interface BorrowingTransactionTypes {
   id: number | null;
   distributed_item_id: number;
   borrower_emp_id: number | null;
-  owner: number | null;
+  owner_emp_id: number | null;
   quantity: number | null;
   status: number | null;
   remarks: string;
