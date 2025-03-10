@@ -86,6 +86,8 @@ const Distribution = () => {
       <DataGrid
         getRowId={(params) => params.ID}
         sx={{ height: 400 }}
+        disableRowSelectionOnClick
+        pageSizeOptions={[25, 50, 100, 200]}
         columns={columns}
         rows={employees?.map((emp: Employee) => ({
           ...emp,

@@ -93,6 +93,7 @@ const DistributedItems = () => {
       <DataGrid
         loading={isItemsLoading}
         columns={columns}
+        disableRowSelectionOnClick
         rows={distributedItems?.map((item) => ({
           ...item,
           accountableEmpDetails: `${item.accountableEmpDetails.FIRSTNAME.toUpperCase()} ${item.accountableEmpDetails.LASTNAME.toUpperCase()} ${

@@ -156,8 +156,8 @@ const DistributionModal = ({
     <DefaultModal
       open={open}
       onClose={onClose}
-      className={` ${
-        isDarkMode ? "bg-gray-50 text-black" : "bg-gray-900 text-white"
+      className={`${
+        isDarkMode ? "bg-gray-900 text-gray-50" : " bg-gray-50 text-gray-900"
       }`}
     >
       <form onSubmit={handleSubmit} className="w-full h-full">
@@ -321,9 +321,9 @@ const Distribute = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-4 h-[400px]">
+    <>
       <PageHeader pageHead="Select an item to distribute" />
-      <div className="flex gap-2 mb-2 justify-between">
+      <div className="flex gap-2 mb-4 justify-between">
         <BackArrow backTo="/admin/distributions" />
         <div className="flex gap-2">
           <h1 className="text-base font-semibold">Receiver: </h1>
@@ -339,10 +339,12 @@ const Distribute = () => {
         </div>
       </div>
       <DataGrid
+        sx={{ border: "none" }}
         rows={undistributedItems}
         columns={columns}
         getRowId={(params) => params.ID}
         loading={isItemsLoading}
+        disableRowSelectionOnClick
       />
       <DistributionModal
         open={isModalOpen}
@@ -350,7 +352,7 @@ const Distribute = () => {
         itemId={itemId}
         receiverId={empId}
       />
-    </div>
+    </>
   );
 };
 

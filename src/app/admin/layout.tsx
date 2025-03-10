@@ -23,7 +23,7 @@ const AdminPageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       {isLoading ? (
-        <div className="animate-pulse">Loading...</div>
+        <div className="animate-pulse text-center flex">Loading...</div>
       ) : (
         <Paper className="p-4 flex flex-col">{children}</Paper>
       )}

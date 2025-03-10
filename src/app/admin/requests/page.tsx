@@ -240,9 +240,9 @@ const Requests = () => {
       headerName: "Item Owner",
       valueGetter: (params: Employee) => {
         return params
-          ? `${params.LASTNAME}, ${params.FIRSTNAME} ${
-              params.MIDDLENAME ?? ""
-            } ${params.SUFFIX ?? ""}`
+          ? `${params.LASTNAME.toUpperCase()}, ${params.FIRSTNAME.toUpperCase()} ${
+              params?.MIDDLENAME?.toUpperCase() ?? ""
+            } ${params?.SUFFIX?.toUpperCase() ?? ""}`
           : "Failed to Retrieved name";
       },
       width: 180,
@@ -338,7 +338,7 @@ const Requests = () => {
   }
 
   return (
-    <div className="flex flex-col h-[400px]">
+    <>
       <div className="flex justify-between items-start">
         <PageHeader pageHead="Requests" />
         <Tooltip title={<span className="text-lg">Preview PDF</span>}>
@@ -347,17 +347,19 @@ const Requests = () => {
           </button>
         </Tooltip>
       </div>
-      <DataGrid
-        columns={columns}
-        rows={borrowingTransactions}
-        disableRowSelectionOnClick
-        sx={{
-          "& .cell-approved": { backgroundColor: "#90ee90 ", color: "#333" }, // Light green
-          "& .cell-rejected": { backgroundColor: "#d0312d", color: "#fff" }, // Light red
-          "& .cell-pending": { backgroundColor: "#fcf4a3", color: "#333" }, // green yellow
-          "& .cell-cancel": { backgroundColor: "#d8bfd8", color: "#333" }, // thirstle: purple
-        }}
-      />
+      <div className="h-[400px]">
+        <DataGrid
+          columns={columns}
+          rows={borrowingTransactions}
+          disableRowSelectionOnClick
+          sx={{
+            "& .cell-approved": { backgroundColor: "#90ee90 ", color: "#333" }, // Light green
+            "& .cell-rejected": { backgroundColor: "#d0312d", color: "#fff" }, // Light red
+            "& .cell-pending": { backgroundColor: "#fcf4a3", color: "#333" }, // green yellow
+            "& .cell-cancel": { backgroundColor: "#d8bfd8", color: "#333" }, // thirstle: purple
+          }}
+        />
+      </div>
       <ConfirmModalApprove
         open={openModalApprove}
         close={handleCloseModalApprove}
@@ -370,7 +372,7 @@ const Requests = () => {
         handleRejectTransaction={handleRejectTransaction}
         isLoading={isRejectloading}
       />
-    </div>
+    </>
   );
 };
 
