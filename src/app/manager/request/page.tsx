@@ -87,12 +87,52 @@ const RequestItem = () => {
     {
       field: "quantity",
       headerName: "Quantity",
-      width: 70,
+      width: 90,
     },
     {
       field: "statusDetails",
       headerName: "Status",
       valueGetter: (params: StatusProcess) => params.description.toUpperCase(),
+    },
+    {
+      field: "approvedByEmpDetails",
+      headerName: "Approved by",
+      width: 220,
+      valueGetter: (params: Employee) =>
+        params
+          ? `${params.LASTNAME} ${params.FIRSTNAME} ${
+              params.MIDDLENAME ?? ""
+            } ${params.SUFFIX ?? ""}`
+          : "--",
+    },
+    {
+      field: "ownerEmp",
+      headerName: "Owner",
+      width: 220,
+      valueGetter: (params: Employee) =>
+        params
+          ? `${params.LASTNAME} ${params.FIRSTNAME} ${
+              params.MIDDLENAME ?? ""
+            } ${params.SUFFIX ?? ""}`
+          : "--",
+    },
+    {
+      field: "createdAt",
+      headerName: "Requested at",
+      width: 200,
+      type: "dateTime",
+      valueGetter: (params) => new Date(params),
+    },
+    {
+      field: "borrowerEmp",
+      headerName: "Borrower",
+      width: 220,
+      valueGetter: (params: Employee) =>
+        params
+          ? `${params.LASTNAME} ${params.FIRSTNAME} ${
+              params.MIDDLENAME ?? ""
+            } ${params.SUFFIX ?? ""}`
+          : "--",
     },
     {
       field: "remarks",
