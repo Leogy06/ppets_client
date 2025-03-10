@@ -147,7 +147,7 @@ const LendItem = () => {
 
   //use state
   const [lendForm, setLendForm] = useState<Partial<BorrowingTransactionTypes>>({
-    item_id: itemDetails?.id,
+    distributed_item_id: itemDetails?.id,
     borrower_emp_id: null,
     owner: empDetails?.ID,
     quantity: 1,
