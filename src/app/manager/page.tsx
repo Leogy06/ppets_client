@@ -6,9 +6,9 @@ import {
   useGetItemsNotOwnedQuery,
 } from "@/features/api/apiSlice";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import PageHeader from "@/app/(component)/pageheader";
-import { UndistributedItem } from "@/types/global_types";
+import { Employee, UndistributedItem } from "@/types/global_types";
 import DefaultButton from "../(component)/buttonDefault";
 import { useRouter } from "next/navigation";
 import { ArrowDropDownCircleSharp } from "@mui/icons-material";
@@ -79,7 +79,8 @@ const ManagerPage = () => {
     {
       field: "itemDetails",
       headerName: "Item",
-      valueGetter: (params: UndistributedItem) => params.ITEM_NAME,
+      valueGetter: (params: UndistributedItem) =>
+        params ? params.ITEM_NAME : "--",
       width: 180,
     },
     {
@@ -104,13 +105,20 @@ const ManagerPage = () => {
     {
       field: "DISTRIBUTED_ON",
       headerName: "Distrbuted on",
-      width: 180,
+      width: 220,
+      type: "dateTime",
       valueGetter: (params) => (params ? new Date(params) : "--"),
     },
     {
-      field: "DISTRIBUTED_BY",
-      headerName: "Distributed by",
-      width: 120,
+      field: "distributedByEmpDetails",
+      headerName: "Approved by",
+      width: 200,
+      valueGetter: (params: Employee) =>
+        params
+          ? `${params.LASTNAME} ${params.FIRSTNAME} ${
+              params.MIDDLENAME ?? ""
+            } ${params.SUFFIX ?? ""}`
+          : "--",
     },
     {
       field: "remarks",
@@ -145,11 +153,11 @@ const ManagerPage = () => {
     setItemShow(itemShowOption);
   };
 
-  // useEffect(() => {
-  //   if (ownedItems) {
-  //     console.log("owned items ", ownedItems);
-  //   }
-  // }, [ownedItems]);
+  useEffect(() => {
+    if (notOwnedItems) {
+      console.log("not owned items ", notOwnedItems);
+    }
+  }, [notOwnedItems]);
 
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;
@@ -170,6 +178,7 @@ const ManagerPage = () => {
         )}
       </div>
       <DataGrid
+        sx={{ height: 400 }}
         rows={itemToShow}
         columns={columns}
         loading={isLoading || isNotOwnedItemLoading}

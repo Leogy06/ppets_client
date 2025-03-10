@@ -7,7 +7,11 @@ import {
   useGetBorrowingTransactionByBorrowerQuery,
   useGetBorrowingTransactionByOwnerQuery,
 } from "@/features/api/apiSlice";
-import { StatusProcess, UndistributedItem } from "@/types/global_types";
+import {
+  Employee,
+  StatusProcess,
+  UndistributedItem,
+} from "@/types/global_types";
 import { ArrowDropDownCircle } from "@mui/icons-material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useEffect, useMemo, useState } from "react";
@@ -74,7 +78,6 @@ const RequestItem = () => {
 
   //column grid
   const column: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 50 },
     {
       field: "itemDetails",
       headerName: "Requesting Item",
