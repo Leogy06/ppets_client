@@ -195,14 +195,16 @@ const Inventory = () => {
   const columns: GridColDef[] = [
     { field: "ITEM_NAME", headerName: "Item Name", width: 120 },
     {
-      field: "ORIGINAL_STOCK",
-      headerName: "Quantity",
-      type: "number",
-    },
-    {
       field: "STOCK_QUANTITY",
       headerName: "Remaining",
       type: "number",
+      width: 140,
+    },
+    {
+      field: "ORIGINAL_QUANTITY",
+      headerName: "Original Quantity",
+      type: "number",
+      width: 160,
     },
 
     {
