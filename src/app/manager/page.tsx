@@ -132,12 +132,19 @@ const ManagerPage = () => {
       width: 200,
       renderCell: (params) => {
         return (
-          <div>
+          <div className="flex gap-1">
             <DefaultButton
               btnText="Lend"
               color="secondary"
               title="Lend this Item"
+              disabled={itemShow === 2}
               onClick={() => router.push(`/manager/lend/${params.row.id}`)}
+            />
+            <DefaultButton
+              btnText="borrow"
+              color="primary"
+              disabled={itemShow === 1}
+              onClick={() => window.alert("La pay function.")}
             />
           </div>
         );

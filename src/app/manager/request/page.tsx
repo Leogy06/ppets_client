@@ -81,7 +81,7 @@ const RequestItem = () => {
     {
       field: "itemDetails",
       headerName: "Requesting Item",
-      valueGetter: (params: UndistributedItem) => params.ITEM_NAME,
+      valueGetter: (params: UndistributedItem) => params?.ITEM_NAME ?? "--",
       width: 200,
     },
     {
