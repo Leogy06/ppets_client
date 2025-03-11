@@ -93,9 +93,14 @@ const SideBarHeader = () => {
 
   return (
     /**Side bar header */
-    <div className="flex items-center justify-center gap-2 p-8">
-      {getGreeting()}
-      <span className="text-base font-semibold">{empDetails?.FIRSTNAME}!</span>
+    <div className="flex flex-col items-center justify-center gap-2 p-8 text-sm">
+      <p className="text-base font-semibold">
+        {empDetails?.departmentDetails?.DEPARTMENT_NAME ?? ""}
+      </p>
+      <p className="flex">
+        {getGreeting()}
+        <span className="font-semibold flex">{empDetails?.FIRSTNAME}!</span>
+      </p>
     </div>
   );
 };

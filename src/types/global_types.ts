@@ -56,6 +56,7 @@ export interface Employee {
   SUFFIX: string;
   CREATED_BY: number | null;
   UPDATED_BY: number | null;
+  departmentDetails: Department;
 }
 
 export interface Credentials {
