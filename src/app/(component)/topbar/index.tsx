@@ -34,7 +34,7 @@ const NotificationCard = ({
   if (!isOpen) return null;
 
   return (
-    <Paper className="absolute flex flex-col h-96 overflow-auto w-96 bg-white rounded-lg p-4 -bottom-32 z-50 right-0 top-full  left-auto">
+    <Paper className="absolute flex flex-col h-96 overflow-auto w-80 md:w-96 bg-white rounded-lg p-4 -bottom-32 z-50 right-0 top-full  left-auto">
       {isLoading ? (
         <span className="animate-pulse ">Loading...</span>
       ) : (
