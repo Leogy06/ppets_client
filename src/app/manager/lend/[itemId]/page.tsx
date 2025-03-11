@@ -157,7 +157,7 @@ const LendItem = () => {
 
   //use state
   const [lendForm, setLendForm] = useState<Partial<BorrowingTransactionTypes>>({
-    distributed_item_id: Number(undistributedItemDetails?.ID),
+    distributed_item_id: null,
     borrower_emp_id: null,
     owner_emp_id: empDetails?.ID,
     quantity: 1,
@@ -166,7 +166,11 @@ const LendItem = () => {
   });
 
   const handleOpenModal = (empId: number) => {
-    setLendForm((prevForm) => ({ ...prevForm, borrower_emp_id: empId }));
+    setLendForm((prevForm) => ({
+      ...prevForm,
+      borrower_emp_id: empId,
+      distributed_item_id: Number(undistributedItemDetails?.ID),
+    }));
     setIsModalOpen(true);
   };
 
@@ -206,11 +210,12 @@ const LendItem = () => {
     try {
       console.log("Lend form ", lendForm);
 
-      const result = await createLendTransaction(lendForm).unwrap();
+      await createLendTransaction(lendForm).unwrap();
 
-      console.log("result lend ", result);
-
-      openSnackbar("Lend item was submitted. ", "success");
+      openSnackbar(
+        "The item is on request for lent, wait for the admin to approve. ",
+        "success"
+      );
       setIsModalOpen(false);
     } catch (error) {
       console.error("unexpected error occured. ", error);
@@ -241,14 +246,14 @@ const LendItem = () => {
   //   }
   // }, [undistributedItemDetails]);
 
-  useEffect(() => {
-    if (undistributedItemDetails) {
-      setLendForm((prevForm) => ({
-        ...prevForm,
-        distributed_item_id: Number(undistributedItemDetails.ID), //set borrowed item
-      }));
-    }
-  }, [itemDetails]);
+  // useEffect(() => {
+  //   if (undistributedItemDetails) {
+  //     setLendForm((prevForm) => ({
+  //       ...prevForm,
+  //       distributed_item_id: Number(undistributedItemDetails.ID), //set borrowed item
+  //     }));
+  //   }
+  // }, [itemDetails]);
 
   return (
     <div className="flex flex-col">

@@ -75,7 +75,7 @@ export interface Department {
 
 export interface BorrowingTransactionTypes {
   id: number | null;
-  distributed_item_id: number;
+  distributed_item_id: number | null;
   borrower_emp_id: number | null;
   owner_emp_id: number | null;
   quantity: number | null;
