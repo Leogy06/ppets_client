@@ -249,7 +249,13 @@ const Requests = () => {
       width: 180,
     },
     {
-      field: "APPROVED_BY",
+      field: "approvedByEmpDetails",
+      headerName: "Approved By",
+      valueGetter: (params: Employee) =>
+        `${params?.LASTNAME ?? ""} ${params?.FIRSTNAME ?? ""} ${
+          params?.MIDDLENAME ?? ""
+        } ${params?.SUFFIX ?? ""}`,
+      width: 180,
     },
     {
       field: "borrowerEmp",
@@ -343,7 +349,11 @@ const Requests = () => {
   }, [borrowingTransactions]);
 
   if (isLoading) {
-    return <div className="animate-pulse">Loading...</div>;
+    return (
+      <span className="animate-pulse dead-center text-base font-semibold">
+        Loading...
+      </span>
+    );
   }
 
   return (
