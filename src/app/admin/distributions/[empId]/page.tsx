@@ -26,10 +26,12 @@ const ConfirmDistribute = ({
   open,
   onClose,
   handleSubmit,
+  isLoading,
 }: {
   open: boolean;
   onClose: () => void;
   handleSubmit: () => void;
+  isLoading: boolean;
 }) => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
@@ -38,7 +40,7 @@ const ConfirmDistribute = ({
       open={open}
       onClose={onClose}
       className={`${
-        isDarkMode ? "bg-white text-black" : "bg-black text-white"
+        isDarkMode ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
       <div className="flex flex-col gap-4 items-center">
@@ -49,8 +51,13 @@ const ConfirmDistribute = ({
             variant="text"
             color="error"
             onClick={onClose}
+            disabled={isLoading}
           />
-          <DefaultButton btnIcon={<Check />} onClick={handleSubmit} />
+          <DefaultButton
+            btnIcon={<Check />}
+            onClick={handleSubmit}
+            disabled={isLoading}
+          />
         </div>
       </div>
     </DefaultModal>
@@ -255,6 +262,7 @@ const DistributionModal = ({
         open={openChildOpen}
         onClose={() => setOpenChildOpen(false)}
         handleSubmit={handleSubmitApi}
+        isLoading={isItemAddLoading}
       />
     </DefaultModal>
   );
@@ -350,7 +358,7 @@ const Distribute = () => {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         itemId={itemId}
-        receiverId={empId}
+        receiverId={Number(empReceiver?.ID)}
       />
     </>
   );
