@@ -139,6 +139,11 @@ const RequestItem = () => {
       headerName: "Remarks",
       width: 200,
     },
+    {
+      field: "transactionType",
+      headerName: "Transaction ",
+      width: 100,
+    },
   ];
 
   useEffect(() => {
