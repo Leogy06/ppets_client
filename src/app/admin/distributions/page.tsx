@@ -13,7 +13,7 @@ import {
 import { Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 
 const Distribution = () => {
   const router = useRouter();

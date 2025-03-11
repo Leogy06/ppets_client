@@ -1,5 +1,6 @@
 "use client";
 
+import BackArrow from "@/app/(component)/backArrow";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetItemsDepartmentQuery } from "@/features/api/apiSlice";
@@ -9,23 +10,16 @@ import React, { useEffect } from "react";
 
 const DistributedItems = () => {
   const { empDetails } = useAuth();
+
   const { data: distributedItems, isLoading: isItemsLoading } =
     useGetItemsDepartmentQuery(Number(empDetails?.CURRENT_DPT_ID));
 
   const columns: GridColDef[] = [
     {
-      field: "item_description",
+      field: "itemDetails",
       headerName: "Item Description",
       width: 200,
-      renderCell: (params) => {
-        const itemName = params.row.itemDetails
-          ? params.row.itemDetails.ITEM_NAME
-          : params.row.itemDetails === null
-          ? "--"
-          : "--";
-
-        return <div>{itemName}</div>;
-      },
+      valueGetter: (params: UndistributedItem) => params?.ITEM_NAME ?? "--",
     },
 
     { field: "quantity", headerName: "Quantity", width: 130 },
@@ -47,17 +41,35 @@ const DistributedItems = () => {
       width: 110,
     },
     {
-      field: "ics",
+      field: "ics #",
       headerName: "ICS No.",
       width: 110,
+      renderCell: (params) => {
+        const { itemDetails } = params.row;
+
+        return itemDetails?.PIC_NO ?? "--";
+      },
     },
     {
       //prop no
-      field: "itemDetails",
+      field: "prop item",
       headerName: "Property No.",
-      valueGetter: (params: UndistributedItem) =>
-        params ? params.PROP_NO : "--",
+      renderCell: (params) => {
+        const { itemDetails } = params.row;
+
+        return itemDetails?.PROP_NO ?? "--";
+      },
       width: 110,
+    },
+    {
+      field: "serial no",
+      headerName: "Serial No.",
+      width: 110,
+      renderCell: (params) => {
+        const { itemDetails } = params.row;
+
+        return itemDetails?.SERIAL_NO ?? "--";
+      },
     },
     {
       field: "class_no",
@@ -90,17 +102,22 @@ const DistributedItems = () => {
   return (
     <>
       <PageHeader pageHead="Distributed Items" />
-      <DataGrid
-        loading={isItemsLoading}
-        columns={columns}
-        disableRowSelectionOnClick
-        rows={distributedItems?.map((item) => ({
-          ...item,
-          accountableEmpDetails: `${item.accountableEmpDetails.FIRSTNAME.toUpperCase()} ${item.accountableEmpDetails.LASTNAME.toUpperCase()} ${
-            item.accountableEmpDetails?.MIDDLENAME?.toUpperCase() ?? ""
-          } ${item.accountableEmpDetails?.SUFFIX?.toUpperCase() ?? ""}`,
-        }))}
-      />
+      <div className="mb-4">
+        <BackArrow backTo="/admin/distributions" />
+      </div>
+      <div className="h-[400px]">
+        <DataGrid
+          loading={isItemsLoading}
+          columns={columns}
+          disableRowSelectionOnClick
+          rows={distributedItems?.map((item) => ({
+            ...item,
+            accountableEmpDetails: `${item.accountableEmpDetails.FIRSTNAME.toUpperCase()} ${item.accountableEmpDetails.LASTNAME.toUpperCase()} ${
+              item.accountableEmpDetails?.MIDDLENAME?.toUpperCase() ?? ""
+            } ${item.accountableEmpDetails?.SUFFIX?.toUpperCase() ?? ""}`,
+          }))}
+        />
+      </div>
     </>
   );
 };

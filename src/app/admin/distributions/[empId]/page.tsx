@@ -14,7 +14,7 @@ import {
   useGetUndistributedItemByIdQuery,
   useGetUnDistributeItemQuery,
 } from "@/features/api/apiSlice";
-import { Employee, Item, UndistributedItem } from "@/types/global_types";
+import { Item, UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { CancelOutlined, Check, CompareArrows } from "@mui/icons-material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -40,7 +40,7 @@ const ConfirmDistribute = ({
       open={open}
       onClose={onClose}
       className={`${
-        isDarkMode ? "bg-black text-white" : "bg-white text-black"
+        isDarkMode ? "bg-white text-gray-900" : " bg-black text-gray-50"
       }`}
     >
       <div className="flex flex-col gap-4 items-center">
@@ -68,15 +68,16 @@ const ConfirmDistribute = ({
 const DistributionModal = ({
   open,
   onClose,
-  receiverId,
   itemId,
 }: {
   open: boolean;
   onClose: () => void;
-  receiverId: Employee["ID"];
   itemId: UndistributedItem["ID"];
 }) => {
   const { empDetails } = useAuth();
+
+  //accountable emp id from params
+  const empId = Number(useParams().empId);
 
   //use get query
   const { data: itemDetails, isLoading } = useGetUndistributedItemByIdQuery(
@@ -101,7 +102,7 @@ const DistributionModal = ({
     pis_no: "",
     class_no: "",
     acct_code: "",
-    accountable_emp: receiverId,
+    accountable_emp: null,
     remarks: "",
     DISTRIBUTED_BY: Number(empDetails?.ID),
   });
@@ -122,8 +123,10 @@ const DistributionModal = ({
 
     if (!itemForm.quantity || !itemForm.are_no) {
       openSnackbar("Required fields are empty. ", "error");
+      console.log("item form ", itemForm);
       return;
     }
+
     console.log("item form ", itemForm);
 
     setOpenChildOpen(true);
@@ -148,23 +151,22 @@ const DistributionModal = ({
   };
 
   useEffect(() => {
-    if (itemDetails) {
+    if (itemDetails && empId) {
       setItemForm((prevForm) => ({
         ...prevForm,
         ITEM_ID: itemDetails.ID,
         DISTRIBUTED_BY: Number(empDetails?.ID),
+        accountable_emp: empId,
       }));
-    } else {
-      console.log("Unable to set item details. ");
     }
-  }, [itemDetails, empDetails?.ID]);
+  }, [itemDetails, empDetails?.ID, empId]);
 
   return (
     <DefaultModal
       open={open}
       onClose={onClose}
       className={`${
-        isDarkMode ? "bg-gray-900 text-gray-50" : " bg-gray-50 text-gray-900"
+        isDarkMode ? "bg-white text-gray-900" : " bg-black text-gray-50"
       }`}
     >
       <form onSubmit={handleSubmit} className="w-full h-full">
@@ -358,7 +360,6 @@ const Distribute = () => {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         itemId={itemId}
-        receiverId={Number(empReceiver?.ID)}
       />
     </>
   );
