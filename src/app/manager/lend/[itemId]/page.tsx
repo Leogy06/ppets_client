@@ -62,7 +62,7 @@ const LendModal = ({
       open={open}
       onClose={onClose}
       className={`${
-        isDarkMode ? "bg-white text-black" : "bg-black text-white"
+        isDarkMode ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
       <div className="flex flex-col gap-4 w-full ">
@@ -99,7 +99,7 @@ const LendModal = ({
       {/**Confirm lend modal */}
       <DefaultModal
         className={`${
-          isDarkMode ? "bg-white text-black" : "bg-black text-white"
+          isDarkMode ? "bg-black text-white" : "bg-white text-black"
         }`}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -182,6 +182,10 @@ const LendItem = () => {
       field: "Actions",
       headerName: "Action",
       width: 250,
+      flex: 1,
+      headerAlign: "right",
+      align: "right",
+
       renderCell: (params) => {
         return (
           <div>
@@ -237,14 +241,14 @@ const LendItem = () => {
   //   }
   // }, [undistributedItemDetails]);
 
-  // useEffect(() => {
-  //   if (undistributedItemDetails) {
-  //     setLendForm((prevForm) => ({
-  //       ...prevForm,
-  //       distributed_item_id: Number(undistributedItemDetails.ID), //set borrowed item
-  //     }));
-  //   }
-  // }, [itemDetails]);
+  useEffect(() => {
+    if (undistributedItemDetails) {
+      setLendForm((prevForm) => ({
+        ...prevForm,
+        distributed_item_id: Number(undistributedItemDetails.ID), //set borrowed item
+      }));
+    }
+  }, [itemDetails]);
 
   return (
     <div className="flex flex-col">
@@ -276,7 +280,7 @@ const LendItem = () => {
           </div>
         )}
       </div>
-      <div className="h-[480px]">
+      <div className="h-[340px]">
         <DataGrid
           rows={employees?.map((emp: Employee) => ({
             ...emp,
