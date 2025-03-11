@@ -83,19 +83,21 @@ const Distribution = () => {
           </button>
         </Tooltip>
       </div>
-      <DataGrid
-        getRowId={(params) => params.ID}
-        sx={{ height: 400 }}
-        disableRowSelectionOnClick
-        pageSizeOptions={[25, 50, 100, 200]}
-        columns={columns}
-        rows={employees?.map((emp: Employee) => ({
-          ...emp,
-          fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
-            emp.MIDDLENAME ?? ""
-          }`,
-        }))}
-      />
+      <div className="h-[400px]">
+        <DataGrid
+          getRowId={(params) => params.ID}
+          sx={{ height: 400 }}
+          disableRowSelectionOnClick
+          pageSizeOptions={[25, 50, 100, 200]}
+          columns={columns}
+          rows={employees?.map((emp: Employee) => ({
+            ...emp,
+            fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
+              emp.MIDDLENAME ?? ""
+            }`,
+          }))}
+        />
+      </div>
     </>
   );
 };
