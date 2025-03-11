@@ -249,6 +249,9 @@ const Requests = () => {
       width: 180,
     },
     {
+      field: "APPROVED_BY",
+    },
+    {
       field: "borrowerEmp",
       headerName: "Borrower",
       valueGetter: (params: Employee) => {
