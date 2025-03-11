@@ -13,6 +13,7 @@ import {
   BorrowingStatusProps,
   BorrowingTransactionTypes,
   Employee,
+  TransactionRemarksProp,
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
@@ -47,7 +48,7 @@ const ConfirmModalApprove = ({
             padding: "1rem",
           }}
         >
-          <h1 className="text-lg font-semibold text-center">Aprrove Lend?</h1>
+          <h1 className="text-lg font-semibold text-center">Approve Lend?</h1>
           <div className="flex gap-1 items-baseline justify-center">
             <DefaultButton
               btnText="cancel"
@@ -268,10 +269,11 @@ const Requests = () => {
       valueGetter: (params) => (params ? new Date(params) : "--"),
     },
     {
-      field: "remarks",
-      headerName: "Reason for Borrowing",
+      field: "transactionRemarksDetails",
+      headerName: "Transaction",
       width: 200,
-      valueGetter: (params) => params ?? "--",
+      valueGetter: (params: TransactionRemarksProp) =>
+        params?.DESCRIPTION ?? "--",
     },
     {
       field: "Actions",
