@@ -139,3 +139,8 @@ export interface UndistributedItem {
   updatedAt: Date;
   createdAt: Date;
 }
+
+export interface TransactionRemarksProp {
+  ID: number;
+  DESCRIPTION: string;
+}
