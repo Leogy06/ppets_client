@@ -314,9 +314,13 @@ const Requests = () => {
   //render transaction pdf
   const handlePDFPreview = async () => {
     try {
-      const response = await axios.get(`${baseURL}/api/pdfkit`, {
-        responseType: "blob",
-      });
+      const response = await axios.post(
+        `${baseURL}/api/pdfkit`,
+        { requestRows: borrowingTransactions },
+        {
+          responseType: "blob",
+        }
+      );
 
       //crete blob pdf response
       const blob = new Blob([response.data], { type: "application/pdf" });
