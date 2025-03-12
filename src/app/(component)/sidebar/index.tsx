@@ -4,6 +4,7 @@ import {
   AccountTreeOutlined,
   Dashboard,
   Inventory,
+  ListAlt,
   Logout,
   MoveToInboxOutlined,
   PanToolAltSharp,
@@ -22,7 +23,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
 import { useAuth } from "@/context/AuthContext";
@@ -72,6 +73,11 @@ const managerNavigations = [
     icon: <RequestPageRounded />,
     path: "/manager/request",
   },
+  {
+    label: "On Lend Items",
+    icon: <ListAlt />,
+    path: "/manager/on_lend",
+  },
 ];
 
 //employee navigations
@@ -90,6 +96,12 @@ const employeeNavigations = [
 
 const SideBarHeader = () => {
   const { empDetails } = useAuth();
+
+  // useEffect(() => {
+  //   if (empDetails) {
+  //     console.log("Emp details ", empDetails);
+  //   }
+  // }, [empDetails]);
 
   return (
     /**Side bar header */
