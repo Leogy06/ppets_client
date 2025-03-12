@@ -5,8 +5,13 @@ import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetItemsDepartmentQuery } from "@/features/api/apiSlice";
 import { UndistributedItem } from "@/types/global_types";
+import { PictureAsPdf } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import axios from "axios";
 import React, { useEffect } from "react";
+
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 
 const DistributedItems = () => {
   const { empDetails } = useAuth();
@@ -93,6 +98,27 @@ const DistributedItems = () => {
     },
   ];
 
+  //render items pdf
+  const handlePDFPreview = async () => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/pdfkit/item`,
+        { items: distributedItems },
+        {
+          responseType: "blob",
+        }
+      );
+
+      //crete blob pdf response
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const pdfURL = URL.createObjectURL(blob);
+
+      window.open(pdfURL, "_blank");
+    } catch (error) {
+      console.error("Failed to preview PDF. ", error);
+    }
+  };
+
   useEffect(() => {
     if (distributedItems) {
       console.log("distributed items ", distributedItems);
@@ -102,8 +128,16 @@ const DistributedItems = () => {
   return (
     <>
       <PageHeader pageHead="Distributed Items" />
-      <div className="mb-4">
+      <div className="mb-4 flex justify-between items-start">
         <BackArrow backTo="/admin/distributions" />
+        <Tooltip
+          title={<span className="text-base font-medium">Preview PDF</span>}
+          placement="left"
+        >
+          <button onClick={handlePDFPreview}>
+            <PictureAsPdf />
+          </button>
+        </Tooltip>
       </div>
       <div className="h-[400px]">
         <DataGrid
