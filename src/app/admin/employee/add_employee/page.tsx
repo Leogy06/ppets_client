@@ -33,7 +33,7 @@ const ConfirmAddEmployee = ({
       open={open}
       onClose={onClose}
       className={`${
-        isDarkMode ? "bg-black text-gray-50 " : " bg-white text-gray-900"
+        isDarkMode ? "bg-gray-900 text-gray-50" : " bg-gray-50 text-gray-900"
       }`}
     >
       <div className="flex flex-col gap-4 justify-center items-center">

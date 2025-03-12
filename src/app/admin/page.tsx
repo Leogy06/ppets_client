@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import PageHeader from "../(component)/pageheader";
 import { Dashboard } from "@mui/icons-material";
 import {
@@ -25,12 +25,12 @@ const AdminDashboard = () => {
     });
 
   //console log
-  useEffect(() => {
-    if (allTimeCountByDpt && todayCountByDpt) {
-      console.log("Time count ", allTimeCountByDpt);
-      console.log("Today Time count ", todayCountByDpt);
-    }
-  }, [allTimeCountByDpt, todayCountByDpt]);
+  // useEffect(() => {
+  //   if (allTimeCountByDpt && todayCountByDpt) {
+  //     console.log("Time count ", allTimeCountByDpt);
+  //     console.log("Today Time count ", todayCountByDpt);
+  //   }
+  // }, [allTimeCountByDpt, todayCountByDpt]);
 
   if (isCountByDptLdng || isTodayCountByDptLdng) {
     return (
@@ -42,10 +42,16 @@ const AdminDashboard = () => {
     <>
       <PageHeader icon={Dashboard} pageHead="Dashboard" />
       <div className="flex flex-col gap-4">
-        <div>
+        <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">
             {empDetails?.departmentDetails.DEPARTMENT_NAME}&apos;s
           </h1>
+          <span className="text-sm">
+            Admin:{" "}
+            {`${empDetails?.LASTNAME}, ${empDetails?.FIRSTNAME} ${
+              empDetails?.MIDDLENAME ?? ""
+            } ${empDetails?.SUFFIX ?? ""}`}
+          </span>
         </div>
         <p className="flex gap-1 items-center">
           All Time Total Request:
