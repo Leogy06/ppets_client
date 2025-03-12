@@ -232,6 +232,14 @@ export const apiSlice = createApi({
       invalidatesTags: ["BorrowingTransaction"],
     }),
 
+    //get own transaction that is approved
+    getOwnApprovedTransaction: builder.query({
+      query: ({ empId }: { empId: Employee["ID"] }) => ({
+        url: `/transaction/get/approved/${empId}`,
+      }),
+      providesTags: ["BorrowingTransaction"],
+    }),
+
     //status
     getStatusProcess: builder.query<StatusProcess[], void>({
       query: () => "/status_process",
@@ -334,6 +342,8 @@ export const {
   useApproveTransactionMutation,
   //reject
   useRejectTransactionMutation,
+  //get own transaction approved
+  useGetOwnApprovedTransactionQuery,
 
   //status process
   useGetStatusProcessQuery,
