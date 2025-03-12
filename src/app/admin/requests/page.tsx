@@ -17,7 +17,7 @@ import {
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { Cancel, Preview } from "@mui/icons-material";
+import { Cancel, PictureAsPdf, Preview } from "@mui/icons-material";
 import { Modal, Paper, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
@@ -362,7 +362,7 @@ const Requests = () => {
         <PageHeader pageHead="Requests" />
         <Tooltip title={<span className="text-lg">Preview PDF</span>}>
           <button onClick={handlePDFPreview}>
-            <Preview />
+            <PictureAsPdf />
           </button>
         </Tooltip>
       </div>
