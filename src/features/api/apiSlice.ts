@@ -23,6 +23,7 @@ export const apiSlice = createApi({
     "StatusProcess",
     "Notifications",
     "UndistributedItem",
+    "TransactionCount",
   ],
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -231,13 +232,22 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["BorrowingTransaction"],
     }),
-
     //get own transaction that is approved
     getOwnApprovedTransaction: builder.query({
       query: ({ empId }: { empId: Employee["ID"] }) => ({
         url: `/transaction/get/approved/${empId}`,
       }),
       providesTags: ["BorrowingTransaction"],
+    }),
+    //transaction count all time
+    getCountAllTimeRequestDepartment: builder.query({
+      query: ({ DPT_ID }) => `/transaction/count/all_time/${DPT_ID}`,
+      providesTags: ["TransactionCount"],
+    }),
+    //transaction count by today
+    getCountTodayRequestDepartment: builder.query({
+      query: ({ DPT_ID }) => `/transaction/count/today/${DPT_ID}`,
+      providesTags: ["TransactionCount"],
     }),
 
     //status
@@ -344,6 +354,9 @@ export const {
   useRejectTransactionMutation,
   //get own transaction approved
   useGetOwnApprovedTransactionQuery,
+  //transction count by department
+  useGetCountAllTimeRequestDepartmentQuery,
+  useGetCountTodayRequestDepartmentQuery,
 
   //status process
   useGetStatusProcessQuery,
