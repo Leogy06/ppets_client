@@ -21,7 +21,7 @@ import {
 import { Modal } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface ItemId {
   id: number | null;
@@ -209,16 +209,15 @@ const Inventory = () => {
 
     {
       field: "UNIT_VALUE",
-      headerName: "Unit value",
       type: "number",
-      renderCell: (params) => (params ? ` ₱ ${params.row.UNIT_VALUE}` : "--"),
+      headerName: "Unit value",
+      width: 110,
     },
     {
       field: "TOTAL_VALUE",
+      type: "number",
       headerName: "Total value",
       width: 110,
-      type: "number",
-      renderCell: (params) => (params ? ` ₱ ${params.row.TOTAL_VALUE}` : "--"),
     },
     { field: "REMARKS", headerName: "Remarks", width: 180 },
     {
@@ -302,12 +301,14 @@ const Inventory = () => {
           onClick={() => router.push("/admin/inventory/add")}
         />
       </div>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        getRowId={(params) => params.ID}
-        loading={isUndistributeLoading}
-      />
+      <div className="h-[400px]">
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          getRowId={(params) => params.ID}
+          loading={isUndistributeLoading}
+        />
+      </div>
       <ConfirmModal
         open={openModal}
         onClose={handleCloseModal}
