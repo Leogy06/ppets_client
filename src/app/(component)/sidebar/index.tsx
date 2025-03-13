@@ -109,9 +109,9 @@ const SideBarHeader = () => {
       <p className="text-base font-semibold">
         {empDetails?.departmentDetails?.DEPARTMENT_NAME ?? ""}
       </p>
-      <p className="flex gap-1">
-        <span>{getGreeting()}</span>
-        <span className="font-semibold flex">{empDetails?.FIRSTNAME}!</span>
+      <p className="flex flex-col gap-1 items-center">
+        <span>{getGreeting()},</span>
+        <span className="font-semibold">{empDetails?.FIRSTNAME}!</span>
       </p>
     </div>
   );

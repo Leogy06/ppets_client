@@ -92,7 +92,8 @@ const RequestItem = () => {
     {
       field: "statusDetails",
       headerName: "Status",
-      valueGetter: (params: StatusProcess) => params.description.toUpperCase(),
+      valueGetter: (params: StatusProcess) =>
+        params?.description.toUpperCase() ?? "",
     },
     {
       field: "approvedByEmpDetails",

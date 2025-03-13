@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import PageHeader from "../(component)/pageheader";
 import { Dashboard } from "@mui/icons-material";
 import {
@@ -10,10 +10,8 @@ import {
 import { useAuth } from "@/context/AuthContext";
 
 const AdminDashboard = () => {
-  //use auth
   const { empDetails } = useAuth();
 
-  //all time request count
   const { data: allTimeCountByDpt, isLoading: isCountByDptLdng } =
     useGetCountAllTimeRequestDepartmentQuery({
       DPT_ID: empDetails?.CURRENT_DPT_ID,
@@ -25,12 +23,11 @@ const AdminDashboard = () => {
     });
 
   //console log
-  // useEffect(() => {
-  //   if (allTimeCountByDpt && todayCountByDpt) {
-  //     console.log("Time count ", allTimeCountByDpt);
-  //     console.log("Today Time count ", todayCountByDpt);
-  //   }
-  // }, [allTimeCountByDpt, todayCountByDpt]);
+  useEffect(() => {
+    if (allTimeCountByDpt) {
+      console.log("Counts ", allTimeCountByDpt);
+    }
+  }, [allTimeCountByDpt]);
 
   if (isCountByDptLdng || isTodayCountByDptLdng) {
     return (
@@ -39,34 +36,46 @@ const AdminDashboard = () => {
   }
 
   return (
-    <>
-      <PageHeader icon={Dashboard} pageHead="Dashboard" />
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">
-            {empDetails?.departmentDetails.DEPARTMENT_NAME}&apos;s
-          </h1>
-          <span className="text-sm">
-            Admin:{" "}
-            {`${empDetails?.LASTNAME}, ${empDetails?.FIRSTNAME} ${
-              empDetails?.MIDDLENAME ?? ""
-            } ${empDetails?.SUFFIX ?? ""}`}
-          </span>
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-2">
+        {empDetails?.departmentDetails &&
+          empDetails?.departmentDetails?.DEPARTMENT_NAME + " 's Dashboard"}
+      </h1>
+      <p className="text-sm mb-4">
+        Admin:{" "}
+        {`${empDetails?.LASTNAME}, ${empDetails?.FIRSTNAME} ${
+          empDetails?.MIDDLENAME ?? ""
+        } ${empDetails?.SUFFIX ?? ""}`}
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* All Time Requests Card */}
+        <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
+          <h2 className="text-lg font-semibold mb-1">
+            All Time Total Requests
+          </h2>
+          <p className="text-3xl font-bold text-blue-600">
+            {allTimeCountByDpt.transactionCount}
+          </p>
         </div>
-        <p className="flex gap-1 items-center">
-          All Time Total Request:
-          <span className="text-lg font-semibold underline underline-offset-1">
-            {allTimeCountByDpt}
-          </span>
-        </p>
-        <p>
-          Today&apos;s Request:{" "}
-          <span className="text-lg font-semibold underline underline-offset-1">
-            {todayCountByDpt}
-          </span>
-        </p>
+
+        {/**Item count */}
+        <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
+          <h2 className="text-lg font-semibold mb-1">
+            Items count per measure: unit / pieces
+          </h2>
+          <p className="text-3xl font-bold text-blue-600 ">
+            {allTimeCountByDpt.itemCountDepartment}
+          </p>
+        </div>
+
+        {/* Today's Requests Card */}
+        <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
+          <h2 className="text-lg font-semibold mb-1">Today's Requests</h2>
+          <p className="text-3xl font-bold text-green-600">{todayCountByDpt}</p>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

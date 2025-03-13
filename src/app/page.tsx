@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import Image from "next/image";
-import ibs_logo from "@/assets/ibs_logo.png";
 import lgu_logo from "@/assets/lgu_logo.png";
+import adts_logo from "@/assets/images/adts.png";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { socket } from "@/hooks/useSocket";
@@ -80,7 +80,7 @@ const LoginPage = () => {
           />
           <div className="flex flex-col items-center">
             <Image
-              src={ibs_logo}
+              src={adts_logo}
               alt="ibs-logo"
               className="h-32 w-auto"
               priority

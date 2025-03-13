@@ -40,7 +40,7 @@ const ConfirmDistribute = ({
       open={open}
       onClose={onClose}
       className={`${
-        isDarkMode ? "bg-white text-gray-900" : " bg-black text-gray-50"
+        isDarkMode ? "bg-black text-gray-50" : " bg-white text-gray-900"
       }`}
     >
       <div className="flex flex-col gap-4 items-center">
@@ -161,13 +161,15 @@ const DistributionModal = ({
     }
   }, [itemDetails, empDetails?.ID, empId]);
 
+  useEffect(() => {
+    console.log("dark mode: ", isDarkMode);
+  }, [isDarkMode]);
+
   return (
     <DefaultModal
       open={open}
       onClose={onClose}
-      className={`${
-        isDarkMode ? "bg-white text-gray-900" : " bg-black text-gray-50"
-      }`}
+      className={` bg-white text-black`}
     >
       <form onSubmit={handleSubmit} className="w-full h-full">
         <div className="flex flex-col gap-4">

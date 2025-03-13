@@ -138,14 +138,14 @@ const ManagerPage = () => {
               btnText="Lend"
               color="secondary"
               title="Lend this Item"
-              disabled={itemShow === 2}
+              disabled={itemShow === 2 || params.row.quantity <= 0}
               onClick={() => router.push(`/manager/lend/${params.row.id}`)}
             />
             <DefaultButton
               btnText="borrow"
               color="primary"
-              disabled={itemShow === 1}
-              onClick={() => window.alert("La pay function.")}
+              disabled={itemShow === 1 || params.row.quantity <= 0}
+              onClick={() => window.alert("Function coming soon.")}
             />
           </div>
         );

@@ -1,5 +1,6 @@
 "use client";
 
+import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
@@ -43,31 +44,31 @@ const ConfirmAddEmployee = ({
         {formData && (
           <div className="flex flex-col gap-4">
             <p>
-              Id number |
+              Id number :
               <span className="font-medium">{formData.ID_NUMBER}</span>
             </p>
             <p>
-              FIRSTNAME |
+              FIRSTNAME :
               <span className="font-medium text-lg">{formData.FIRSTNAME}</span>
             </p>
             <p>
-              MIDDLENAME |
+              MIDDLENAME :
               <span className="font-medium text-lg">
                 {formData.MIDDLENAME ?? "--"}
               </span>
             </p>
             <p>
-              LASTNAME |
+              LASTNAME :
               <span className="font-medium text-lg">{formData.LASTNAME}</span>
             </p>
             <p>
-              SUFFIX |
+              SUFFIX :
               <span className="font-medium text-lg">
                 {formData.SUFFIX ?? "--"}
               </span>
             </p>
             <p>
-              LASTNAME |
+              LASTNAME :
               <span className="font-medium text-lg">{formData.LASTNAME}</span>
             </p>
           </div>
@@ -142,6 +143,9 @@ const AddEmployee = () => {
   return (
     <>
       <PageHeader pageHead="Add Employee" icon={People} />
+      <div>
+        <BackArrow backTo="/admin/employee" />
+      </div>
       <div className="flex items-center justify-center w-full">
         <form
           onSubmit={handleSubmitForm}
