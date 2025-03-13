@@ -95,12 +95,13 @@ const ManagerPage = () => {
       field: "unit_value",
       headerName: "Unit value",
       type: "number",
-      width: 78,
+      width: 90,
     },
     {
       field: "total_value",
       headerName: "Total value",
       width: 90,
+      type: "number",
     },
     {
       field: "DISTRIBUTED_ON",
