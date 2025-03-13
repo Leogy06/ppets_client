@@ -10,13 +10,13 @@ import { UndistributedItem } from "@/types/global_types";
 import { dateFormmater } from "@/utils/date_formmater";
 import { handleError } from "@/utils/errorHandler";
 import { AddBoxOutlined, Inventory2Outlined } from "@mui/icons-material";
-import { Modal } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 //day js
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import DefaultModal from "@/app/(component)/modal";
 
 const ConfirmSubmitModal = ({
   open,
@@ -30,8 +30,8 @@ const ConfirmSubmitModal = ({
   itemForm: Partial<UndistributedItem>;
 }) => {
   return (
-    <Modal open={open}>
-      <div className=" bg-white p-4 gap-4  rounded-lg border border-gray-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center w-9/12">
+    <DefaultModal open={open} onClose={onClose}>
+      <>
         <h1 className="text-center text-lg font-semibold">
           <Inventory2Outlined />
           Summary
@@ -82,8 +82,8 @@ const ConfirmSubmitModal = ({
             placement="top"
           />
         </div>
-      </div>
-    </Modal>
+      </>
+    </DefaultModal>
   );
 };
 

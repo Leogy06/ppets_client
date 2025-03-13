@@ -7,17 +7,17 @@ import {
 import { dateFormmater } from "@/utils/date_formmater";
 import { Button, Modal } from "@mui/material";
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import {
-  Department,
-  Employee as EmployeeProps,
-  ErrorParams,
-} from "@/types/global_types";
+import { Department, Employee as EmployeeProps } from "@/types/global_types";
 import { useAuth } from "@/context/AuthContext";
 import PageHeader from "@/app/(component)/pageheader";
-import { People } from "@mui/icons-material";
+import { Check, Close, Edit, People } from "@mui/icons-material";
+import DefaultModal from "@/app/(component)/modal";
+import DefaultTextField from "@/app/(component)/defaultTextField";
+import DefaultButton from "@/app/(component)/buttonDefault";
+import { handleError } from "@/utils/errorHandler";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -75,6 +75,138 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   );
 };
 
+//edit employe modal props
+interface EditEmployeeModalProps {
+  open: boolean;
+  onClose: () => void;
+  editEmployeeForm: Partial<EmployeeProps>;
+  handleEditEmployeeOnchange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: () => void;
+}
+
+//edit employee modal
+const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
+  open,
+  onClose,
+  editEmployeeForm,
+  handleEditEmployeeOnchange,
+  handleSubmit,
+}) => {
+  const [confirmEditEmployee, setConfirmEditEmployee] = useState(false);
+
+  //closes also the child modal if parent was.
+  useEffect(() => {
+    if (!open) {
+      setConfirmEditEmployee(false);
+    }
+  }, [open]);
+
+  const ConfirmEditEmployeeModal = () => (
+    <DefaultModal
+      open={confirmEditEmployee}
+      onClose={() => setConfirmEditEmployee(false)}
+    >
+      <div className="flex flex-col items-center gap-1 justify-center">
+        <h1 className="text-lg font-bold mb-4">Confirm Edit Employee?</h1>
+        <div className="flex gap-1">
+          <DefaultButton
+            btnText="cancel"
+            onClick={() => setConfirmEditEmployee(false)}
+            variant="outlined"
+            color="error"
+          />
+          <DefaultButton btnText="confirm" onClick={handleSubmit} />
+        </div>
+      </div>
+    </DefaultModal>
+  );
+
+  const handleOpenConfirmEditEmployeeModal = (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    setConfirmEditEmployee(true);
+  };
+
+  return (
+    <DefaultModal
+      open={open}
+      onClose={onClose}
+      className="bg-white text-gray-900"
+    >
+      <form onSubmit={handleOpenConfirmEditEmployeeModal}>
+        <div className="flex flex-col gap-4 max-h-[36rem] overflow-auto">
+          <h1 className="text-lg font-bold">Edit Employee</h1>
+
+          {/**ID number */}
+          <DefaultTextField
+            name="ID_NUMBER"
+            type="number"
+            label="ID number"
+            onChange={handleEditEmployeeOnchange}
+            placeholder="ID number"
+            value={
+              editEmployeeForm.ID_NUMBER ? String(editEmployeeForm.ID) : ""
+            }
+          />
+
+          {/**first name */}
+          <DefaultTextField
+            name="FIRSTNAME"
+            label="First name"
+            onChange={handleEditEmployeeOnchange}
+            value={editEmployeeForm.FIRSTNAME || ""}
+          />
+
+          {/*Last name */}
+          <DefaultTextField
+            name="LASTNAME"
+            label="Last name"
+            onChange={handleEditEmployeeOnchange}
+            value={editEmployeeForm.LASTNAME || ""}
+          />
+
+          {/*middle name */}
+          <DefaultTextField
+            name="MIDDLENAME"
+            label="Middle name"
+            onChange={handleEditEmployeeOnchange}
+            value={editEmployeeForm.MIDDLENAME || ""}
+          />
+
+          {/*suffix name */}
+          <DefaultTextField
+            name="SUFFIX"
+            label="Suffix"
+            required={false}
+            onChange={handleEditEmployeeOnchange}
+            value={editEmployeeForm.SUFFIX || ""}
+          />
+
+          {/**edit Employee confirm buttons */}
+          <div className="flex gap-1 items-end justify-end">
+            <DefaultButton
+              btnIcon={<Close />}
+              onClick={onClose}
+              variant="outlined"
+              color="error"
+              title="Cancel Edit Employee"
+              placement="left"
+            />
+            <DefaultButton
+              btnIcon={<Check />}
+              type="submit"
+              title="Confirm Edit Employee"
+              placement="top"
+            />
+          </div>
+        </div>
+      </form>
+      <ConfirmEditEmployeeModal />
+    </DefaultModal>
+  );
+};
+
 const Employee = () => {
   const { empDetails } = useAuth();
 
@@ -97,6 +229,21 @@ const Employee = () => {
   //edit employee
   const [editEmployee] = useEditEmployeeMutation();
 
+  //edit form
+  const [editEmployeeForm, setEditEmployeeForm] = useState<
+    Partial<EmployeeProps>
+  >({
+    ID: null,
+    ID_NUMBER: null,
+    FIRSTNAME: "",
+    LASTNAME: "",
+    MIDDLENAME: "",
+    SUFFIX: "",
+    UPDATED_BY: empDetails?.ID,
+  });
+  //edit form modal open
+  const [openEditEmployeeModal, setOpenEditEmployeeModal] = useState(false);
+
   // State to capture selected rows
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -104,34 +251,62 @@ const Employee = () => {
 
   const [deleteEmployees] = useDeleteEmployeesMutation();
 
+  //edit employee handles
+  //handle open edit employee modal
+  const handleOpenEditEmployeeModal = (employeeDetails: EmployeeProps) => {
+    const { ID, ID_NUMBER, FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
+      employeeDetails;
+    setEditEmployeeForm((prevFormData) => ({
+      ...prevFormData,
+      ID,
+      ID_NUMBER,
+      FIRSTNAME,
+      LASTNAME,
+      MIDDLENAME,
+      SUFFIX,
+    }));
+    setOpenEditEmployeeModal(true);
+  };
+
+  //handle close edit employee modal
+  const handleCloseEditEmployeeModal = () => {
+    setEditEmployeeForm((prevFormData) => ({ ...prevFormData, ID: null }));
+    setOpenEditEmployeeModal(false);
+  };
+
   const columns: GridColDef[] = [
-    { field: "ID_NUMBER", headerName: "ID number", width: 150, editable: true },
+    {
+      field: "ID_NUMBER",
+      headerName: "ID number",
+      width: 150,
+      editable: false,
+    },
     {
       field: "LASTNAME",
       headerName: "Last Name",
       width: 150,
-      editable: true,
+      editable: false,
       valueGetter: (params: string) => params.toUpperCase(),
     },
     {
       field: "FIRSTNAME",
       headerName: "First Name",
       width: 150,
-      editable: true,
+      editable: false,
       valueGetter: (params: string) => params.toUpperCase(),
     },
     {
       field: "MIDDLENAME",
       headerName: "Middle Name",
       width: 150,
-      editable: true,
+      editable: false,
       valueGetter: (params: string) => (params ? params.toUpperCase() : ""),
     },
     {
       field: "SUFFIX",
       headerName: "Suffix",
       width: 100,
-      editable: true,
+      editable: false,
       valueGetter: (params: string) => (params ? params.toUpperCase() : ""),
     },
     {
@@ -176,23 +351,43 @@ const Employee = () => {
       type: "date",
       valueFormatter: (param) => dateFormmater(param),
     },
+    {
+      field: "Actions",
+      width: 170,
+      renderCell: (params) => {
+        return (
+          <div className="flex">
+            <DefaultButton
+              title="Edit this employee"
+              placement="left"
+              btnIcon={<Edit />}
+              onClick={() =>
+                //on click set employee id to edit
+                handleOpenEditEmployeeModal(params.row)
+              }
+            />
+          </div>
+        );
+      },
+    },
   ];
 
   //handle row edit
-  const handleRowEdit = async (newRow: EmployeeProps) => {
-    const { ID, ...updatedFields } = newRow;
-    try {
-      await editEmployee({
-        data: { ...updatedFields, UPDATED_BY: empDetails?.ID },
-        id: ID,
-      });
+  //inline edit row
+  // const handleRowEdit = async (newRow: EmployeeProps) => {
+  //   const { ID, ...updatedFields } = newRow;
+  //   try {
+  //     await editEmployee({
+  //       data: { ...updatedFields, UPDATED_BY: empDetails?.ID },
+  //       id: ID,
+  //     });
 
-      return { ...newRow };
-    } catch (error) {
-      console.error(error);
-      return { ...employees?.find((row) => row.ID === ID) };
-    }
-  };
+  //     return { ...newRow };
+  //   } catch (error) {
+  //     console.error(error);
+  //     return { ...employees?.find((row) => row.ID === ID) };
+  //   }
+  // };
 
   // Handle selection change
   const handleSelectionChange = (rowSelectionModel: GridRowSelectionModel) => {
@@ -207,11 +402,36 @@ const Employee = () => {
       setOpenDltConfMdl(false);
     } catch (error: unknown) {
       console.error(error);
-      openSnackbar(
-        (error as ErrorParams)?.response?.message ||
-          "Unable to Delete employee(s)",
-        "error"
-      );
+
+      const errMsg = handleError(error, "Unable to delete employee(s).");
+      openSnackbar(errMsg, "error");
+    }
+  };
+
+  //handle edit employee on change
+  const handleEditEmployeeOnchange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setEditEmployeeForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  //handle edit employee submit
+  const handleEditEmployeeSubmit = async () => {
+    try {
+      const result = await editEmployee({ data: editEmployeeForm }).unwrap();
+
+      handleCloseEditEmployeeModal();
+
+      openSnackbar(result?.message ?? "Employee has been Edited. ", "info");
+    } catch (error) {
+      console.error("Unable to edit employee. ", error);
+      const errMsg = handleError(error, "Unable to edit employee.");
+      openSnackbar(errMsg, "error");
     }
   };
 
@@ -244,16 +464,17 @@ const Employee = () => {
           </Button>
         )}
       </div>
-      <DataGrid
-        rows={employees}
-        columns={columns}
-        processRowUpdate={(newRow) => handleRowEdit(newRow)}
-        checkboxSelection
-        getRowId={(row) => row.ID}
-        onRowSelectionModelChange={(rowSelectionModel) =>
-          handleSelectionChange(rowSelectionModel as number[])
-        }
-      />
+      <div className="flex h-[400px]">
+        <DataGrid
+          rows={employees}
+          columns={columns}
+          checkboxSelection
+          getRowId={(row) => row.ID}
+          onRowSelectionModelChange={(rowSelectionModel) =>
+            handleSelectionChange(rowSelectionModel as number[])
+          }
+        />
+      </div>
       <div className="flex justify-end mt-4">
         <Button
           variant="contained"
@@ -263,11 +484,20 @@ const Employee = () => {
         </Button>
       </div>
 
-      {/**Delete confirmatio modal */}
+      {/**Delete confirmation modal */}
       <DeleteConfirmModal
         open={openDltConfMdl}
         deleteEmployees={handleDeleteEmployees}
         onClose={() => setOpenDltConfMdl(false)}
+      />
+
+      {/**Edit employee modal */}
+      <EditEmployeeModal
+        open={openEditEmployeeModal}
+        onClose={handleCloseEditEmployeeModal}
+        editEmployeeForm={editEmployeeForm}
+        handleEditEmployeeOnchange={handleEditEmployeeOnchange}
+        handleSubmit={handleEditEmployeeSubmit}
       />
     </div>
   );

@@ -47,7 +47,7 @@ export interface User {
 
 export interface Employee {
   ID: number | null;
-  ID_NUMBER: number;
+  ID_NUMBER: number | null;
   DEPARTMENT_ID: number;
   CURRENT_DPT_ID: number;
   FIRSTNAME: string;

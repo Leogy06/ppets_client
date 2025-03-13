@@ -55,8 +55,8 @@ export const apiSlice = createApi({
       invalidatesTags: ["Employees"],
     }),
     editEmployee: builder.mutation({
-      query: ({ data, id }) => ({
-        url: `/employees?ID=${id}`,
+      query: ({ data }) => ({
+        url: `/employees`,
         method: "PUT",
         body: data,
       }),

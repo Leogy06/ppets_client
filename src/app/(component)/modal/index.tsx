@@ -1,11 +1,10 @@
-import { Modal } from "@mui/material";
+import { Modal, Paper } from "@mui/material";
 import React from "react";
 
 const DefaultModal = ({
   open,
   onClose,
   children,
-  className,
 }: {
   open: boolean;
   onClose: () => void;
@@ -14,11 +13,19 @@ const DefaultModal = ({
 }) => {
   return (
     <Modal open={open} onClose={onClose}>
-      <div
-        className={` ${className} dead-center p-8 flex justify-center rounded-lg border max-h-[38rem] w-full md:w-[38rem] overflow-auto`}
+      <Paper
+        sx={{
+          border: "1px solid gray",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "90%", sm: "70%", md: "50%", lg: "40%" },
+          p: 2,
+        }}
       >
         {children}
-      </div>
+      </Paper>
     </Modal>
   );
 };
