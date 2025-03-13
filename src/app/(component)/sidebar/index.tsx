@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
 import { useAuth } from "@/context/AuthContext";
@@ -164,7 +164,7 @@ const Sidebar = () => {
               key={index}
               component={Link}
               href={navi.path}
-              className="flex gap-4 hover:bg-blue-300"
+              className="flex gap-4 hover:bg-blue-50"
               sx={(theme) => ({
                 backgroundColor:
                   pathname === navi.path ? "#375ba5" : "transparent",
