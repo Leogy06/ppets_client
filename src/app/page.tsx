@@ -87,14 +87,19 @@ const LoginPage = () => {
             />
             <span className="flex text-base items-baseline gap-1">
               <div className="flex items-baseline">
-                <h1 className="text-green-600 font-bold text-2xl">I</h1>{" "}
-                nventory
+                <h1 className="text-green-600 font-bold text-2xl">A</h1> ssets
               </div>
               <div className="flex items-baseline">
-                <h1 className="text-blue-600 font-bold text-2xl">B</h1>orrowing{" "}
+                <h1 className="text-blue-600 font-bold text-2xl">D</h1>
+                istribution
+              </div>
+              &
+              <div className="flex items-baseline">
+                <h1 className="text-yellow-600 font-bold text-2xl">T</h1>
+                tracking
               </div>
               <div className="flex items-baseline">
-                <h1 className="text-yellow-600 font-bold text-2xl">S</h1>ystem
+                <h1 className="text-amber-600 font-bold text-2xl">S</h1>ystem
               </div>
             </span>
           </div>
