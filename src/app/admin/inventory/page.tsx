@@ -210,14 +210,14 @@ const Inventory = () => {
     {
       field: "UNIT_VALUE",
       type: "number",
-      headerName: "Unit value",
-      width: 110,
+      headerName: "Unit value in ₱",
+      width: 180,
     },
     {
       field: "TOTAL_VALUE",
       type: "number",
-      headerName: "Total value",
-      width: 110,
+      headerName: "Total value in ₱",
+      width: 180,
     },
     { field: "REMARKS", headerName: "Remarks", width: 180 },
     {
@@ -301,12 +301,18 @@ const Inventory = () => {
           onClick={() => router.push("/admin/inventory/add")}
         />
       </div>
-      <div className="h-[400px]">
+      <div className="max-h-[38rem]">
         <DataGrid
           rows={rows}
           columns={columns}
           getRowId={(params) => params.ID}
           loading={isUndistributeLoading}
+          getRowClassName={
+            (params) =>
+              params.indexRelativeToCurrentPage % 2 === 0
+                ? "bg-gray-100" //light gray for even rows
+                : "bg-white" //for odd rows
+          }
         />
       </div>
       <ConfirmModal
