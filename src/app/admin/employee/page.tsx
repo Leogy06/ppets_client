@@ -76,6 +76,7 @@ interface EditEmployeeModalProps {
   editEmployeeForm: Partial<EmployeeProps>;
   handleEditEmployeeOnchange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => void;
+  isLoading: boolean;
 }
 
 //edit employee modal
@@ -85,6 +86,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   editEmployeeForm,
   handleEditEmployeeOnchange,
   handleSubmit,
+  isLoading,
 }) => {
   const [confirmEditEmployee, setConfirmEditEmployee] = useState(false);
 
@@ -109,7 +111,11 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
             variant="outlined"
             color="error"
           />
-          <DefaultButton btnText="confirm" onClick={handleSubmit} />
+          <DefaultButton
+            btnText="confirm"
+            onClick={handleSubmit}
+            disabled={isLoading}
+          />
         </div>
       </div>
     </DefaultModal>
@@ -221,7 +227,8 @@ const Employee = () => {
   } = useGetEmployeesQuery(Number(empDetails?.CURRENT_DPT_ID));
 
   //edit employee
-  const [editEmployee] = useEditEmployeeMutation();
+  const [editEmployee, { isLoading: isEditEmployeeLoading }] =
+    useEditEmployeeMutation();
 
   //edit form
   const [editEmployeeForm, setEditEmployeeForm] = useState<
@@ -492,6 +499,7 @@ const Employee = () => {
         editEmployeeForm={editEmployeeForm}
         handleEditEmployeeOnchange={handleEditEmployeeOnchange}
         handleSubmit={handleEditEmployeeSubmit}
+        isLoading={isEditEmployeeLoading}
       />
     </div>
   );
