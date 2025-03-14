@@ -1,29 +1,37 @@
 import React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
-interface DataTableProps {
+interface DataTableProps<T> {
   columns: GridColDef[];
-  rows: [];
+  rows: T[];
+  getRowId: (row: T) => number | string;
   pageSize?: number;
-  checkboxSelection?: boolean;
   loading: boolean;
+  checkboxSelection?: boolean;
+  onRowSelectionModelChange?: (rowSelectionModel: number[]) => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({
+const DataTable = <T,>({
   columns,
   rows,
+  getRowId,
   pageSize = 5,
   checkboxSelection = false,
+  onRowSelectionModelChange,
   loading = false,
-}) => {
+}: DataTableProps<T>) => {
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div className="h-[400px] w-full overflow-auto">
       <DataGrid
         rows={rows}
         columns={columns}
+        getRowId={getRowId}
         pageSizeOptions={[5, 10, 20]}
         initialState={{ pagination: { paginationModel: { pageSize } } }}
         checkboxSelection={checkboxSelection}
+        onRowSelectionModelChange={(rowSelectionModel) =>
+          onRowSelectionModelChange?.(rowSelectionModel as number[])
+        }
         disableRowSelectionOnClick
         loading={loading}
         sx={{
@@ -40,6 +48,11 @@ const DataTable: React.FC<DataTableProps> = ({
           "& .MuiDataGrid-columnHeaderTitle": {
             fontWeight: "bold", // Make header text bold
             textTransform: "uppercase",
+          },
+
+          "& .MuiDataGrid-footerContainer": {
+            color: "black",
+            border: "2px solid #ccc",
           },
         }}
         slotProps={{
