@@ -218,11 +218,9 @@ const Employee = () => {
 
   //get employees
 
-  const {
-    data: employees,
-    isLoading: isEmployeeRdy,
-    isError: isEmployeeErr,
-  } = useGetEmployeesQuery(Number(empDetails?.CURRENT_DPT_ID));
+  const { data: employees, isLoading: isEmployeeRdy } = useGetEmployeesQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
 
   //edit employee
   const [editEmployee, { isLoading: isEditEmployeeLoading }] =
@@ -418,14 +416,6 @@ const Employee = () => {
   //     console.log("employees ", employees);
   //   }
   // }, [employees]);
-
-  if (isEmployeeRdy) {
-    return <p className="animate-pulse">Loading...</p>;
-  }
-
-  if (isEmployeeErr) {
-    return <p className="text-red-500">Error loading data...</p>;
-  }
 
   return (
     <div className="flex flex-col max-h-[520px]">

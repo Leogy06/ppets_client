@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
-import PageHeader from "../(component)/pageheader";
-import { Dashboard } from "@mui/icons-material";
+import React from "react";
 import {
   useGetCountAllTimeRequestDepartmentQuery,
   useGetCountTodayRequestDepartmentQuery,
 } from "@/features/api/apiSlice";
 import { useAuth } from "@/context/AuthContext";
+import { Dashboard } from "@mui/icons-material";
+import PageHeader from "../(component)/pageheader";
 
 const AdminDashboard = () => {
   const { empDetails } = useAuth();
@@ -23,11 +23,11 @@ const AdminDashboard = () => {
     });
 
   //console log
-  useEffect(() => {
-    if (allTimeCountByDpt) {
-      console.log("Counts ", allTimeCountByDpt);
-    }
-  }, [allTimeCountByDpt]);
+  // useEffect(() => {
+  //   if (allTimeCountByDpt) {
+  //     console.log("Counts ", allTimeCountByDpt);
+  //   }
+  // }, [allTimeCountByDpt]);
 
   if (isCountByDptLdng || isTodayCountByDptLdng) {
     return (
@@ -37,10 +37,13 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-2">
-        {empDetails?.departmentDetails &&
-          empDetails?.departmentDetails?.DEPARTMENT_NAME + " 's Dashboard"}
-      </h1>
+      <PageHeader
+        icon={Dashboard}
+        pageHead={`${
+          empDetails?.departmentDetails?.DEPARTMENT_NAME ?? ""
+        }'s Dashboard`}
+      />
+
       <p className="text-sm mb-4">
         Admin:{" "}
         {`${empDetails?.LASTNAME}, ${empDetails?.FIRSTNAME} ${
@@ -54,7 +57,7 @@ const AdminDashboard = () => {
           <h2 className="text-lg font-semibold mb-1">
             All Time Total Requests
           </h2>
-          <p className="text-3xl font-bold text-blue-600">
+          <p className="text-3xl font-bold text-green-600">
             {allTimeCountByDpt.transactionCount}
           </p>
         </div>
@@ -64,24 +67,23 @@ const AdminDashboard = () => {
           <h2 className="text-lg font-semibold mb-1">
             Items count per measure: unit / pieces
           </h2>
-          <p className="text-3xl font-bold text-violet-600 ">
+          <p className="text-3xl font-bold text-blue-600 ">
             {allTimeCountByDpt.itemCountDepartment}
           </p>
         </div>
 
         {/* Today's Requests Card */}
         <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
-          <h2 className="text-lg font-semibold mb-1">Today's Requests</h2>
-          <p className="text-3xl font-bold text-green-600">{todayCountByDpt}</p>
+          <h2 className="text-lg font-semibold mb-1">Today&apos;s Requests</h2>
+          <p className="text-3xl font-bold text-amber-700">{todayCountByDpt}</p>
         </div>
 
         {/* Employee count's Requests Card */}
         <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
           <h2 className="text-lg font-semibold mb-1">
-            Total EMployees under{" "}
-            {empDetails?.departmentDetails.DEPARTMENT_NAME}
+            Total Employees of {empDetails?.departmentDetails.DEPARTMENT_NAME}
           </h2>
-          <p className="text-3xl font-bold text-red-600">
+          <p className="text-3xl font-bold text-yellow-600">
             {allTimeCountByDpt.employeeDptCount}
           </p>
         </div>
