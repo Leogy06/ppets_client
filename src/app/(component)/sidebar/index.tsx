@@ -164,7 +164,7 @@ const Sidebar = () => {
               key={index}
               component={Link}
               href={navi.path}
-              className="flex gap-4 hover:bg-blue-50"
+              className="flex gap-4 hover:bg-blue-300"
               sx={(theme) => ({
                 backgroundColor:
                   pathname === navi.path ? "#375ba5" : "transparent",

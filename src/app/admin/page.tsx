@@ -64,7 +64,7 @@ const AdminDashboard = () => {
           <h2 className="text-lg font-semibold mb-1">
             Items count per measure: unit / pieces
           </h2>
-          <p className="text-3xl font-bold text-blue-600 ">
+          <p className="text-3xl font-bold text-violet-600 ">
             {allTimeCountByDpt.itemCountDepartment}
           </p>
         </div>
@@ -73,6 +73,17 @@ const AdminDashboard = () => {
         <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
           <h2 className="text-lg font-semibold mb-1">Today's Requests</h2>
           <p className="text-3xl font-bold text-green-600">{todayCountByDpt}</p>
+        </div>
+
+        {/* Employee count's Requests Card */}
+        <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
+          <h2 className="text-lg font-semibold mb-1">
+            Total EMployees under{" "}
+            {empDetails?.departmentDetails.DEPARTMENT_NAME}
+          </h2>
+          <p className="text-3xl font-bold text-red-600">
+            {allTimeCountByDpt.employeeDptCount}
+          </p>
         </div>
       </div>
     </div>
