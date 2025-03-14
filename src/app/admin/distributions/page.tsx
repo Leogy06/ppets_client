@@ -26,20 +26,13 @@ const Distribution = () => {
 
   const columns: GridColDef[] = [
     {
-      field: "fullName",
-      headerName: "Full name",
-      width: 280,
-      renderCell: (params) =>
-        `${params.row.LASTNAME} ${params.row.FIRSTNAME} ${
-          params.row.MIDDLENAME || ""
-        } ${params.row.SUFFIX || ""}`,
-    },
-    {
       field: "actions",
       headerName: "Actions",
-      width: 180,
+      headerAlign: "center",
+      width: 130,
+
       renderCell: (params) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center">
           <DefaultButton
             btnIcon={<DifferenceOutlined />}
             title="Distribute Item"
@@ -47,6 +40,19 @@ const Distribution = () => {
             onClick={() => router.push(`/admin/distributions/${params.row.ID}`)}
           />
         </div>
+      ),
+    },
+    {
+      field: "fullName",
+      headerName: "Full name",
+      width: 280,
+      flex: 1,
+      renderCell: (params) => (
+        <span className="font-bold">
+          {`${params.row.LASTNAME} ${params.row.FIRSTNAME} ${
+            params.row.MIDDLENAME || ""
+          } ${params.row.SUFFIX || ""}`}
+        </span>
       ),
     },
   ];
@@ -86,10 +92,24 @@ const Distribution = () => {
       <div className="h-[400px]">
         <DataGrid
           getRowId={(params) => params.ID}
-          sx={{ height: 400 }}
           disableRowSelectionOnClick
           pageSizeOptions={[25, 50, 100, 200]}
           columns={columns}
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              background: "#4169e1", // Change this to your desired color
+              fontWeight: "bold",
+            },
+            "& .MuiDataGrid-columnHeader": {
+              backgroundColor: "#375ba5", // **Cell color inside headers**
+              color: "white", // Text color for better contrast
+              // Optional: add borders between header cells
+            },
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: "bold", // Make header text bold
+              textTransform: "uppercase",
+            },
+          }}
           rows={employees?.map((emp: Employee) => ({
             ...emp,
             fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
