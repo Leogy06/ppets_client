@@ -6,7 +6,7 @@ import {
 } from "@/features/api/apiSlice";
 import { dateFormmater } from "@/utils/date_formmater";
 import { Button } from "@mui/material";
-import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
+import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
@@ -18,6 +18,7 @@ import DefaultModal from "@/app/(component)/modal";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import { handleError } from "@/utils/errorHandler";
+import DataTable from "@/app/(component)/datagrid";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -98,10 +99,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   }, [open]);
 
   const ConfirmEditEmployeeModal = () => (
-    <DefaultModal
-      open={confirmEditEmployee}
-      onClose={() => setConfirmEditEmployee(false)}
-    >
+    <DefaultModal open={confirmEditEmployee}>
       <div className="flex flex-col items-center gap-1 justify-center">
         <h1 className="text-lg font-bold mb-4">Confirm Edit Employee?</h1>
         <div className="flex gap-1">
@@ -234,7 +232,7 @@ const Employee = () => {
   const [editEmployeeForm, setEditEmployeeForm] = useState<
     Partial<EmployeeProps>
   >({
-    ID: null,
+    ID: 0,
     ID_NUMBER: null,
     FIRSTNAME: "",
     LASTNAME: "",
@@ -271,7 +269,6 @@ const Employee = () => {
 
   //handle close edit employee modal
   const handleCloseEditEmployeeModal = () => {
-    setEditEmployeeForm((prevFormData) => ({ ...prevFormData, ID: null }));
     setOpenEditEmployeeModal(false);
   };
 
@@ -283,32 +280,11 @@ const Employee = () => {
       editable: false,
     },
     {
-      field: "LASTNAME",
-      headerName: "Last Name",
-      width: 150,
+      field: "fullName",
+      headerName: "Name",
+      width: 220,
       editable: false,
       valueGetter: (params: string) => params.toUpperCase(),
-    },
-    {
-      field: "FIRSTNAME",
-      headerName: "First Name",
-      width: 150,
-      editable: false,
-      valueGetter: (params: string) => params.toUpperCase(),
-    },
-    {
-      field: "MIDDLENAME",
-      headerName: "Middle Name",
-      width: 150,
-      editable: false,
-      valueGetter: (params: string) => (params ? params.toUpperCase() : ""),
-    },
-    {
-      field: "SUFFIX",
-      headerName: "Suffix",
-      width: 100,
-      editable: false,
-      valueGetter: (params: string) => (params ? params.toUpperCase() : ""),
     },
     {
       field: "departmentDetails",
@@ -465,17 +441,23 @@ const Employee = () => {
           </Button>
         )}
       </div>
-      <div className="flex h-[400px]">
-        <DataGrid
-          rows={employees}
-          columns={columns}
-          checkboxSelection
-          getRowId={(row) => row.ID}
-          onRowSelectionModelChange={(rowSelectionModel) =>
-            handleSelectionChange(rowSelectionModel as number[])
-          }
-        />
-      </div>
+      <DataTable
+        rows={
+          employees?.map((emp) => ({
+            ...emp,
+            fullName: `${emp.LASTNAME}, ${emp.FIRSTNAME} ${
+              emp?.MIDDLENAME ?? ""
+            } ${emp?.SUFFIX ?? ""}`,
+          })) ?? []
+        }
+        columns={columns}
+        checkboxSelection
+        loading={isEmployeeRdy}
+        getRowId={(row) => row.ID}
+        onRowSelectionModelChange={(rowSelectionModel: number[]) =>
+          handleSelectionChange(rowSelectionModel)
+        }
+      />
       <div className="flex justify-end mt-4">
         <Button
           variant="contained"
