@@ -24,12 +24,14 @@ interface DeleteConfirmModalProps {
   open: boolean;
   onClose: () => void;
   deleteEmployees: () => void;
+  isLoading: boolean;
 }
 
 const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   open,
   onClose,
   deleteEmployees,
+  isLoading,
 }) => {
   return (
     <DefaultModal open={open} onClose={onClose}>
@@ -50,6 +52,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
         <button
           onClick={deleteEmployees}
           className="w-1/2 h-9 rounded-lg bg-red-400 text-white hover:bg-red-500 font-semibold"
+          disabled={isLoading}
         >
           Delete
         </button>
@@ -57,6 +60,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
       <button
         className="absolute top-5 right-5 flex items-center justify-center bg-transparent hover:text-black"
         onClick={onClose}
+        disabled={isLoading}
       >
         <svg
           height="20px"
@@ -246,7 +250,8 @@ const Employee = () => {
 
   //delete api
 
-  const [deleteEmployees] = useDeleteEmployeesMutation();
+  const [deleteEmployees, { isLoading: isDeleteEmpLoading }] =
+    useDeleteEmployeesMutation();
 
   //edit employee handles
   //handle open edit employee modal
@@ -462,6 +467,7 @@ const Employee = () => {
         open={openDltConfMdl}
         deleteEmployees={handleDeleteEmployees}
         onClose={() => setOpenDltConfMdl(false)}
+        isLoading={isDeleteEmpLoading}
       />
 
       {/**Edit employee modal */}
