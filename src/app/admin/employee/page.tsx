@@ -352,24 +352,8 @@ const Employee = () => {
     },
   ];
 
-  //handle row edit
-  //inline edit row
-  // const handleRowEdit = async (newRow: EmployeeProps) => {
-  //   const { ID, ...updatedFields } = newRow;
-  //   try {
-  //     await editEmployee({
-  //       data: { ...updatedFields, UPDATED_BY: empDetails?.ID },
-  //       id: ID,
-  //     });
-
-  //     return { ...newRow };
-  //   } catch (error) {
-  //     console.error(error);
-  //     return { ...employees?.find((row) => row.ID === ID) };
-  //   }
-  // };
-
   // Handle selection change
+  //checkbox for delete employee
   const handleSelectionChange = (rowSelectionModel: GridRowSelectionModel) => {
     setSelectedRows(rowSelectionModel as number[]);
   };
@@ -380,7 +364,7 @@ const Employee = () => {
 
       openSnackbar(result?.message || "Employees are deleted.", "success");
       setOpenDltConfMdl(false);
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error);
 
       const errMsg = handleError(error, "Unable to delete employee(s).");

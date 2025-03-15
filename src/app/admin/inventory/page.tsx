@@ -8,89 +8,99 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useDeleteUndistributedItemMutation,
   useGetUnDistributeItemQuery,
+  useRestoreUndistributedItemMutation,
 } from "@/features/api/apiSlice";
 import { UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import {
   AddBoxOutlined,
   ArrowDropDownCircle,
-  ArrowUpward,
   Cancel,
   Check,
   Delete,
   Inventory2Outlined,
+  Restore,
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-interface ItemId {
-  id: number | null;
-}
+//confirm restore item
+const ConfirmRestoreItemModal = ({
+  open,
+  onClose,
+  handleRestoreItem,
+  isLoading,
+}: {
+  open: boolean;
+  onClose: () => void;
+  handleRestoreItem: () => void;
+  isLoading: boolean;
+}) => {
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
+        <h1 className="text-lg font-bold mb-8">Confirm Restore Item?</h1>
+        <div className="flex gap-2 justify-center">
+          <DefaultButton
+            btnIcon={<Cancel />}
+            onClick={onClose}
+            title="Abort delete"
+            variant="outlined"
+            color="error"
+            placement="top"
+            disabled={isLoading}
+          />
+          <DefaultButton
+            btnIcon={<Check />}
+            onClick={handleRestoreItem}
+            title="Proceed delete item"
+            placement="top"
+            disabled={isLoading}
+          />
+        </div>
+      </div>
+    </Modal>
+  );
+};
 
+//modal for confirm delete items
 const ConfirmModal = ({
   open,
   onClose,
   handleDeleteItem,
   isLoading,
-  itemShow,
 }: {
   open: boolean;
   onClose: () => void;
-  handleDeleteItem: (param: number) => void;
+  handleDeleteItem: () => void;
   isLoading: boolean;
-  itemShow: number;
 }) => {
   return (
     <Modal open={open} onClose={onClose}>
-      {itemShow === 0 ? (
-        <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
-          <h1 className="text-lg font-bold mb-8">Confirm Delete Item?</h1>
-          <div className="flex flex-col gap-4"></div>
-          <div className="flex gap-2 justify-center">
-            <DefaultButton
-              btnIcon={<Cancel />}
-              onClick={onClose}
-              title="Abort delete"
-              variant="outlined"
-              color="error"
-              placement="top"
-              disabled={isLoading}
-            />
-            <DefaultButton
-              btnIcon={<Check />}
-              onClick={() => handleDeleteItem(1)}
-              title="Proceed delete item"
-              placement="top"
-              disabled={isLoading}
-            />
-          </div>
+      <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
+        <h1 className="text-lg font-bold mb-8">Confirm Delete Item?</h1>
+        <div className="flex flex-col gap-4"></div>
+        <div className="flex gap-2 justify-center">
+          <DefaultButton
+            btnIcon={<Cancel />}
+            onClick={onClose}
+            title="Abort delete"
+            variant="outlined"
+            color="error"
+            placement="top"
+            disabled={isLoading}
+          />
+          <DefaultButton
+            btnIcon={<Check />}
+            onClick={handleDeleteItem}
+            title="Proceed delete item"
+            placement="top"
+            disabled={isLoading}
+          />
         </div>
-      ) : (
-        <div className="dead-center bg-white w-10/12 rounded-lg border md:w-96 flex flex-col items-center p-4">
-          <h1 className="text-lg font-bold mb-8">Confirm Restore Item?</h1>
-          <div className="flex flex-col gap-4"></div>
-          <div className="flex gap-2 justify-center">
-            <DefaultButton
-              btnIcon={<Cancel />}
-              onClick={onClose}
-              title="Abort restore"
-              variant="outlined"
-              color="error"
-              placement="top"
-              disabled={isLoading}
-            />
-            <DefaultButton
-              btnIcon={<Check />}
-              onClick={() => handleDeleteItem(0)}
-              title="Proceed restore item"
-              placement="top"
-              disabled={isLoading}
-            />
-          </div>
-        </div>
-      )}
+      </div>
     </Modal>
   );
 };
@@ -139,14 +149,20 @@ const Inventory = () => {
   const [deleteItem, { isLoading: isDeleteLoading }] =
     useDeleteUndistributedItemMutation();
 
+  //restore item
+  const [restoreItem, { isLoading: isRestoreItemLoading }] =
+    useRestoreUndistributedItemMutation();
+
   //snackbar
   const { openSnackbar } = useSnackbar();
 
   //use state hookss
+
+  //modal for delete
   const [openModal, setOpenModal] = useState(false);
 
-  //itemId
-  const [itemId, setItemId] = useState<ItemId["id"]>(null);
+  //modal for restore
+  const [openRestoreItemModal, setOpenRestoreItemModal] = useState(false);
 
   //item row shows
   const [itemShows, setItemShows] = useState<number>(0);
@@ -154,31 +170,46 @@ const Inventory = () => {
   //open inventory dropdown
   const [isOpen, setIsOpen] = useState(false);
 
+  //selected item id to delete
+  const [selectedItemId, setSelectedItemId] = useState<number[]>([]);
+
   //item to delete
 
   //handles
   //open delete modal
-  const handleOpenModal = (itemId: ItemId["id"]) => {
+  const handleOpenModal = () => {
+    //set open modal
+    //open deleted open modal if item shows is not deleted(1)
     setOpenModal(true);
-    setItemId(itemId);
+  };
+
+  //handle open restore modal
+  const handleOpenRestoreModal = () => {
+    setOpenRestoreItemModal(true);
   };
 
   //close modal
   const handleCloseModal = () => {
     setOpenModal(false);
-    setItemId(null);
+  };
+
+  //handle close restore item modal
+  const handleCloseRestoreItemModal = () => {
+    setOpenRestoreItemModal(false);
+  };
+
+  //handle checkbox select row
+  const handleSelectionChange = (rowSelectionModel: GridRowSelectionModel) => {
+    setSelectedItemId(rowSelectionModel as number[]);
   };
 
   //handle delete item api
-  const handleDeleteItem = async (action: number) => {
-    if (itemId == null) {
-      openSnackbar("Item id is required to proceed.", "info");
-      return;
-    }
-
+  const handleDeleteItem = async () => {
     try {
-      const result = await deleteItem({ itemId, action }).unwrap();
+      const result = await deleteItem(selectedItemId).unwrap();
       openSnackbar(result.message ?? "Item deleted.", "info");
+      console.log("result ", result);
+
       handleCloseModal();
     } catch (error) {
       console.error("Unable to delete item  unexpected error occured.", error);
@@ -186,6 +217,25 @@ const Inventory = () => {
       const errMsg = handleError(
         error,
         "Unable to delete item, unexpected error occured."
+      );
+      openSnackbar(errMsg, "error");
+    }
+  };
+
+  //handle restore item api
+  const handleRestoreItem = async () => {
+    try {
+      const result = await restoreItem(selectedItemId).unwrap();
+      openSnackbar(result.message ?? "Item restored.", "success");
+      console.log("result ", result);
+
+      handleCloseRestoreItemModal();
+    } catch (error) {
+      console.error("Unable to restore item  unexpected error occured.", error);
+
+      const errMsg = handleError(
+        error,
+        "Unable to restore item, unexpected error occured."
       );
       openSnackbar(errMsg, "error");
     }
@@ -226,30 +276,6 @@ const Inventory = () => {
       width: 180,
       type: "date",
       valueGetter: (params) => new Date(params) ?? "--",
-    },
-    {
-      field: "Actions",
-      renderCell: (params) => {
-        return itemShows === 0 ? (
-          <DefaultButton
-            title="Delete Item"
-            btnIcon={<Delete />}
-            color="error"
-            variant="text"
-            onClick={() => handleOpenModal(params.row.ID)}
-          />
-        ) : itemShows === 1 ? (
-          <DefaultButton
-            title="Restore Item"
-            btnIcon={<ArrowUpward />}
-            color="success"
-            variant="text"
-            onClick={() => handleOpenModal(params.row.ID)}
-          />
-        ) : (
-          "Unknown action"
-        );
-      },
     },
   ];
 
@@ -295,24 +321,58 @@ const Inventory = () => {
             />
           )}
         </div>
-        <DefaultButton
-          btnIcon={<AddBoxOutlined />}
-          title="Add item"
-          onClick={() => router.push("/admin/inventory/add")}
-        />
+        <div className="flex gap-1 ">
+          {/**Show button delete the item */}
+          {selectedItemId.length > 0 && itemShows === 0 && (
+            <DefaultButton
+              btnIcon={<Delete />}
+              onClick={handleOpenModal}
+              color="error"
+              title="Delete selected item"
+              placement="left"
+            />
+          )}
+          {selectedItemId.length > 0 && itemShows === 1 && (
+            <DefaultButton
+              btnIcon={<Restore />}
+              onClick={handleOpenRestoreModal}
+              color="success"
+              title="Delete selected item"
+              placement="left"
+            />
+          )}
+          <DefaultButton
+            btnIcon={<AddBoxOutlined />}
+            title="Add item"
+            placement="top"
+            onClick={() => router.push("/admin/inventory/add")}
+          />
+        </div>
       </div>
       <DataTable
         rows={rows}
         columns={columns}
         getRowId={(params: UndistributedItem) => params.ID}
         loading={isUndistributeLoading}
+        checkboxSelection
+        onRowSelectionModelChange={(rowSelectionModel) =>
+          handleSelectionChange(rowSelectionModel)
+        }
       />
+      {/**delete item modal */}
       <ConfirmModal
         open={openModal}
         onClose={handleCloseModal}
         handleDeleteItem={handleDeleteItem}
         isLoading={isDeleteLoading}
-        itemShow={itemShows}
+      />
+
+      {/**restore item modal */}
+      <ConfirmRestoreItemModal
+        isLoading={isRestoreItemLoading}
+        open={openRestoreItemModal}
+        onClose={handleCloseRestoreItemModal}
+        handleRestoreItem={handleRestoreItem}
       />
     </>
   );

@@ -296,9 +296,18 @@ export const apiSlice = createApi({
       providesTags: ["UndistributedItem"],
     }),
     deleteUndistributedItem: builder.mutation({
-      query: ({ itemId, action }) => ({
-        url: `/api/item/${itemId}/${action}`,
+      query: (itemIds) => ({
+        url: `/api/item/delete`,
         method: "DELETE",
+        body: { ids: itemIds },
+      }),
+      invalidatesTags: ["UndistributedItem"],
+    }),
+    restoreUndistributedItem: builder.mutation({
+      query: (itemIds) => ({
+        url: `/api/item/restore`,
+        method: "PUT",
+        body: { ids: itemIds },
       }),
       invalidatesTags: ["UndistributedItem"],
     }),
@@ -370,4 +379,5 @@ export const {
   useGetUnDistributeItemQuery,
   useDeleteUndistributedItemMutation,
   useGetUndistributedItemByIdQuery,
+  useRestoreUndistributedItemMutation,
 } = apiSlice;
