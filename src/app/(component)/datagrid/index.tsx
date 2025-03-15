@@ -1,14 +1,21 @@
 import React from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  DataGridProps,
+  GridColDef,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
 
-interface DataTableProps<T> {
+interface DataTableProps<T> extends Partial<DataGridProps> {
   columns: GridColDef[];
   rows: T[];
-  getRowId: (row: T) => number | string;
+  getRowId?: (row: T) => number | string;
   pageSize?: number;
   loading: boolean;
   checkboxSelection?: boolean;
-  onRowSelectionModelChange?: (rowSelectionModel: number[]) => void;
+  onRowSelectionModelChange?: (
+    rowSelectionModel: GridRowSelectionModel
+  ) => void;
 }
 
 const DataTable = <T,>({
@@ -19,6 +26,7 @@ const DataTable = <T,>({
   checkboxSelection = false,
   onRowSelectionModelChange,
   loading = false,
+  sx = {},
 }: DataTableProps<T>) => {
   return (
     <div className="h-[400px] w-full overflow-auto">
@@ -30,7 +38,7 @@ const DataTable = <T,>({
         initialState={{ pagination: { paginationModel: { pageSize } } }}
         checkboxSelection={checkboxSelection}
         onRowSelectionModelChange={(rowSelectionModel) =>
-          onRowSelectionModelChange?.(rowSelectionModel as number[])
+          onRowSelectionModelChange?.(rowSelectionModel)
         }
         disableRowSelectionOnClick
         loading={loading}
@@ -54,6 +62,7 @@ const DataTable = <T,>({
             color: "black",
             border: "2px solid #ccc",
           },
+          ...sx,
         }}
         slotProps={{
           loadingOverlay: {
