@@ -10,7 +10,7 @@ import {
   useGetUnDistributeItemQuery,
   useRestoreUndistributedItemMutation,
 } from "@/features/api/apiSlice";
-import { UndistributedItem } from "@/types/global_types";
+import { AccountItem, UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import {
   AddBoxOutlined,
@@ -251,6 +251,13 @@ const Inventory = () => {
       width: 140,
     },
     {
+      field: "RECEIVED_AT",
+      headerName: "Acquisition Date",
+      width: 180,
+      type: "date",
+      valueGetter: (params) => new Date(params) ?? "--",
+    },
+    {
       field: "ORIGINAL_QUANTITY",
       headerName: "Original Quantity",
       type: "number",
@@ -269,14 +276,29 @@ const Inventory = () => {
       headerName: "Total value in ₱",
       width: 180,
     },
-    { field: "REMARKS", headerName: "Remarks", width: 180 },
     {
-      field: "RECEIVED_AT",
-      headerName: "Received on",
-      width: 180,
-      type: "date",
-      valueGetter: (params) => new Date(params) ?? "--",
+      field: "DESCRIPTION",
+      headerName: "Description",
+      width: 190,
     },
+    {
+      field: "PAR_NO",
+      headerName: "PAR #",
+      width: 180,
+    },
+    {
+      field: "MR_NO",
+      headerName: "MR #",
+      width: 180,
+    },
+    {
+      field: "accountCodeDetails",
+      headerName: "Account Code",
+      width: 300,
+      valueGetter: (params: AccountItem) =>
+        `${params?.ACCOUNT_CODE ?? ""} - ${params?.ACCOUNT_TITLE ?? ""}`,
+    },
+    { field: "REMARKS", headerName: "Remarks", width: 180 },
   ];
 
   //items to show

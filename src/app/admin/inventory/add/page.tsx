@@ -27,11 +27,13 @@ const ConfirmSubmitModal = ({
   onClose,
   onSubmit,
   itemForm,
+  isLoading,
 }: {
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
   itemForm: Partial<UndistributedItem>;
+  isLoading: boolean;
 }) => {
   //
   //
@@ -112,12 +114,14 @@ const ConfirmSubmitModal = ({
             title="Cancel the Item"
             placement="top"
             variant="text"
+            disabled={isLoading}
           />
           <DefaultButton
             onClick={onSubmit}
             btnText="confirm"
             title="Save the Item"
             placement="top"
+            disabled={isLoading}
           />
         </div>
       </>
@@ -269,7 +273,7 @@ const AddItem = () => {
           name="UNIT_VALUE"
           label="Unit value"
           fullWidth
-          placeholder="Per piece"
+          placeholder="Per piece, accepts decimal digit 10, 2 e.g. 1234567890.12, please do not exceed"
           type="number"
           value={itemForm.UNIT_VALUE ? itemForm.UNIT_VALUE.toString() : ""}
           onChange={handleChangeItemForm}
@@ -295,31 +299,31 @@ const AddItem = () => {
         </LocalizationProvider>
         <DefaultTextField
           name="PIS_NO"
-          label="PIS #"
+          label="Requisition and Issue (RIS)"
           value={itemForm.PIS_NO}
           onChange={handleChangeItemForm}
         />
         <DefaultTextField
           name="SERIAL_NO"
-          label="SERIAL #"
+          label="SERIAL Number"
           value={itemForm.SERIAL_NO}
           onChange={handleChangeItemForm}
         />
         <DefaultTextField
           name="PROP_NO"
-          label="PROP #"
+          label="Property Number(PROP)"
           value={itemForm.PROP_NO}
           onChange={handleChangeItemForm}
         />
         <DefaultTextField
           name="PAR_NO"
-          label="PAR #"
+          label="Property Acknowledgement Receipt (PAR)"
           value={itemForm.PAR_NO}
           onChange={handleChangeItemForm}
         />
         <DefaultTextField
           name="MR_NO"
-          label="MR #"
+          label="Material Requisition (MR)"
           value={itemForm.MR_NO}
           onChange={handleChangeItemForm}
         />
@@ -340,6 +344,7 @@ const AddItem = () => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitItemForm}
         itemForm={itemForm}
+        isLoading={isLoading}
       />
     </>
   );
