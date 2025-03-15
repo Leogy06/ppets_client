@@ -169,7 +169,7 @@ const AddItem = () => {
       </div>
       <form
         onSubmit={handleOpenModal}
-        className="flex flex-col gap-4 max-h-[38rem] overflow-auto px-4"
+        className="flex flex-col gap-4 max-h-[24rem] overflow-auto px-4"
       >
         <DefaultTextField
           name="ITEM_NAME"
