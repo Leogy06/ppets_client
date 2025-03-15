@@ -124,7 +124,7 @@ export interface BorrowingStatusProps {
 }
 
 export interface UndistributedItem {
-  ID: number | null;
+  ID: number;
   ITEM_NAME: string;
   DESCRIPTION: string;
   STOCK_QUANTITY: number;
