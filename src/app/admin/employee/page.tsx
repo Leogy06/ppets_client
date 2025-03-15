@@ -444,7 +444,7 @@ const Employee = () => {
         checkboxSelection
         loading={isEmployeeRdy}
         getRowId={(row) => row.ID}
-        onRowSelectionModelChange={(rowSelectionModel: number[]) =>
+        onRowSelectionModelChange={(rowSelectionModel: GridRowSelectionModel) =>
           handleSelectionChange(rowSelectionModel)
         }
       />
