@@ -1,6 +1,7 @@
 "use client";
 
 import DefaultButton from "@/app/(component)/buttonDefault";
+import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
@@ -17,9 +18,9 @@ import {
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { Cancel, PictureAsPdf, Preview } from "@mui/icons-material";
+import { Cancel, PictureAsPdf } from "@mui/icons-material";
 import { Modal, Paper, Tooltip } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -348,13 +349,13 @@ const Requests = () => {
     }
   }, [borrowingTransactions]);
 
-  if (isLoading) {
-    return (
-      <span className="animate-pulse dead-center text-base font-semibold">
-        Loading...
-      </span>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <span className="animate-pulse dead-center text-base font-semibold">
+  //       Loading...
+  //     </span>
+  //   );
+  // }
 
   return (
     <>
@@ -366,19 +367,17 @@ const Requests = () => {
           </button>
         </Tooltip>
       </div>
-      <div className="h-[400px]">
-        <DataGrid
-          columns={columns}
-          rows={borrowingTransactions}
-          disableRowSelectionOnClick
-          sx={{
-            "& .cell-approved": { backgroundColor: "#90ee90 ", color: "#333" }, // Light green
-            "& .cell-rejected": { backgroundColor: "#d0312d", color: "#fff" }, // Light red
-            "& .cell-pending": { backgroundColor: "#fcf4a3", color: "#333" }, // green yellow
-            "& .cell-cancel": { backgroundColor: "#d8bfd8", color: "#333" }, // thirstle: purple
-          }}
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        rows={borrowingTransactions}
+        loading={isLoading}
+        sx={{
+          "& .cell-approved": { backgroundColor: "#90ee90 ", color: "#333" }, // Light green
+          "& .cell-rejected": { backgroundColor: "#d0312d", color: "#fff" }, // Light red
+          "& .cell-pending": { backgroundColor: "#fcf4a3", color: "#333" }, // green yellow
+          "& .cell-cancel": { backgroundColor: "#d8bfd8", color: "#333" }, // thirstle: purple
+        }}
+      />
       <ConfirmModalApprove
         open={openModalApprove}
         close={handleCloseModalApprove}
