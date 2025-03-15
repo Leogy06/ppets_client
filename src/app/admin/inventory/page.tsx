@@ -1,6 +1,7 @@
 "use client";
 
 import DefaultButton from "@/app/(component)/buttonDefault";
+import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
@@ -8,6 +9,7 @@ import {
   useDeleteUndistributedItemMutation,
   useGetUnDistributeItemQuery,
 } from "@/features/api/apiSlice";
+import { UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import {
   AddBoxOutlined,
@@ -19,9 +21,9 @@ import {
   Inventory2Outlined,
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 interface ItemId {
   id: number | null;
@@ -169,12 +171,10 @@ const Inventory = () => {
 
   //handle delete item api
   const handleDeleteItem = async (action: number) => {
-    if (!itemId) {
+    if (itemId == null) {
       openSnackbar("Item id is required to proceed.", "info");
       return;
     }
-
-    console.log("action ", action);
 
     try {
       const result = await deleteItem({ itemId, action }).unwrap();
@@ -204,7 +204,7 @@ const Inventory = () => {
       field: "ORIGINAL_QUANTITY",
       headerName: "Original Quantity",
       type: "number",
-      width: 160,
+      width: 180,
     },
 
     {
@@ -301,20 +301,12 @@ const Inventory = () => {
           onClick={() => router.push("/admin/inventory/add")}
         />
       </div>
-      <div className="max-h-[38rem]">
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          getRowId={(params) => params.ID}
-          loading={isUndistributeLoading}
-          getRowClassName={
-            (params) =>
-              params.indexRelativeToCurrentPage % 2 === 0
-                ? "bg-gray-100" //light gray for even rows
-                : "bg-white" //for odd rows
-          }
-        />
-      </div>
+      <DataTable
+        rows={rows}
+        columns={columns}
+        getRowId={(params: UndistributedItem) => params.ID}
+        loading={isUndistributeLoading}
+      />
       <ConfirmModal
         open={openModal}
         onClose={handleCloseModal}
