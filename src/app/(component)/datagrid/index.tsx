@@ -61,6 +61,12 @@ const DataTable = <T,>({
             noRowsVariant: "skeleton",
           },
         }}
+        getRowClassName={
+          (params) =>
+            params.indexRelativeToCurrentPage % 2 === 0
+              ? "bg-gray-100" //light gray for even rows
+              : "bg-white" //for odd rows
+        }
       />
     </div>
   );
