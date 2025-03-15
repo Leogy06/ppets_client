@@ -5,8 +5,11 @@ import DefaultTextField from "@/app/(component)/defaultTextField";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import { useCreateUndistributedItemMutation } from "@/features/api/apiSlice";
-import { UndistributedItem } from "@/types/global_types";
+import {
+  useCreateUndistributedItemMutation,
+  useGetAccountItemQuery,
+} from "@/features/api/apiSlice";
+import { AccountItem, UndistributedItem } from "@/types/global_types";
 import { dateFormmater } from "@/utils/date_formmater";
 import { handleError } from "@/utils/errorHandler";
 import { AddBoxOutlined, Inventory2Outlined } from "@mui/icons-material";
@@ -17,6 +20,7 @@ import React, { useState } from "react";
 //day js
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DefaultModal from "@/app/(component)/modal";
+import { Autocomplete, TextField } from "@mui/material";
 
 const ConfirmSubmitModal = ({
   open,
@@ -29,6 +33,23 @@ const ConfirmSubmitModal = ({
   onSubmit: () => void;
   itemForm: Partial<UndistributedItem>;
 }) => {
+  //
+  //
+  const SpanItemForm = ({
+    formField,
+    itemField,
+  }: {
+    formField: string;
+    itemField: string | number;
+  }) => (
+    <span className="flex gap-4">
+      {formField}:{" "}
+      <p className="font-semibold underline underline-offset-1">{itemField}</p>
+    </span>
+  );
+
+  //
+  //
   return (
     <DefaultModal open={open} onClose={onClose}>
       <>
@@ -39,32 +60,49 @@ const ConfirmSubmitModal = ({
         <hr />
         {itemForm && (
           <div className="flex flex-col gap-2">
-            <span className="flex gap-4">
-              Item name | <p className="font-semibold">{itemForm.ITEM_NAME}</p>
-            </span>
-            <span className="flex gap-4">
-              Description |{" "}
-              <p className="font-semibold">{itemForm.DESCRIPTION}</p>
-            </span>
-            <span className="flex gap-4">
-              Unit value |{" "}
-              <p className="font-semibold">₱ {itemForm.UNIT_VALUE}</p>
-            </span>
-            <span className="flex gap-4">
-              Stock | <p className="font-semibold">{itemForm.STOCK_QUANTITY}</p>
-            </span>
-            <span className="flex gap-4">
-              Date Received |
-              <p className="font-semibold">
-                {dateFormmater(itemForm.RECEIVED_AT || null, "YYYY-DD-MM")}
-              </p>
-            </span>
-            <span className="flex gap-4">
-              Prop | <p className="font-semibold">{itemForm.PROP_NO}</p>
-            </span>
-            <span className="flex gap-4">
-              Serial | <p className="font-semibold">{itemForm.SERIAL_NO}</p>
-            </span>
+            <SpanItemForm
+              formField="Item Name"
+              itemField={itemForm?.ITEM_NAME ?? ""}
+            />
+            <SpanItemForm
+              formField="Description"
+              itemField={itemForm?.DESCRIPTION ?? ""}
+            />
+            <SpanItemForm
+              formField="Unit Value"
+              itemField={itemForm?.UNIT_VALUE ?? ""}
+            />
+            <SpanItemForm
+              formField="Stock"
+              itemField={itemForm?.STOCK_QUANTITY ?? ""}
+            />
+            <SpanItemForm
+              formField="Acquisition Date"
+              itemField={dateFormmater(
+                itemForm?.RECEIVED_AT || null,
+                "YYYY-DD-MM"
+              )}
+            />
+
+            <SpanItemForm
+              formField="Serial Number"
+              itemField={itemForm?.SERIAL_NO ?? ""}
+            />
+
+            <SpanItemForm
+              formField="Property Number"
+              itemField={itemForm?.PROP_NO ?? ""}
+            />
+
+            <SpanItemForm
+              formField="Property Acknowledgement Receipt"
+              itemField={itemForm?.PAR_NO ?? ""}
+            />
+
+            <SpanItemForm
+              formField="Material Requisition"
+              itemField={itemForm?.MR_NO ?? ""}
+            />
           </div>
         )}
         <div className="flex gap-4 justify-center">
@@ -102,19 +140,27 @@ const AddItem = () => {
   //router
   const router = useRouter();
 
+  //get account item for the account code in item form
+  const { data: accountItems, isLoading: isAccountItemLoading } =
+    useGetAccountItemQuery({});
+
   //use states
   //item form state
   const [itemForm, setItemForm] = useState<Partial<UndistributedItem>>({
     ITEM_NAME: "",
     DESCRIPTION: "",
-    STOCK_QUANTITY: 0,
     UNIT_VALUE: 0,
-    REMARKS: "",
+    STOCK_QUANTITY: 0,
+    RECEIVED_AT: null,
+    PIS_NO: "",
     SERIAL_NO: "",
     PROP_NO: "",
-    RECEIVED_AT: null,
+    REMARKS: "",
+    PAR_NO: "",
+    MR_NO: "",
+    ACCOUNT_CODE: 0,
     DEPARTMENT_ID: Number(empDetails?.CURRENT_DPT_ID),
-    PIC_NO: "",
+    ADDED_BY: Number(empDetails?.ID),
   });
 
   //modal
@@ -152,12 +198,13 @@ const AddItem = () => {
     }
   };
 
+  //handle change add item form
   const handleChangeItemForm = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
 
     setItemForm((prevForm) => ({
       ...prevForm,
-      [name]: value,
+      [name]: type === "number" ? (value ? parseFloat(value) : "") : value, // Convert number fields properly
     }));
   };
 
@@ -169,13 +216,39 @@ const AddItem = () => {
       </div>
       <form
         onSubmit={handleOpenModal}
-        className="flex flex-col gap-4 max-h-[24rem] overflow-auto px-4"
+        className="flex flex-col gap-4 max-h-[32rem] overflow-auto px-4"
       >
         <DefaultTextField
           name="ITEM_NAME"
           label="Item Name"
           value={itemForm.ITEM_NAME}
           onChange={handleChangeItemForm}
+        />
+        <Autocomplete
+          options={accountItems || []}
+          loading={isAccountItemLoading}
+          getOptionLabel={(option: AccountItem) =>
+            `${option.ACCOUNT_CODE} - ${option.ACCOUNT_TITLE}`
+          }
+          onChange={(_, newValue) => {
+            if (newValue) {
+              setItemForm((prevForm) => ({
+                ...prevForm,
+                ACCOUNT_CODE: newValue.ID,
+              }));
+            }
+          }}
+          renderInput={(params) => {
+            return (
+              <TextField
+                {...params}
+                label="Select Account Code"
+                fullWidth
+                variant="outlined"
+                disabled={isAccountItemLoading}
+              />
+            );
+          }}
         />
         <DefaultTextField
           name="DESCRIPTION"
@@ -192,9 +265,10 @@ const AddItem = () => {
           }
           onChange={handleChangeItemForm}
         />
-        <DefaultTextField
+        <TextField
           name="UNIT_VALUE"
           label="Unit value"
+          fullWidth
           placeholder="Per piece"
           type="number"
           value={itemForm.UNIT_VALUE ? itemForm.UNIT_VALUE.toString() : ""}
@@ -220,9 +294,9 @@ const AddItem = () => {
           />
         </LocalizationProvider>
         <DefaultTextField
-          name="PIC_NO"
-          label="PIC #"
-          value={itemForm.PIC_NO}
+          name="PIS_NO"
+          label="PIS #"
+          value={itemForm.PIS_NO}
           onChange={handleChangeItemForm}
         />
         <DefaultTextField
@@ -237,6 +311,20 @@ const AddItem = () => {
           value={itemForm.PROP_NO}
           onChange={handleChangeItemForm}
         />
+        <DefaultTextField
+          name="PAR_NO"
+          label="PAR #"
+          value={itemForm.PAR_NO}
+          onChange={handleChangeItemForm}
+        />
+        <DefaultTextField
+          name="MR_NO"
+          label="MR #"
+          value={itemForm.MR_NO}
+          onChange={handleChangeItemForm}
+        />
+
+        {/**ACcount code should be select auto complete */}
         <div className="flex gap-2 justify-center md:justify-end">
           <DefaultButton
             btnText="submit"

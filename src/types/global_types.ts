@@ -131,17 +131,27 @@ export interface UndistributedItem {
   UNIT_VALUE: number;
   TOTAL_VALUE: number;
   SERIAL_NO: string;
-  PIC_NO: string;
+  PIS_NO: string;
   PROP_NO: string;
   REMARKS: string;
+  RECEIVED_AT: Date | null;
+  PAR_NO: string;
+  MR_NO: string;
+  ACCOUNT_CODE: number;
   DELETE: number;
   DEPARTMENT_ID: number;
-  RECEIVED_AT: Date | null;
   updatedAt: Date;
   createdAt: Date;
+  ADDED_BY: number;
 }
 
 export interface TransactionRemarksProp {
   ID: number;
   DESCRIPTION: string;
+}
+
+export interface AccountItem {
+  ID: number;
+  ACCOUNT_CODE: string;
+  ACCOUNT_TITLE: string;
 }

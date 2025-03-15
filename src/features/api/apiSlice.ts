@@ -24,6 +24,7 @@ export const apiSlice = createApi({
     "Notifications",
     "UndistributedItem",
     "TransactionCount",
+    "AccountCodes",
   ],
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -315,6 +316,12 @@ export const apiSlice = createApi({
       query: (itemId) => `/api/item/${itemId}`,
       providesTags: ["UndistributedItem"],
     }),
+
+    //get account item
+    getAccountItem: builder.query({
+      query: () => "/account_code",
+      providesTags: ["AccountCodes"],
+    }),
   }),
 });
 
@@ -380,4 +387,7 @@ export const {
   useDeleteUndistributedItemMutation,
   useGetUndistributedItemByIdQuery,
   useRestoreUndistributedItemMutation,
+
+  //account items
+  useGetAccountItemQuery,
 } = apiSlice;
