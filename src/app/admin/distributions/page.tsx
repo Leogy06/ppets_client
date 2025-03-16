@@ -28,15 +28,25 @@ const Distribution = () => {
       field: "actions",
       headerName: "Actions",
       headerAlign: "center",
-      width: 130,
+      width: 200,
 
       renderCell: (params) => (
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-2 justify-center items-center">
           <DefaultButton
             btnIcon={<DifferenceOutlined />}
             title="Distribute Item"
-            placement="right"
+            placement="bottom"
             onClick={() => router.push(`/admin/distributions/${params.row.ID}`)}
+          />
+          <DefaultButton
+            btnIcon={<List />}
+            title="View Distributed Items"
+            placement="bottom"
+            onClick={() =>
+              router.push(
+                `/admin/distributions/distributed_items/${params.row.ID}`
+              )
+            }
           />
         </div>
       ),

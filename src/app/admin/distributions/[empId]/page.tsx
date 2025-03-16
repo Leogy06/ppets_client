@@ -18,7 +18,7 @@ import {
 import { Item, UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { CancelOutlined, Check, CompareArrows } from "@mui/icons-material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { useParams } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
@@ -116,15 +116,7 @@ const DistributionModal = ({
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!itemForm.quantity || !itemForm.are_no) {
-      openSnackbar("Required fields are empty. ", "error");
-      console.log("item form ", itemForm);
-      return;
-    }
-
     console.log("item form ", itemForm);
-
     setOpenChildOpen(true);
   };
 
@@ -162,45 +154,70 @@ const DistributionModal = ({
   //   console.log("dark mode: ", isDarkMode);
   // }, [isDarkMode]);
 
+  const SpanItemForm = ({
+    formField,
+    itemField,
+  }: {
+    formField: string;
+    itemField: string | number;
+  }) => (
+    <span className="flex gap-4">
+      {formField}:{" "}
+      <p className="font-semibold underline underline-offset-1">{itemField}</p>
+    </span>
+  );
+
   return (
     <DefaultModal
       open={open}
       onClose={onClose}
       className={` bg-white text-black`}
     >
-      <form onSubmit={handleSubmit} className="w-full h-full">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full h-[400px] p-4 overflow-auto"
+      >
         <div className="flex flex-col gap-4">
           <h1 className="text-lg font-semibold">Finalize the Distribution</h1>
           {itemDetails && !isLoading && (
             <div className="flex flex-col gap-4">
-              <span className="flex gap-1 items-center">
-                Item |{" "}
-                <p className="text-base font-medium">
-                  {itemDetails?.ITEM_NAME}
-                </p>
-              </span>
-              <span className="flex gap-1 items-center">
-                Quantity |{" "}
-                <p className="text-base font-medium">
-                  {itemDetails?.STOCK_QUANTITY}
-                </p>
-              </span>
-              <span className="flex gap-1 items-center">
-                Unit Value |{" "}
-                <p className="text-base font-medium">
-                  {itemDetails?.UNIT_VALUE}
-                </p>
-              </span>
-              <span className="flex gap-1 items-center">
-                SRN # |{" "}
-                <p className="text-base font-medium">
-                  {itemDetails?.SERIAL_NO}
-                </p>
-              </span>
-              <span className="flex gap-1 items-center">
-                PROP # |{" "}
-                <p className="text-base font-medium">{itemDetails?.PROP_NO}</p>
-              </span>
+              <SpanItemForm
+                formField="Item"
+                itemField={itemDetails?.ITEM_NAME ?? "N/A"}
+              />
+              <SpanItemForm
+                formField="Quantity"
+                itemField={`${itemDetails.STOCK_QUANTITY}/${itemDetails.ORIGINAL_QUANTITY}`}
+              />
+
+              <SpanItemForm
+                itemField={itemDetails?.SERIAL_NO ?? "N/A"}
+                formField="Serial Number"
+              />
+              <SpanItemForm
+                itemField={itemDetails?.PROP_NO ?? "N/A"}
+                formField="Property Number"
+              />
+              <SpanItemForm
+                itemField={itemDetails?.PIS_NO ?? "N/A"}
+                formField="PIS Number"
+              />
+              <SpanItemForm
+                itemField={itemDetails?.DESCRIPTION ?? "N/A"}
+                formField="Description"
+              />
+              <SpanItemForm
+                itemField={itemDetails?.PAR_NO ?? "N/A"}
+                formField="Property Acknowledgement Receipt"
+              />
+              <SpanItemForm
+                itemField={itemDetails?.MR_NO ?? "N/A"}
+                formField="Material Requisition"
+              />
+              <SpanItemForm
+                itemField={itemDetails?.ICS_NO ?? "N/A"}
+                formField="Inventory Custodian Slip"
+              />
             </div>
           )}
           <DefaultTextField

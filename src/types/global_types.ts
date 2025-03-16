@@ -128,9 +128,11 @@ export interface UndistributedItem {
   ITEM_NAME: string;
   DESCRIPTION: string;
   STOCK_QUANTITY: number;
+  ORIGINAL_QUANTITY: number;
   UNIT_VALUE: number;
   TOTAL_VALUE: number;
   SERIAL_NO: string;
+  ICS_NO: string;
   PIS_NO: string;
   PROP_NO: string;
   REMARKS: string;
@@ -138,6 +140,7 @@ export interface UndistributedItem {
   PAR_NO: string;
   MR_NO: string;
   ACCOUNT_CODE: number;
+  accountCodeDetails: AccountItem;
   DELETE: number;
   DEPARTMENT_ID: number;
   updatedAt: Date;
