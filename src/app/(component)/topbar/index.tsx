@@ -17,6 +17,7 @@ import {
 import { Paper } from "@mui/material";
 import { dateFormmater } from "@/utils/date_formmater";
 import { socket } from "@/hooks/useSocket";
+import { useRouter } from "next/navigation";
 
 const NotificationCard = ({
   isOpen,
@@ -31,6 +32,8 @@ const NotificationCard = ({
   addNotifLimit: () => void;
   handleReadNotification: (param: number) => void;
 }) => {
+  const router = useRouter();
+
   if (!isOpen) return null;
 
   return (
@@ -44,7 +47,11 @@ const NotificationCard = ({
             <span className="text-center">Nothing to show</span>
           ) : (
             notifications.map((n) => (
-              <li key={n.ID} className={`border-b-2 flex flex-col p-2`}>
+              <li
+                key={n.ID}
+                className={`border-b-2 flex flex-col p-2 cursor-pointer`}
+                onClick={() => router.push("/notification")}
+              >
                 <span className="mb-2 text-sm font-semibold">{n.MESSAGE}</span>
                 <span className="text-xs font-light flex justify-between">
                   on {dateFormmater(n.createdAt)}

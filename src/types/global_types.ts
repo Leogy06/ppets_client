@@ -106,6 +106,7 @@ export interface NotificationProps {
   MESSAGE: string;
   createdAt: Date;
   READ: number;
+  borrowingTransactionDetails: BorrowingTransactionTypes;
 }
 
 export interface NotificationPropsOther {
