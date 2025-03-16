@@ -291,7 +291,7 @@ const Distribute = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //item id
-  const [itemId, setItemId] = useState<UndistributedItem["ID"]>(null);
+  const [itemId, setItemId] = useState<UndistributedItem["ID"]>(0);
 
   //handles
   const handleOpenModal = (itemId: UndistributedItem["ID"]) => {

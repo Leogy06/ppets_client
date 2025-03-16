@@ -1,13 +1,14 @@
 "use client";
 
 import BackArrow from "@/app/(component)/backArrow";
+import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetItemsDepartmentQuery } from "@/features/api/apiSlice";
 import { UndistributedItem } from "@/types/global_types";
 import { PictureAsPdf } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect } from "react";
 
@@ -106,6 +107,7 @@ const DistributedItems = () => {
         { items: distributedItems },
         {
           responseType: "blob",
+          withCredentials: true,
         }
       );
 
@@ -139,19 +141,19 @@ const DistributedItems = () => {
           </button>
         </Tooltip>
       </div>
-      <div className="h-[400px]">
-        <DataGrid
-          loading={isItemsLoading}
-          columns={columns}
-          disableRowSelectionOnClick
-          rows={distributedItems?.map((item) => ({
+      <DataTable
+        loading={isItemsLoading}
+        columns={columns}
+        disableRowSelectionOnClick
+        rows={
+          distributedItems?.map((item) => ({
             ...item,
             accountableEmpDetails: `${item.accountableEmpDetails.FIRSTNAME.toUpperCase()} ${item.accountableEmpDetails.LASTNAME.toUpperCase()} ${
               item.accountableEmpDetails?.MIDDLENAME?.toUpperCase() ?? ""
             } ${item.accountableEmpDetails?.SUFFIX?.toUpperCase() ?? ""}`,
-          }))}
-        />
-      </div>
+          })) || []
+        }
+      />
     </>
   );
 };

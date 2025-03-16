@@ -1,6 +1,7 @@
 "use client";
 
 import DefaultButton from "@/app/(component)/buttonDefault";
+import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetEmployeesQuery } from "@/features/api/apiSlice";
@@ -11,18 +12,16 @@ import {
   List,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Distribution = () => {
   const router = useRouter();
   const { empDetails } = useAuth();
-  const {
-    data: employees,
-    isLoading,
-    isError,
-  } = useGetEmployeesQuery(Number(empDetails?.CURRENT_DPT_ID));
+  const { data: employees, isLoading } = useGetEmployeesQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
 
   const columns: GridColDef[] = [
     {
@@ -71,9 +70,6 @@ const Distribution = () => {
   //   }
   // }, [empDetails]);
 
-  if (isLoading) return <div>Loading...</div>;
-
-  if (isError) return <div>Error fetching data...</div>;
   return (
     <>
       <div className="flex justify-between items-start">
@@ -89,35 +85,35 @@ const Distribution = () => {
           </button>
         </Tooltip>
       </div>
-      <div className="h-[400px]">
-        <DataGrid
-          getRowId={(params) => params.ID}
-          disableRowSelectionOnClick
-          pageSizeOptions={[25, 50, 100, 200]}
-          columns={columns}
-          sx={{
-            "& .MuiDataGrid-columnHeaders": {
-              background: "#4169e1", // Change this to your desired color
-              fontWeight: "bold",
-            },
-            "& .MuiDataGrid-columnHeader": {
-              backgroundColor: "#375ba5", // **Cell color inside headers**
-              color: "white", // Text color for better contrast
-              // Optional: add borders between header cells
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "bold", // Make header text bold
-              textTransform: "uppercase",
-            },
-          }}
-          rows={employees?.map((emp: Employee) => ({
+      <DataTable
+        loading={isLoading}
+        getRowId={(params) => params.ID}
+        disableRowSelectionOnClick
+        columns={columns}
+        sx={{
+          "& .MuiDataGrid-columnHeaders": {
+            background: "#4169e1", // Change this to your desired color
+            fontWeight: "bold",
+          },
+          "& .MuiDataGrid-columnHeader": {
+            backgroundColor: "#375ba5", // **Cell color inside headers**
+            color: "white", // Text color for better contrast
+            // Optional: add borders between header cells
+          },
+          "& .MuiDataGrid-columnHeaderTitle": {
+            fontWeight: "bold", // Make header text bold
+            textTransform: "uppercase",
+          },
+        }}
+        rows={
+          employees?.map((emp: Employee) => ({
             ...emp,
             fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
               emp.MIDDLENAME ?? ""
             }`,
-          }))}
-        />
-      </div>
+          })) ?? []
+        }
+      />
     </>
   );
 };
