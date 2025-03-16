@@ -2,6 +2,7 @@
 
 import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
+import DataTable from "@/app/(component)/datagrid";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
@@ -89,19 +90,14 @@ const DistributionModal = ({
 
   //use darkmode
 
-  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+  // const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   //add item
   const [addItem, { isLoading: isItemAddLoading }] = useAddItemMutation();
 
   const [itemForm, setItemForm] = useState<Partial<Item>>({
     ITEM_ID: itemDetails?.ID,
-    quantity: null,
-    ics: "",
-    are_no: "",
-    pis_no: "",
-    class_no: "",
-    acct_code: "",
+    quantity: 0,
     accountable_emp: null,
     remarks: "",
     DISTRIBUTED_BY: Number(empDetails?.ID),
@@ -150,6 +146,7 @@ const DistributionModal = ({
     }
   };
 
+  //setting item id , accountable emp and distributed
   useEffect(() => {
     if (itemDetails && empId) {
       setItemForm((prevForm) => ({
@@ -161,9 +158,9 @@ const DistributionModal = ({
     }
   }, [itemDetails, empDetails?.ID, empId]);
 
-  useEffect(() => {
-    console.log("dark mode: ", isDarkMode);
-  }, [isDarkMode]);
+  // useEffect(() => {
+  //   console.log("dark mode: ", isDarkMode);
+  // }, [isDarkMode]);
 
   return (
     <DefaultModal
@@ -211,40 +208,6 @@ const DistributionModal = ({
             label="Quantity"
             onChange={handleOnchange}
             type="number"
-          />
-          <DefaultTextField
-            name="ics"
-            label="ICS #"
-            onChange={handleOnchange}
-            required={false}
-            placeholder="Optional"
-          />
-          <DefaultTextField
-            name="are_no"
-            label="ARE #"
-            onChange={handleOnchange}
-            required
-          />
-          <DefaultTextField
-            name="pis_no"
-            label="PIS #"
-            onChange={handleOnchange}
-            required={false}
-            placeholder="Optional"
-          />
-          <DefaultTextField
-            name="class_no"
-            label="Class #"
-            onChange={handleOnchange}
-            required={false}
-            placeholder="Optional"
-          />
-          <DefaultTextField
-            name="acc_code"
-            label="Account Code"
-            onChange={handleOnchange}
-            required={false}
-            placeholder="Optional"
           />
           <DefaultTextField
             name="remarks"
@@ -350,9 +313,8 @@ const Distribute = () => {
           )}
         </div>
       </div>
-      <DataGrid
-        sx={{ border: "none" }}
-        rows={undistributedItems}
+      <DataTable
+        rows={undistributedItems || []}
         columns={columns}
         getRowId={(params) => params.ID}
         loading={isItemsLoading}
