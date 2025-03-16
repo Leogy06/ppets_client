@@ -258,9 +258,12 @@ const Inventory = () => {
       valueGetter: (params) => new Date(params) ?? "--",
     },
     {
-      field: "ORIGINAL_QUANTITY",
-      headerName: "Original Quantity",
+      field: "quantity",
+      headerName: "Quantity",
       type: "number",
+      renderCell: (params) => {
+        return `${params.row.STOCK_QUANTITY} / ${params.row.ORIGINAL_QUANTITY}`;
+      },
       width: 180,
     },
 

@@ -88,21 +88,6 @@ const Distribution = () => {
         getRowId={(params) => params.ID}
         disableRowSelectionOnClick
         columns={columns}
-        sx={{
-          "& .MuiDataGrid-columnHeaders": {
-            background: "#4169e1", // Change this to your desired color
-            fontWeight: "bold",
-          },
-          "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "#375ba5", // **Cell color inside headers**
-            color: "white", // Text color for better contrast
-            // Optional: add borders between header cells
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: "bold", // Make header text bold
-            textTransform: "uppercase",
-          },
-        }}
         rows={
           employees?.map((emp: Employee) => ({
             ...emp,

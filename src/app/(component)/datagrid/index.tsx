@@ -45,11 +45,11 @@ const DataTable = <T,>({
         sx={{
           // header style
           "& .MuiDataGrid-columnHeaders": {
-            background: "#4169e1", // Change this to your desired color
+            background: "#3A7CA5", // Change this to your desired color
             fontWeight: "bold",
           },
           "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "#375ba5", // **Cell color inside headers**
+            backgroundColor: "#3A7CA5", // **Cell color inside headers**
             color: "white", // Text color for better contrast
             // Optional: add borders between header cells
           },

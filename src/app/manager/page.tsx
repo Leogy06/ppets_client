@@ -5,13 +5,14 @@ import {
   useGetItemsByOwnerQuery,
   useGetItemsNotOwnedQuery,
 } from "@/features/api/apiSlice";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import React, { useEffect, useMemo, useState } from "react";
 import PageHeader from "@/app/(component)/pageheader";
-import { Employee, UndistributedItem } from "@/types/global_types";
+import { Employee, Item } from "@/types/global_types";
 import DefaultButton from "../(component)/buttonDefault";
 import { useRouter } from "next/navigation";
 import { ArrowDropDownCircleSharp } from "@mui/icons-material";
+import DataTable from "../(component)/datagrid";
 
 //dropdown item to show
 const ItemDropDown = ({
@@ -66,41 +67,98 @@ const ManagerPage = () => {
 
   const [openDropdownItem, setOpenDropdownItem] = useState(false);
 
+  //mapped items to show
   const itemToShow = useMemo(() => {
-    if (itemShow === 1 && notOwnedItems) {
-      return ownedItems;
+    let items: Item[] = [];
+    if (itemShow === 1 && ownedItems) {
+      items = ownedItems;
     }
     if (itemShow === 2 && notOwnedItems) {
-      return notOwnedItems;
+      items = notOwnedItems;
     }
+
+    return items.map((item: Item) => {
+      return {
+        ...item,
+        id: item.ITEM_ID,
+        itemName: item?.itemDetails?.ITEM_NAME ?? "N/A",
+        parNo: item.itemDetails?.PAR_NO ?? "N/A",
+        mrNo: item.itemDetails?.MR_NO ?? "N/A",
+        icsNo: item.itemDetails?.ICS_NO ?? "N/A",
+        pisNo: item.itemDetails?.PIS_NO ?? "N/A",
+        propNo: item.itemDetails?.PROP_NO ?? "N/A",
+        serialNo: item.itemDetails?.SERIAL_NO ?? "N/A",
+        receivedAt: item.itemDetails?.RECEIVED_AT ?? "N/A",
+        accountableEmployee: `${item.accountableEmpDetails?.LASTNAME} ${
+          item.accountableEmpDetails.FIRSTNAME
+        } ${item.accountableEmpDetails.MIDDLENAME ?? ""} ${
+          item.accountableEmpDetails.SUFFIX ?? ""
+        }`,
+        accountDetails: `${
+          item?.itemDetails?.accountCodeDetails?.ACCOUNT_CODE ?? "N/A"
+        } - ${item?.itemDetails?.accountCodeDetails?.ACCOUNT_TITLE ?? "N/A"}`,
+      };
+    });
   }, [ownedItems, itemShow, notOwnedItems]);
 
   const columns: GridColDef[] = [
     {
-      field: "itemDetails",
+      field: "itemName",
       headerName: "Item",
-      valueGetter: (params: UndistributedItem) =>
-        params ? params.ITEM_NAME : "--",
       width: 180,
     },
     {
       field: "quantity",
       headerName: "Quantity",
       renderCell: (params) =>
-        `${params.row.quantity} / ${
-          params.row.ORIGINAL_QUANTITY ?? " Unknown"
-        }`,
+        `${params.row.quantity} / ${params.row.ORIGINAL_QUANTITY ?? "N/A"}`,
     },
     {
       field: "unit_value",
       headerName: "Unit value",
       type: "number",
-      width: 90,
+      width: 120,
     },
+    {
+      field: "parNo",
+      headerName: "PAR No",
+      width: 120,
+    },
+    {
+      field: "mrNo",
+      headerName: "MR No",
+      width: 120,
+    },
+    {
+      field: "icsNo",
+      headerName: "ICS No",
+      width: 120,
+    },
+    {
+      field: "pisNo",
+      headerName: "PIS No",
+      width: 120,
+    },
+    {
+      field: "propNo",
+      headerName: "PROP No",
+      width: 120,
+    },
+    {
+      field: "serialNo",
+      headerName: "Serial No",
+      width: 120,
+    },
+    {
+      field: "accountDetails",
+      headerName: "Account Details",
+      width: 200,
+    },
+
     {
       field: "total_value",
       headerName: "Total value",
-      width: 90,
+      width: 120,
       type: "number",
     },
     {
@@ -126,6 +184,11 @@ const ManagerPage = () => {
       headerName: "Remarks",
       width: 200,
       valueGetter: (params) => params ?? "--",
+    },
+    {
+      field: "accountableEmployee",
+      headerName: "Accountable Employee",
+      width: 200,
     },
     {
       field: "Actions",
@@ -167,6 +230,13 @@ const ManagerPage = () => {
   //   }
   // }, [notOwnedItems]);
 
+  //log owned items
+  useEffect(() => {
+    if (itemToShow) {
+      console.log(" items", itemToShow);
+    }
+  }, [itemToShow]);
+
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;
   }
@@ -185,9 +255,9 @@ const ManagerPage = () => {
           />
         )}
       </div>
-      <DataGrid
+      <DataTable
         sx={{ height: 400 }}
-        rows={itemToShow}
+        rows={itemToShow || []}
         columns={columns}
         loading={isLoading || isNotOwnedItemLoading}
       />
