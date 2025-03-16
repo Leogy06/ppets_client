@@ -15,12 +15,14 @@ import {
   useGetUndistributedItemByIdQuery,
   useGetUnDistributeItemQuery,
 } from "@/features/api/apiSlice";
-import { Item, UndistributedItem } from "@/types/global_types";
+import { AccountItem, Item, UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { CancelOutlined, Check, CompareArrows } from "@mui/icons-material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useParams } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+
+//this is for distribution of items to employees
 
 //child modal
 const ConfirmDistribute = ({
@@ -280,26 +282,14 @@ const Distribute = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "ITEM_NAME", headerName: "Item name", width: 135 },
-    {
-      field: "Quantity",
-      headerName: "Quantity",
-      width: 95,
-      renderCell: (params) =>
-        `${params.row.STOCK_QUANTITY}/${params.row.ORIGINAL_QUANTITY}`,
-    },
-    { field: "DESCRIPTION", headerName: "Description", width: 140 },
-    { field: "UNIT_VALUE", headerName: "Unit value", width: 95 },
-    { field: "TOTAL_VALUE", headerName: "Total value", width: 95 },
-    { field: "SERIAL_NO", headerName: "Serial #", width: 135 },
-    { field: "PROP_NO", headerName: "Prop #", width: 140 },
     {
       field: "Actions",
       headerName: "Actions",
+      headerAlign: "center",
       width: 140,
       renderCell: (params) => {
         return (
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center justify-center">
             <DefaultButton
               onClick={() => handleOpenModal(params.row.ID)}
               disabled={params.row.STOCK_QUANTITY <= 0}
@@ -310,7 +300,39 @@ const Distribute = () => {
         );
       },
     },
+    { field: "ITEM_NAME", headerName: "Item name", width: 135 },
+    {
+      field: "Quantity",
+      headerName: "Quantity",
+      width: 95,
+      renderCell: (params) =>
+        `${params.row.STOCK_QUANTITY}/${params.row.ORIGINAL_QUANTITY}`,
+    },
+    { field: "DESCRIPTION", headerName: "Description", width: 140 },
+    {
+      field: "UNIT_VALUE",
+      headerName: "Unit value",
+      width: 180,
+      type: "number",
+    },
+    {
+      field: "TOTAL_VALUE",
+      headerName: "Total value",
+      width: 180,
+      type: "number",
+    },
+    { field: "SERIAL_NO", headerName: "Serial #", width: 135 },
+    { field: "PROP_NO", headerName: "Prop #", width: 140 },
+    {
+      field: "accountCodeDetails",
+      headerName: "Account Code",
+      width: 200,
+      valueGetter: (params: AccountItem) =>
+        `${params?.ACCOUNT_CODE ?? ""} - ${params?.ACCOUNT_TITLE ?? ""}`,
+    },
   ];
+
+  console.log("undistributed items: ", undistributedItems);
 
   return (
     <>

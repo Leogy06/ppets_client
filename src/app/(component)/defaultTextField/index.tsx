@@ -9,6 +9,7 @@ const DefaultTextField = ({
   value,
   required = true,
   type = "text",
+  disabled = false,
 }: {
   name: string;
   label: string;
@@ -17,6 +18,7 @@ const DefaultTextField = ({
   value?: string;
   required?: boolean;
   type?: "text" | "number";
+  disabled?: boolean;
 }) => {
   return (
     <TextField
@@ -28,6 +30,7 @@ const DefaultTextField = ({
       fullWidth
       required={required}
       type={type}
+      disabled={disabled}
     />
   );
 };

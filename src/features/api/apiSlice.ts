@@ -27,6 +27,7 @@ export const apiSlice = createApi({
     "AccountCodes",
   ],
   endpoints: (builder) => ({
+    //users
     login: builder.mutation({
       query: (credentials) => ({
         url: "/user/auth/api/login",
@@ -41,6 +42,24 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    firstTimeLogin: builder.mutation({
+      query: (ID_NUMBER) => ({
+        url: "/user/auth/api/first_time_login",
+        method: "POST",
+        body: { ID_NUMBER },
+      }),
+      invalidatesTags: ["User"],
+    }),
+    //add user role 2
+    addUser: builder.mutation({
+      query: (data) => ({
+        url: "/user",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
     //employee api
     getEmployees: builder.query<Employee[], number>({
       query: (department) => `/employees?department=${department}`,
@@ -330,6 +349,8 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useCheckUserQuery,
+  useFirstTimeLoginMutation,
+  useAddUserMutation,
 
   //employees
   useAddEmployeeMutation,

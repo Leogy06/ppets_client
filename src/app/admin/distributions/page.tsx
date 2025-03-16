@@ -11,7 +11,6 @@ import {
   DifferenceOutlined,
   List,
 } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -82,19 +81,8 @@ const Distribution = () => {
 
   return (
     <>
-      <div className="flex justify-between items-start">
-        <PageHeader pageHead="Distribution" icon={AccountTreeOutlined} />
-        <Tooltip
-          title={<span className="text-base">See Distributed Items</span>}
-        >
-          <button
-            className="hover:text-gray-500"
-            onClick={() => router.push("/admin/distributions/items")}
-          >
-            <List />
-          </button>
-        </Tooltip>
-      </div>
+      <PageHeader pageHead="Distribution" icon={AccountTreeOutlined} />
+
       <DataTable
         loading={isLoading}
         getRowId={(params) => params.ID}

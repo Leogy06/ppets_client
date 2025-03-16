@@ -42,6 +42,8 @@ export interface User {
   role: number;
   username: string;
   emp_id: number;
+  password: string;
+  email: string;
   // Add other user fields if needed
 }
 
