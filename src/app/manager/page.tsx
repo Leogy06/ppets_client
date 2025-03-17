@@ -6,7 +6,7 @@ import {
   useGetItemsNotOwnedQuery,
 } from "@/features/api/apiSlice";
 import { GridColDef } from "@mui/x-data-grid";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import { Employee, Item } from "@/types/global_types";
 import DefaultButton from "../(component)/buttonDefault";
@@ -18,16 +18,21 @@ import DataTable from "../(component)/datagrid";
 const ItemDropDown = ({
   itemShow,
   handleSelectItemShow,
+  setOpenDropdownItem,
 }: {
   itemShow: number;
   handleSelectItemShow: (param: number) => void;
+  setOpenDropdownItem: (arg: boolean) => void;
 }) => {
   const options = [
     { id: 1, label: "Owned Items" },
     { id: 2, label: "Not owned Items" },
   ];
   return (
-    <div className="absolute z-50 left-16 -right-40 top-4 mt-2 bg-white border border-gray-300 rounded-md shadow-md w-44">
+    <div
+      className="absolute z-50 left-16 -right-40 top-4 mt-2 bg-white border border-gray-300 rounded-md shadow-md w-44"
+      onMouseLeave={() => setOpenDropdownItem(false)}
+    >
       {options.map((option) => (
         <button
           key={option.id}
@@ -83,7 +88,7 @@ const ManagerPage = () => {
         itemName: item?.itemDetails?.ITEM_NAME ?? "N/A",
         parNo: item.itemDetails?.PAR_NO ?? "N/A",
         mrNo: item.itemDetails?.MR_NO ?? "N/A",
-        icsNo: item.itemDetails?.ICS_NO ?? "N/A",
+        icsNo: item.itemDetails?.PIS_NO ?? "N/A",
         pisNo: item.itemDetails?.PIS_NO ?? "N/A",
         propNo: item.itemDetails?.PROP_NO ?? "N/A",
         serialNo: item.itemDetails?.SERIAL_NO ?? "N/A",
@@ -101,6 +106,11 @@ const ManagerPage = () => {
   }, [ownedItems, itemShow, notOwnedItems]);
 
   const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "ID",
+      width: 50,
+    },
     {
       field: "itemName",
       headerName: "Item",
@@ -187,7 +197,7 @@ const ManagerPage = () => {
     {
       field: "accountableEmployee",
       headerName: "Accountable Employee",
-      width: 200,
+      width: 300,
     },
     {
       field: "Actions",
@@ -230,11 +240,13 @@ const ManagerPage = () => {
   // }, [notOwnedItems]);
 
   //log owned items
-  useEffect(() => {
-    if (itemToShow) {
-      console.log(" items", itemToShow);
-    }
-  }, [itemToShow]);
+  // useEffect(() => {
+  //   if (itemToShow) {
+  //     console.log(" items", itemToShow);
+  //   }
+  // }, [itemToShow]);
+
+  console.log("items ", itemToShow);
 
   if (isError) {
     return <div className="text-red-500 ">Error fetching items...</div>;
@@ -251,6 +263,7 @@ const ManagerPage = () => {
           <ItemDropDown
             itemShow={itemShow}
             handleSelectItemShow={handleSelectItemShow}
+            setOpenDropdownItem={setOpenDropdownItem}
           />
         )}
       </div>

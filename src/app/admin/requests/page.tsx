@@ -329,6 +329,7 @@ const Requests = () => {
         { requestRows: borrowingTransactions },
         {
           responseType: "blob",
+          withCredentials: true,
         }
       );
 

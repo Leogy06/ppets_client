@@ -285,6 +285,11 @@ const Inventory = () => {
       width: 190,
     },
     {
+      field: "PIS_NO",
+      headerName: "Inventory Custodian Slip (ICS)",
+      width: 180,
+    },
+    {
       field: "PAR_NO",
       headerName: "PAR #",
       width: 180,
