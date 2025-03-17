@@ -9,11 +9,12 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useCreateBorrowTransactionMutation,
   useGetItemsByIdQuery,
+  useGetUndistributedItemByIdQuery,
 } from "@/features/api/apiSlice";
 import { BorrowingTransactionTypes } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const BorrowItem = () => {
   const { itemId } = useParams();
@@ -23,6 +24,11 @@ const BorrowItem = () => {
 
   const { data: itemDetails, isLoading: isItmLoading } = useGetItemsByIdQuery(
     Number(itemId)
+  );
+
+  //get undistributed item
+  const { data: undistributedItem } = useGetUndistributedItemByIdQuery(
+    Number(itemDetails?.ITEM_ID)
   );
 
   //use snackbar hook
@@ -35,7 +41,7 @@ const BorrowItem = () => {
   const [borrowItemForm, setBorrowItemForm] = useState<
     Partial<BorrowingTransactionTypes>
   >({
-    distributed_item_id: itemDetails?.ID,
+    distributed_item_id: itemDetails?.id,
     borrower_emp_id: empDetails?.ID,
     owner_emp_id: itemDetails?.accountable_emp,
     quantity: 1,
@@ -62,6 +68,17 @@ const BorrowItem = () => {
     console.log("submitted! ", borrowItemForm);
   };
 
+  //setting the default form
+  useEffect(() => {
+    if (itemDetails && empDetails && undistributedItem) {
+      setBorrowItemForm((prevForm) => ({
+        ...prevForm,
+        distributed_item_id: undistributedItem?.ID,
+        owner_emp_id: itemDetails.accountable_emp,
+      }));
+    }
+  }, [itemDetails, undistributedItem, empDetails]);
+
   if (isItmLoading) return <p className="animate-pulse">Loading...</p>;
 
   return (
@@ -71,7 +88,7 @@ const BorrowItem = () => {
       <div className="mt-4">
         <h1>Item Details: </h1>
         <p>{itemDetails?.itemDetails.ITEM_NAME}</p>
-        <p>PAR #: {itemDetails?.itemDetails.PAR_NO}</p>
+        <p>PAR #: {undistributedItem?.PAR_NO}</p>
         <p>
           Accountable Person / Owner:{" "}
           {`${itemDetails?.accountableEmpDetails.LASTNAME}, 

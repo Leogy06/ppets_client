@@ -217,7 +217,7 @@ const DistributionModal = ({
                 formField="Material Requisition"
               />
               <SpanItemForm
-                itemField={itemDetails?.ICS_NO ?? "N/A"}
+                itemField={itemDetails?.PIS_NO ?? "N/A"}
                 formField="Inventory Custodian Slip"
               />
             </div>
