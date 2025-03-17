@@ -17,7 +17,7 @@ const DefaultTextField = ({
   placeholder?: string;
   value?: string;
   required?: boolean;
-  type?: "text" | "number";
+  type?: "text" | "number" | "password";
   disabled?: boolean;
 }) => {
   return (

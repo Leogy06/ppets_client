@@ -121,6 +121,7 @@ const Register = () => {
           <DefaultTextField
             label="Password"
             name="password"
+            type="password"
             onChange={handleOnchange}
             value={registerForm.password}
             required

@@ -80,7 +80,6 @@ const ManagerPage = () => {
     return items.map((item: Item) => {
       return {
         ...item,
-        id: item.ITEM_ID,
         itemName: item?.itemDetails?.ITEM_NAME ?? "N/A",
         parNo: item.itemDetails?.PAR_NO ?? "N/A",
         mrNo: item.itemDetails?.MR_NO ?? "N/A",
@@ -208,7 +207,7 @@ const ManagerPage = () => {
               btnText="borrow"
               color="primary"
               disabled={itemShow === 1 || params.row.quantity <= 0}
-              onClick={() => window.alert("Function coming soon.")}
+              onClick={() => router.push(`/manager/borrow/${params.row.id}`)}
             />
           </div>
         );

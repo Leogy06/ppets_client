@@ -1,5 +1,6 @@
 "use client";
 
+import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetOwnApprovedTransactionQuery } from "@/features/api/apiSlice";
@@ -21,7 +22,7 @@ const OnLendItems = () => {
       width: 180,
       valueGetter: (params: UndistributedItem) => `${params.ITEM_NAME}`,
     },
-    { field: "quantity", headerName: "Quantity", width: 90 },
+    { field: "quantity", headerName: "Quantity", width: 90, type: "number" },
     {
       field: "borrowerEmp",
       headerName: "Borrowed By",
@@ -51,7 +52,7 @@ const OnLendItems = () => {
     <>
       <PageHeader pageHead="On Lend Items" />
       <div className="h-[400px]">
-        <DataGrid rows={data} columns={columns} />
+        <DataTable loading={isLoading} rows={data} columns={columns} />
       </div>
     </>
   );

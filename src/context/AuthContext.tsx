@@ -7,6 +7,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "./GlobalSnackbar";
 import { Credentials, Employee, User } from "@/types/global_types";
+import { handleError } from "@/utils/errorHandler";
 
 // Define the AuthContext type
 interface AuthContextType {
@@ -45,16 +46,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(result.user);
       setEmpDetails(result.empDetails);
-    } catch (error: unknown) {
-      if (typeof error === "object" && error !== null && "data" in error) {
-        const err = error as { data?: { message?: string } };
-        console.error("Unable to login. ", error);
-
-        openSnackbar(err.data?.message || "Unable to login", "error");
-      } else {
-        openSnackbar("Unable to login", "error");
-      }
+    } catch (error) {
+      const errMsg = handleError(error, "Unable to login");
       console.error(`Unable to login`, error);
+      openSnackbar(errMsg, "error");
     }
   };
 

@@ -236,6 +236,15 @@ export const apiSlice = createApi({
       invalidatesTags: ["Items", "BorrowingTransaction"],
     }),
 
+    createBorrowTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction/borrow",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Items", "BorrowingTransaction"],
+    }),
+
     //approve transaction
     approveTransaction: builder.mutation({
       query: ({ transactionId, approverId }) => ({
@@ -394,6 +403,8 @@ export const {
   //transction count by department
   useGetCountAllTimeRequestDepartmentQuery,
   useGetCountTodayRequestDepartmentQuery,
+  //borrow
+  useCreateBorrowTransactionMutation,
 
   //status process
   useGetStatusProcessQuery,

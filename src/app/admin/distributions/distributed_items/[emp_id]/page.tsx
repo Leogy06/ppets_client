@@ -1,5 +1,6 @@
 "use client";
 
+import BackArrow from "@/app/(component)/backArrow";
 import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import {
@@ -140,15 +141,18 @@ const DistributedItems = () => {
     });
   }, [ownedItems]);
 
-  if (isEmployeeLoading) {
-    return <p>Loading...</p>;
-  }
+  // if (isEmployeeLoading) {
+  //   return <p>Loading...</p>;
+  // }
   return (
     <>
       <PageHeader pageHead="Distributed Items" />
+      <div className="mb-2">
+        <BackArrow backTo="/admin/distributions" />
+      </div>
       <EmployeeDetails />
       <DataTable
-        loading={isOwnedItemLoading}
+        loading={isOwnedItemLoading || isEmployeeLoading}
         rows={ownedItemsData || []}
         columns={columns}
       />

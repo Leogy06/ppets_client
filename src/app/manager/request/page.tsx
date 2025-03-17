@@ -1,5 +1,6 @@
 "use client";
 
+import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
@@ -183,7 +184,7 @@ const RequestItem = () => {
           />
         )}
       </div>
-      <DataGrid
+      <DataTable
         sx={{ height: 400 }}
         rows={requestRowsToShow}
         columns={column}

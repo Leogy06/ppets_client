@@ -2,6 +2,7 @@
 
 import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
+import DataTable from "@/app/(component)/datagrid";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
@@ -285,19 +286,19 @@ const LendItem = () => {
           </div>
         )}
       </div>
-      <div className="h-[340px]">
-        <DataGrid
-          rows={employees?.map((emp: Employee) => ({
+      <DataTable
+        rows={
+          employees?.map((emp: Employee) => ({
             ...emp,
             fullName: `${emp.LASTNAME}, ${emp.FIRSTNAME} ${
               emp.MIDDLENAME ?? ""
             } ${emp.SUFFIX ?? ""}`,
-          }))}
-          getRowId={(params) => params.ID}
-          columns={columns}
-          loading={isEmpLoading}
-        />
-      </div>
+          })) || []
+        }
+        getRowId={(params) => params.ID}
+        columns={columns}
+        loading={isEmpLoading}
+      />
       <LendModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

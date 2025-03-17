@@ -11,6 +11,7 @@ import { socket } from "@/hooks/useSocket";
 import DefaultButton from "./(component)/buttonDefault";
 import { useFirstTimeLoginMutation } from "@/features/api/apiSlice";
 import { useSnackbar } from "@/context/GlobalSnackbar";
+import { handleError } from "@/utils/errorHandler";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -37,26 +38,49 @@ const LoginPage = () => {
   //use snackbar
   const { openSnackbar } = useSnackbar();
 
+  /**
+   * Handle form submission
+   * @param e form event
+   */
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    console.log("loginForm ", loginForm);
+
     //check if first time login
     if (loginForm.username === loginForm.password) {
-      const result = await firstTimeLoginApi(loginForm.username).unwrap();
+      try {
+        console.log("first time login detected");
 
-      console.log("result ", result);
+        //call api to check if id is first time login
+        const result = await firstTimeLoginApi(loginForm.username).unwrap();
 
-      //check if the input id has in employee
-      if (result.firstTimeLogin) {
-        router.push(`/register/${loginForm.username}`);
-        openSnackbar(result.message, "info");
+        console.log("result ", result);
+
+        //check if the input id has in employee
+        if (result?.firstTimeLogin) {
+          console.log("first time login detected");
+
+          //redirect to register page
+          router.push(`/register/${loginForm.username}`);
+          //show snackbar message
+          openSnackbar(result.message, "info");
+          return;
+        }
+        //show snackbar message
+        openSnackbar(result.message, "error");
         return;
+      } catch (error) {
+        const errMsg = handleError(error, "Unable to check first time login.");
+        openSnackbar(errMsg, "error");
+        console.error("error ", errMsg);
+        return; // necessary to display error
       }
-      openSnackbar(result.message, "error");
-      return;
     }
 
     //login user
+    console.log("login user");
+
     loginUser(loginForm);
   };
 
