@@ -31,7 +31,7 @@ const AdminDashboard = () => {
 
   if (isCountByDptLdng || isTodayCountByDptLdng) {
     return (
-      <span className="text-lg animate-pulse text-center">Loading...</span>
+      <span className="text-lg animate-pulse dead-center">Loading...</span>
     );
   }
 

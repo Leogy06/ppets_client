@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useEffect, useMemo } from "react";
+import React, { ReactNode, useEffect, useMemo, useTransition } from "react";
 import StoreProvider, { useAppSelector } from "@/app/redux";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { GlobalSnackbarProvider } from "@/context/GlobalSnackbar";
@@ -8,11 +8,23 @@ import { AuthProvider } from "@/context/AuthContext";
 import Sidebar from "@/app/(component)/sidebar";
 import Topbar from "@/app/(component)/topbar";
 import SocketProvider from "./provider/SocketProvider";
+import { usePathname } from "next/navigation";
+import Loader from "@/app/(component)/loader";
 
 //for darkmode
 //snackbar
 const Wrapper = ({ children }: { children: ReactNode }) => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
+  //loading state
+  const [loading, startTransition] = useTransition();
+
+  //router
+  const pathname = usePathname();
+
+  useEffect(() => {
+    startTransition(() => {});
+  }, [pathname]); // Run when pathname changes
 
   useEffect(() => {
     if (isDarkMode) {
@@ -44,6 +56,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
             <SocketProvider />
             <Sidebar />
             <Topbar />
+            {loading && <Loader />}
             <div className="p-4">{children}</div>
           </div>
         </AuthProvider>
