@@ -27,8 +27,8 @@ const NotificationList = () => {
   const mappedNotifications = useMemo(() => {
     return notifications.map((notification: NotificationProps) => ({
       ...notification,
-      borrowingTransactionDetails:
-        notification.borrowingTransactionDetails.status,
+      // borrowingTransactionDetails:
+      //   notification.borrowingTransactionDetails.status,
     }));
   }, [notifications]);
 
@@ -41,7 +41,7 @@ const NotificationList = () => {
       <PageHeader icon={Notifications} pageHead="Notification List" />
       {mappedNotifications.map((notification: NotificationProps) => (
         <div key={notification.ID}>
-          <span>Status: {notification.borrowingTransactionDetails}</span>
+          <span>Status: la pa</span>
         </div>
       ))}
     </div>

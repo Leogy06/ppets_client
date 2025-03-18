@@ -105,6 +105,8 @@ const ConfirmSubmitModal = ({
               formField="Material Requisition"
               itemField={itemForm?.MR_NO ?? ""}
             />
+
+            <SpanItemForm formField="ICS" itemField={itemForm?.ICS_NO ?? ""} />
           </div>
         )}
         <div className="flex gap-4 justify-center">
@@ -162,6 +164,7 @@ const AddItem = () => {
     REMARKS: "",
     PAR_NO: "",
     MR_NO: "",
+    ICS_NO: "",
     ACCOUNT_CODE: 0,
     DEPARTMENT_ID: Number(empDetails?.CURRENT_DPT_ID),
     ADDED_BY: Number(empDetails?.ID),
@@ -220,7 +223,7 @@ const AddItem = () => {
       </div>
       <form
         onSubmit={handleOpenModal}
-        className="flex flex-col gap-4 max-h-[32rem] overflow-auto px-4"
+        className="flex flex-col gap-4 max-h-[32rem] overflow-auto px-4 py-2"
       >
         <DefaultTextField
           name="ITEM_NAME"
@@ -325,6 +328,12 @@ const AddItem = () => {
           name="MR_NO"
           label="Material Requisition (MR)"
           value={itemForm.MR_NO}
+          onChange={handleChangeItemForm}
+        />
+        <DefaultTextField
+          name="ICS_NO"
+          label="Inventory Custodian Slip (ICS)"
+          value={itemForm.ICS_NO}
           onChange={handleChangeItemForm}
         />
 

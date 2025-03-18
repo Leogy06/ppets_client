@@ -9,6 +9,7 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useCreateBorrowTransactionMutation,
   useGetItemsByIdQuery,
+  useGetUndistributedItemByIdQuery,
 } from "@/features/api/apiSlice";
 import { BorrowingTransactionTypes } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
@@ -23,6 +24,11 @@ const BorrowItem = () => {
 
   const { data: itemDetails, isLoading: isItmLoading } = useGetItemsByIdQuery(
     Number(itemId)
+  );
+
+  //get undistributed item
+  const { data: undistributedItem } = useGetUndistributedItemByIdQuery(
+    Number(itemDetails?.ITEM_ID)
   );
 
   //use snackbar hook
@@ -62,6 +68,7 @@ const BorrowItem = () => {
     console.log("submitted! ", borrowItemForm);
   };
 
+<<<<<<< HEAD
   //setting distributed item id & owner id
   useEffect(() => {
     if (itemDetails) {
@@ -72,6 +79,18 @@ const BorrowItem = () => {
       });
     }
   }, [itemDetails]);
+=======
+  //setting the default form
+  useEffect(() => {
+    if (itemDetails && empDetails && undistributedItem) {
+      setBorrowItemForm((prevForm) => ({
+        ...prevForm,
+        distributed_item_id: undistributedItem?.ID,
+        owner_emp_id: itemDetails.accountable_emp,
+      }));
+    }
+  }, [itemDetails, undistributedItem, empDetails]);
+>>>>>>> 34aa5783b99e36bc1d2f0d8da9c11ec46965cf68
 
   if (isItmLoading) return <p className="animate-pulse">Loading...</p>;
 
@@ -82,7 +101,7 @@ const BorrowItem = () => {
       <div className="mt-4">
         <h1>Item Details: </h1>
         <p>{itemDetails?.itemDetails.ITEM_NAME}</p>
-        <p>PAR #: {itemDetails?.itemDetails.PAR_NO}</p>
+        <p>PAR #: {undistributedItem?.PAR_NO}</p>
         <p>
           Accountable Person / Owner:{" "}
           {`${itemDetails?.accountableEmpDetails.LASTNAME}, 
