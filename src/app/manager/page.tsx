@@ -209,6 +209,11 @@ const ManagerPage = () => {
               disabled={itemShow === 1 || params.row.quantity <= 0}
               onClick={() => router.push(`/manager/borrow/${params.row.id}`)}
             />
+            <DefaultButton
+              btnText="transfer"
+              color="warning"
+              onClick={() => window.alert("Coming soon")}
+            />
           </div>
         );
       },

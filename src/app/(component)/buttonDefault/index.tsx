@@ -8,7 +8,7 @@ interface DefaultButtonProps {
   onClick?: () => void;
   type?: "submit" | "button" | "reset";
   disabled?: boolean;
-  color?: "primary" | "success" | "secondary" | "error";
+  color?: "primary" | "success" | "secondary" | "error" | "warning" | "info";
   title?: string;
   placement?: "left" | "top" | "right" | "bottom";
   btnIcon?: React.ReactNode;
