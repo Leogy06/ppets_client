@@ -244,7 +244,6 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Items", "BorrowingTransaction"],
     }),
-
     //approve transaction
     approveTransaction: builder.mutation({
       query: ({ transactionId, approverId }) => ({
@@ -277,6 +276,22 @@ export const apiSlice = createApi({
     getCountTodayRequestDepartment: builder.query({
       query: ({ DPT_ID }) => `/transaction/count/today/${DPT_ID}`,
       providesTags: ["TransactionCount"],
+    }),
+    //get only borrowed transaction that has been approved
+    getBorrowedItems: builder.query({
+      query: (borrowerId) => ({
+        url: `/transaction/borrowed_items?borrower_emp_id=${borrowerId}`,
+      }),
+      providesTags: ["BorrowingTransaction"],
+    }),
+    //create return request
+    createReturnTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction/return",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["BorrowingTransaction", "Items"],
     }),
 
     //status
@@ -405,6 +420,10 @@ export const {
   useGetCountTodayRequestDepartmentQuery,
   //borrow
   useCreateBorrowTransactionMutation,
+  //get borrowed items
+  useGetBorrowedItemsQuery,
+  //create return
+  useCreateReturnTransactionMutation,
 
   //status process
   useGetStatusProcessQuery,

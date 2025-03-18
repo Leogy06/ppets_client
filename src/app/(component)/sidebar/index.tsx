@@ -78,6 +78,11 @@ const managerNavigations = [
     icon: <ListAlt />,
     path: "/manager/on_lend",
   },
+  {
+    label: "Borrowed Items",
+    icon: <MoveToInboxOutlined />,
+    path: "/manager/borrowed_items",
+  },
 ];
 
 //employee navigations

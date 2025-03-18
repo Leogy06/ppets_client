@@ -192,7 +192,7 @@ const ManagerPage = () => {
     {
       field: "Actions",
       headerName: "Actions",
-      width: 200,
+      width: 300,
       renderCell: (params) => {
         return (
           <div className="flex gap-1">

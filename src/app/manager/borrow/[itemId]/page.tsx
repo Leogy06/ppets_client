@@ -13,7 +13,7 @@ import {
 import { BorrowingTransactionTypes } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const BorrowItem = () => {
   const { itemId } = useParams();
@@ -35,7 +35,7 @@ const BorrowItem = () => {
   const [borrowItemForm, setBorrowItemForm] = useState<
     Partial<BorrowingTransactionTypes>
   >({
-    distributed_item_id: itemDetails?.ID,
+    distributed_item_id: itemDetails?.ITEM_ID,
     borrower_emp_id: empDetails?.ID,
     owner_emp_id: itemDetails?.accountable_emp,
     quantity: 1,
@@ -61,6 +61,17 @@ const BorrowItem = () => {
     }
     console.log("submitted! ", borrowItemForm);
   };
+
+  //setting distributed item id & owner id
+  useEffect(() => {
+    if (itemDetails) {
+      setBorrowItemForm({
+        ...borrowItemForm,
+        distributed_item_id: itemDetails.ITEM_ID,
+        owner_emp_id: itemDetails.accountable_emp,
+      });
+    }
+  }, [itemDetails]);
 
   if (isItmLoading) return <p className="animate-pulse">Loading...</p>;
 
