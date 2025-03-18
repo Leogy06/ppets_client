@@ -221,23 +221,6 @@ const Requests = () => {
     },
 
     {
-      field: "statusDetails",
-      headerName: "Status",
-      valueGetter: (params: BorrowingStatusProps) =>
-        params?.description.toUpperCase() ?? "--",
-      cellClassName: (params) =>
-        params.row.status === 1
-          ? "cell-approved"
-          : params.row.status === 2
-          ? "cell-pending"
-          : params.row.status === 3
-          ? "cell-cancel"
-          : params.row.status === 4
-          ? "cell-rejected"
-          : "cell-unknown",
-    },
-
-    {
       field: "ownerEmp",
       headerName: "Item Owner",
       valueGetter: (params: Employee) => {
@@ -286,6 +269,22 @@ const Requests = () => {
         params?.DESCRIPTION ?? "--",
     },
     {
+      field: "statusDetails",
+      headerName: "Status",
+      valueGetter: (params: BorrowingStatusProps) =>
+        params?.description.toUpperCase() ?? "--",
+      cellClassName: (params) =>
+        params.row.status === 1
+          ? "cell-approved"
+          : params.row.status === 2
+          ? "cell-pending"
+          : params.row.status === 3
+          ? "cell-cancel"
+          : params.row.status === 4
+          ? "cell-rejected"
+          : "cell-unknown",
+    },
+    {
       field: "Actions",
       headerName: "Actions",
       width: 400,
@@ -317,15 +316,7 @@ const Requests = () => {
             />
             {/* approve return button
              */}
-            <DefaultButton
-              btnText="accept return"
-              disabled={
-                params.row.status === 1 || //approve
-                params.row.status === 3 || // cancel
-                params.row.status === 4 || // reject
-                params.row.remarks !== 5 //return
-              }
-            />
+            <DefaultButton btnText="accept return" />
           </div>
         );
       },
