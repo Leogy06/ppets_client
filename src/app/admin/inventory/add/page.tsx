@@ -35,8 +35,6 @@ const ConfirmSubmitModal = ({
   itemForm: Partial<UndistributedItem>;
   isLoading: boolean;
 }) => {
-  //
-  //
   const SpanItemForm = ({
     formField,
     itemField,
@@ -50,66 +48,40 @@ const ConfirmSubmitModal = ({
     </span>
   );
 
-  //
-  //
+  const formFields = [
+    { label: "Item Name", value: itemForm?.ITEM_NAME ?? "" },
+    { label: "Description", value: itemForm?.DESCRIPTION ?? "" },
+    { label: "Unit Value", value: itemForm?.UNIT_VALUE ?? "" },
+    { label: "Stock", value: itemForm?.STOCK_QUANTITY ?? "" },
+    {
+      label: "Acquisition Date",
+      value: dateFormmater(itemForm?.RECEIVED_AT || null, "YYYY-DD-MM"),
+    },
+    { label: "Serial Number", value: itemForm?.SERIAL_NO ?? "" },
+    { label: "Property Number", value: itemForm?.PROP_NO ?? "" },
+    {
+      label: "Property Acknowledgement Receipt",
+      value: itemForm?.PAR_NO ?? "",
+    },
+    { label: "Material Requisition", value: itemForm?.MR_NO ?? "" },
+  ];
+
   return (
     <DefaultModal open={open} onClose={onClose}>
-      <>
-        <h1 className="text-center text-lg font-semibold">
+      <div className="max-h-[70vh] overflow-auto">
+        <h1 className="text-center text-lg font-semibold mb-2">
           <Inventory2Outlined />
           Summary
         </h1>
         <hr />
         {itemForm && (
-          <div className="flex flex-col gap-2">
-            <SpanItemForm
-              formField="Item Name"
-              itemField={itemForm?.ITEM_NAME ?? ""}
-            />
-            <SpanItemForm
-              formField="Description"
-              itemField={itemForm?.DESCRIPTION ?? ""}
-            />
-            <SpanItemForm
-              formField="Unit Value"
-              itemField={itemForm?.UNIT_VALUE ?? ""}
-            />
-            <SpanItemForm
-              formField="Stock"
-              itemField={itemForm?.STOCK_QUANTITY ?? ""}
-            />
-            <SpanItemForm
-              formField="Acquisition Date"
-              itemField={dateFormmater(
-                itemForm?.RECEIVED_AT || null,
-                "YYYY-DD-MM"
-              )}
-            />
-
-            <SpanItemForm
-              formField="Serial Number"
-              itemField={itemForm?.SERIAL_NO ?? ""}
-            />
-
-            <SpanItemForm
-              formField="Property Number"
-              itemField={itemForm?.PROP_NO ?? ""}
-            />
-
-            <SpanItemForm
-              formField="Property Acknowledgement Receipt"
-              itemField={itemForm?.PAR_NO ?? ""}
-            />
-
-            <SpanItemForm
-              formField="Material Requisition"
-              itemField={itemForm?.MR_NO ?? ""}
-            />
-
-            <SpanItemForm formField="ICS" itemField={itemForm?.ICS_NO ?? ""} />
+          <div className="flex flex-col gap-2 mt-2">
+            {formFields.map(({ label, value }) => (
+              <SpanItemForm key={label} formField={label} itemField={value} />
+            ))}
           </div>
         )}
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-end mt-2">
           <DefaultButton
             onClick={onClose}
             btnText="cancel"
@@ -126,7 +98,7 @@ const ConfirmSubmitModal = ({
             disabled={isLoading}
           />
         </div>
-      </>
+      </div>
     </DefaultModal>
   );
 };
@@ -156,7 +128,7 @@ const AddItem = () => {
     ITEM_NAME: "",
     DESCRIPTION: "",
     UNIT_VALUE: 0,
-    STOCK_QUANTITY: 0,
+    STOCK_QUANTITY: 1,
     RECEIVED_AT: null,
     PIS_NO: "",
     SERIAL_NO: "",
@@ -176,17 +148,6 @@ const AddItem = () => {
   //form submit (just to open modal);
   const handleOpenModal = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      !itemForm.ITEM_NAME ||
-      !itemForm.DESCRIPTION ||
-      !itemForm.STOCK_QUANTITY ||
-      !itemForm.UNIT_VALUE ||
-      !itemForm.SERIAL_NO ||
-      !itemForm.PROP_NO
-    ) {
-      openSnackbar("Some required fields are empty. ", "error");
-      return;
-    }
 
     setIsModalOpen(true);
   };
@@ -300,12 +261,7 @@ const AddItem = () => {
             }
           />
         </LocalizationProvider>
-        <DefaultTextField
-          name="PIS_NO"
-          label="Requisition and Issue (RIS)"
-          value={itemForm.PIS_NO}
-          onChange={handleChangeItemForm}
-        />
+
         <DefaultTextField
           name="SERIAL_NO"
           label="SERIAL Number"
@@ -328,12 +284,6 @@ const AddItem = () => {
           name="MR_NO"
           label="Material Requisition (MR)"
           value={itemForm.MR_NO}
-          onChange={handleChangeItemForm}
-        />
-        <DefaultTextField
-          name="ICS_NO"
-          label="Inventory Custodian Slip (ICS)"
-          value={itemForm.ICS_NO}
           onChange={handleChangeItemForm}
         />
 
