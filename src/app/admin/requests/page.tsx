@@ -288,7 +288,7 @@ const Requests = () => {
     {
       field: "Actions",
       headerName: "Actions",
-      width: 300,
+      width: 400,
       renderCell: (params) => {
         return (
           <div className="flex gap-1">
@@ -313,6 +313,17 @@ const Requests = () => {
                 params.row.status === 3 ||
                 params.row.status === 4 ||
                 params.row.status === 5
+              }
+            />
+            {/* approve return button
+             */}
+            <DefaultButton
+              btnText="accept return"
+              disabled={
+                params.row.status === 1 || //approve
+                params.row.status === 3 || // cancel
+                params.row.status === 4 || // reject
+                params.row.remarks !== 5 //return
               }
             />
           </div>
