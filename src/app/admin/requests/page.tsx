@@ -20,7 +20,7 @@ import {
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { Cancel, PictureAsPdf } from "@mui/icons-material";
+import { Cancel, PictureAsPdf, RequestQuote } from "@mui/icons-material";
 import { Modal, Paper, Tooltip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
@@ -274,6 +274,11 @@ const Requests = () => {
 
   //colums
   const columns: GridColDef[] = [
+    // {
+    //   field: "id",
+    //   headerName: "ID",
+    //   width: 80,
+    // },
     {
       field: "itemDetails",
       headerName: "Item name",
@@ -434,7 +439,7 @@ const Requests = () => {
   return (
     <>
       <div className="flex justify-between items-start">
-        <PageHeader pageHead="Requests" />
+        <PageHeader pageHead="Requests" icon={RequestQuote} />
         <Tooltip title={<span className="text-lg">Preview PDF</span>}>
           <button onClick={handlePDFPreview}>
             <PictureAsPdf />

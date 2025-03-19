@@ -2,6 +2,7 @@
 
 import {
   AccountTreeOutlined,
+  Autorenew,
   Dashboard,
   Inventory,
   ListAlt,
@@ -9,8 +10,6 @@ import {
   MoveToInboxOutlined,
   PanToolAltSharp,
   People,
-  RequestPageOutlined,
-  RequestPageRounded,
   RequestQuoteOutlined,
 } from "@mui/icons-material";
 import {
@@ -51,7 +50,7 @@ const navigations = [
   },
   {
     label: "Requests",
-    icon: <RequestPageOutlined />,
+    icon: <Autorenew />,
     path: "/admin/requests",
   },
   {
@@ -70,7 +69,7 @@ const managerNavigations = [
   },
   {
     label: "Request",
-    icon: <RequestPageRounded />,
+    icon: <Autorenew />,
     path: "/manager/request",
   },
   {
@@ -94,7 +93,7 @@ const employeeNavigations = [
   },
   {
     label: "Request Item",
-    icon: <RequestQuoteOutlined />,
+    icon: <Autorenew />,
     path: "/employee/request_item",
   },
 ];
