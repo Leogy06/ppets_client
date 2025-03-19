@@ -302,6 +302,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["BorrowingTransaction"],
     }),
+    //create transfer transaction
+    createTransferTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction/create/transfer",
+        method: "PUT",
+        body: data,
+      }),
+    }),
 
     //status
     getStatusProcess: builder.query<StatusProcess[], void>({
@@ -435,6 +443,7 @@ export const {
   useCreateReturnTransactionMutation,
   //approve return
   useApproveReturnTransactionMutation,
+  useCreateTransferTransactionMutation,
 
   //status process
   useGetStatusProcessQuery,

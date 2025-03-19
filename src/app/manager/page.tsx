@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import {
+  useCreateTransferTransactionMutation,
   useGetItemsByOwnerQuery,
   useGetItemsNotOwnedQuery,
 } from "@/features/api/apiSlice";
@@ -13,6 +14,7 @@ import DefaultButton from "../(component)/buttonDefault";
 import { useRouter } from "next/navigation";
 import { ArrowDropDownCircleSharp } from "@mui/icons-material";
 import DataTable from "../(component)/datagrid";
+import DefaultModal from "../(component)/modal";
 
 //dropdown item to show
 const ItemDropDown = ({
@@ -48,6 +50,31 @@ const ItemDropDown = ({
   );
 };
 
+//transfer item modal
+const TransferItemModal = ({
+  open,
+  close,
+  handleSubmit,
+  itemToTransfer,
+}: {
+  open: boolean;
+  close: () => void;
+  handleSubmit: () => void;
+  itemToTransfer: Item;
+}) => {
+  return (
+    <DefaultModal open={open} onClose={close}>
+      <h1 className="text-lg font-bold">Transfer Item</h1>
+      <p className="sm">Are you sure you want to transfer this item?</p>
+      <p>
+        <span>Item: {itemToTransfer?.itemDetails?.ITEM_NAME ?? "Unknown"}</span>
+        <span>PAR: {itemToTransfer?.itemDetails.PAR_NO ?? "Unknown"}</span>
+        <span>Quantity: {itemToTransfer.quantity}</span>
+      </p>
+    </DefaultModal>
+  );
+};
+
 const ManagerPage = () => {
   const { user, empDetails } = useAuth();
 
@@ -71,6 +98,18 @@ const ManagerPage = () => {
   const [itemShow, setItemShow] = useState(1);
 
   const [openDropdownItem, setOpenDropdownItem] = useState(false);
+
+  //open transact item modal
+  const [openModalTransac, setOpenModalTransac] = useState(false);
+  const [itemToTransact, setItemToTransact] = useState<Item | null>(null);
+  //use creat transfer api
+  const [createTransfer] = useCreateTransferTransactionMutation();
+
+  //set to open transfer item modal
+  const handaleOpenTransferMOdal = (itemDetails: Item) => {
+    setItemToTransact(itemDetails);
+    setOpenModalTransac(true);
+  };
 
   //mapped items to show
   const itemToShow = useMemo(() => {
@@ -217,7 +256,7 @@ const ManagerPage = () => {
             <DefaultButton
               btnText="transfer"
               color="warning"
-              onClick={() => window.alert("Coming soon")}
+              onClick={() => handaleOpenTransferMOdal(params.row)}
             />
           </div>
         );
