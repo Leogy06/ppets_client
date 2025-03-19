@@ -407,7 +407,7 @@ const Requests = () => {
              */}
             <DefaultButton
               btnText="accept return"
-              onClick={() => handleOpenReturnModal(params.row)}
+              onClick={() => handleOpenReturnModal(params.row.id)}
             />
           </div>
         );
