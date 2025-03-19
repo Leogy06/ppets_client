@@ -20,7 +20,8 @@ const OnLendItems = () => {
       field: "itemDetails",
       headerName: "Item",
       width: 180,
-      valueGetter: (params: UndistributedItem) => `${params.ITEM_NAME}`,
+      valueGetter: (params: UndistributedItem) =>
+        `${params?.ITEM_NAME ?? "N/A"}`,
     },
     { field: "quantity", headerName: "Quantity", width: 90, type: "number" },
     {
@@ -42,11 +43,11 @@ const OnLendItems = () => {
     },
   ];
 
-  //   useEffect(() => {
-  //     if (data) {
-  //       console.log("Data ", data);
-  //     }
-  //   }, [data]);
+  useEffect(() => {
+    if (data) {
+      console.log("Data ", data);
+    }
+  }, [data]);
 
   return (
     <>

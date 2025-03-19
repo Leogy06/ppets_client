@@ -11,6 +11,7 @@ import {
 import {
   Employee,
   StatusProcess,
+  TransactionRemarksProp,
   UndistributedItem,
 } from "@/types/global_types";
 import { ArrowDropDownCircle } from "@mui/icons-material";
@@ -142,9 +143,11 @@ const RequestItem = () => {
       width: 200,
     },
     {
-      field: "transactionType",
+      field: "transactionRemarksDetails",
       headerName: "Transaction ",
-      width: 100,
+      width: 150,
+      valueGetter: (params: TransactionRemarksProp) =>
+        params?.DESCRIPTION ?? "N/A",
     },
   ];
 

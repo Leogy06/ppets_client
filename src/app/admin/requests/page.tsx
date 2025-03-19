@@ -2,10 +2,12 @@
 
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
+import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
+  useApproveReturnTransactionMutation,
   useApproveTransactionMutation,
   useGetBorrowingTransactionByDptQuery,
   useRejectTransactionMutation,
@@ -114,6 +116,31 @@ const ConfirmModalReject = ({
   );
 };
 
+//confirm return modal
+const ConfirmReturnApproveModal = ({
+  open,
+  close,
+  handleApproveReturnTransaction,
+}: {
+  open: boolean;
+  close: () => void;
+  handleApproveReturnTransaction: () => void;
+}) => {
+  return (
+    <DefaultModal open={open} onClose={close}>
+      <h1 className="text-lg font-bold">Confirm Approve Return Item?</h1>
+      <p> Are you sure you want to approve return this item? </p>
+      <div className="flex gap-1 justify-end">
+        <DefaultButton btnText="cancel" variant="text" onClick={close} />
+        <DefaultButton
+          btnText="confirm"
+          onClick={handleApproveReturnTransaction}
+        />
+      </div>
+    </DefaultModal>
+  );
+};
+
 const Requests = () => {
   //use hooks
   const { empDetails } = useAuth();
@@ -138,9 +165,16 @@ const Requests = () => {
   //open modal reject
   const [openModalReject, setOpenModalReject] = useState(false);
 
+  //open modal approve return item
+  const [openModalReturnApprove, setOpenModalReturnApprove] = useState(false);
+
   //transaction id state
   const [transactionId, setTransactionId] =
     useState<BorrowingTransactionTypes["id"]>(null);
+
+  //use approve return transaction
+  const [approveReturnTransaction, { isLoading: isApproveReturnLoading }] =
+    useApproveReturnTransactionMutation();
 
   //handles
   //handle open modal
@@ -202,6 +236,37 @@ const Requests = () => {
       const errMsg = handleError(error, "Unable to reject transaction.");
       openSnackbar(errMsg, "error");
     }
+  };
+
+  //open return modal
+  const handleOpenReturnModal = (
+    transactionId: BorrowingTransactionTypes["id"]
+  ) => {
+    setTransactionId(transactionId);
+    setOpenModalReturnApprove(true);
+  };
+
+  //handle approve return transaction
+  const handleApproveReturnTransaction = async () => {
+    try {
+      const result = await approveReturnTransaction(transactionId).unwrap();
+
+      openSnackbar(result?.message ?? "Transaction approved. ", "success");
+    } catch (error) {
+      console.error("Unable to approve return transaction.", error);
+
+      const errMsg = handleError(
+        error,
+        "Unable to approve return transaction."
+      );
+      openSnackbar(errMsg, "error");
+    }
+  };
+
+  //handle close accept return modal
+  const handleCloseReturnModal = () => {
+    setTransactionId(null);
+    setOpenModalReturnApprove(false);
   };
 
   //colums
@@ -316,7 +381,10 @@ const Requests = () => {
             />
             {/* approve return button
              */}
-            <DefaultButton btnText="accept return" />
+            <DefaultButton
+              btnText="accept return"
+              onClick={() => handleOpenReturnModal(params.row.id)}
+            />
           </div>
         );
       },
@@ -392,6 +460,12 @@ const Requests = () => {
         close={handleCloseModalReject}
         handleRejectTransaction={handleRejectTransaction}
         isLoading={isRejectloading}
+      />
+      {/* confirm accpet return */}
+      <ConfirmReturnApproveModal
+        open={openModalReturnApprove}
+        close={handleCloseReturnModal}
+        handleApproveReturnTransaction={handleApproveReturnTransaction}
       />
     </>
   );

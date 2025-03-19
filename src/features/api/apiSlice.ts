@@ -293,6 +293,15 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["BorrowingTransaction", "Items"],
     }),
+    //approve return request
+    approveReturnTransaction: builder.mutation({
+      query: (transactionId) => ({
+        url: `/transaction/approve/return`,
+        method: "PUT",
+        body: { id: transactionId },
+      }),
+      invalidatesTags: ["BorrowingTransaction"],
+    }),
 
     //status
     getStatusProcess: builder.query<StatusProcess[], void>({
@@ -424,6 +433,8 @@ export const {
   useGetBorrowedItemsQuery,
   //create return
   useCreateReturnTransactionMutation,
+  //approve return
+  useApproveReturnTransactionMutation,
 
   //status process
   useGetStatusProcessQuery,

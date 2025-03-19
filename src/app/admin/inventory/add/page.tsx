@@ -286,6 +286,12 @@ const AddItem = () => {
           value={itemForm.MR_NO}
           onChange={handleChangeItemForm}
         />
+        <DefaultTextField
+          name="PIS_NO"
+          label="PIS Number"
+          value={itemForm.PIS_NO}
+          onChange={handleChangeItemForm}
+        />
 
         {/**ACcount code should be select auto complete */}
         <div className="flex gap-2 justify-center md:justify-end">

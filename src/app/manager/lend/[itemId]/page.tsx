@@ -267,7 +267,7 @@ const LendItem = () => {
             <p>
               Name |{" "}
               <span className="font-medium text-base">
-                {itemDetails.itemDetails.ITEM_NAME}
+                {itemDetails?.itemDetails?.ITEM_NAME ?? ""}
               </span>
             </p>
             <p>

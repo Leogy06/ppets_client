@@ -107,11 +107,6 @@ const ManagerPage = () => {
 
   const columns: GridColDef[] = [
     {
-      field: "id",
-      headerName: "ID",
-      width: 50,
-    },
-    {
       field: "itemName",
       headerName: "Item",
       width: 180,
