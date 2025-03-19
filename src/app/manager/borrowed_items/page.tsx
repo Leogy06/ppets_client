@@ -20,11 +20,13 @@ const ConfirmReturnModal = ({
   handleClose,
   transactionDetails,
   handleReturnItem,
+  loading,
 }: {
   open: boolean;
   handleClose: () => void;
   transactionDetails: BorrowingTransactionTypes | null;
   handleReturnItem: () => void;
+  loading: boolean;
 }) => {
   useEffect(() => {
     if (transactionDetails) {
@@ -76,8 +78,13 @@ const ConfirmReturnModal = ({
             btnText="cancel"
             variant="text"
             onClick={handleClose}
+            disabled={loading}
           />
-          <DefaultButton btnText="return" onClick={handleReturnItem} />
+          <DefaultButton
+            btnText="return"
+            onClick={handleReturnItem}
+            disabled={loading}
+          />
         </div>
       </div>
     </DefaultModal>
@@ -94,7 +101,8 @@ const BorrowedItems = () => {
   const { openSnackbar } = useSnackbar();
 
   //use creat return item
-  const [createReturn] = useCreateReturnTransactionMutation();
+  const [createReturn, { isLoading: isReturnLoading }] =
+    useCreateReturnTransactionMutation();
 
   //confirm modal
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
@@ -109,6 +117,7 @@ const BorrowedItems = () => {
       console.log("result ", result);
 
       openSnackbar(result?.message ?? "Successfully returned item", "success");
+      handleCloseModal();
     } catch (error) {
       console.error("Unable to return item. - ", error);
       const errMsg = handleError(error, "Unable to return item.");
@@ -179,6 +188,7 @@ const BorrowedItems = () => {
         handleClose={handleCloseModal}
         transactionDetails={transactionDetails}
         handleReturnItem={handleReturnItem}
+        loading={isReturnLoading}
       />
     </>
   );

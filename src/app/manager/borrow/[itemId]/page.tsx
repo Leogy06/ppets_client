@@ -3,6 +3,7 @@
 import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DefaultTextField from "@/app/(component)/defaultTextField";
+import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
@@ -13,8 +14,44 @@ import {
 } from "@/features/api/apiSlice";
 import { BorrowingTransactionTypes } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+
+//confirm borrow item
+const ConfirmBorrow = ({
+  open,
+  onClose,
+  handleBorrowItem,
+  loading,
+}: {
+  open: boolean;
+  onClose: () => void;
+  handleBorrowItem: () => void;
+  loading: boolean;
+}) => {
+  return (
+    <DefaultModal open={open} onClose={onClose}>
+      <h1 className="text-lg font-bold">Confirm Borrow Item?</h1>
+      <p className="text-sm mb-4">
+        {" "}
+        Are you sure you want to borrow this item?{" "}
+      </p>
+      <div className="flex gap-1 justify-end">
+        <DefaultButton
+          btnText="cancel"
+          variant="text"
+          onClick={onClose}
+          disabled={loading}
+        />
+        <DefaultButton
+          btnText="confirm"
+          onClick={handleBorrowItem}
+          disabled={loading}
+        />
+      </div>
+    </DefaultModal>
+  );
+};
 
 const BorrowItem = () => {
   const { itemId } = useParams();
@@ -35,7 +72,11 @@ const BorrowItem = () => {
   const { openSnackbar } = useSnackbar();
 
   //create borrow api
-  const [createBorrowTransaction] = useCreateBorrowTransactionMutation();
+  const [createBorrowTransaction, { isLoading: isBorrowLoading }] =
+    useCreateBorrowTransactionMutation();
+
+  //confirm borrow modal
+  const [openModalBorrow, setopenModalBorrow] = useState(false);
 
   //borrow form
   const [borrowItemForm, setBorrowItemForm] = useState<
@@ -49,16 +90,19 @@ const BorrowItem = () => {
     remarks: "",
   });
 
+  //router
+  const router = useRouter();
+
   //   console.log("itemDetails ", itemDetails);
 
   //handle submit borrow form
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
       const result = await createBorrowTransaction(borrowItemForm).unwrap();
 
       console.log("result ", result);
-      openSnackbar("Successfully created borrow transaction.", "success");
+      openSnackbar("Successfully created a request to borrow item.", "success");
+      router.push("/manager");
     } catch (error) {
       console.error("Unable to create borrow Transaction. ", error);
       const errMsg = handleError(error, "Unable to create borrow Transaction.");
@@ -68,7 +112,11 @@ const BorrowItem = () => {
     console.log("submitted! ", borrowItemForm);
   };
 
-<<<<<<< HEAD
+  const handleOpenBorrow = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setopenModalBorrow(true);
+  };
+
   //setting distributed item id & owner id
   useEffect(() => {
     if (itemDetails) {
@@ -79,18 +127,6 @@ const BorrowItem = () => {
       });
     }
   }, [itemDetails]);
-=======
-  //setting the default form
-  useEffect(() => {
-    if (itemDetails && empDetails && undistributedItem) {
-      setBorrowItemForm((prevForm) => ({
-        ...prevForm,
-        distributed_item_id: undistributedItem?.ID,
-        owner_emp_id: itemDetails.accountable_emp,
-      }));
-    }
-  }, [itemDetails, undistributedItem, empDetails]);
->>>>>>> 34aa5783b99e36bc1d2f0d8da9c11ec46965cf68
 
   if (isItmLoading) return <p className="animate-pulse">Loading...</p>;
 
@@ -112,7 +148,7 @@ const BorrowItem = () => {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleOpenBorrow}>
         <div className="flex flex-col gap-2 mt-4">
           <DefaultTextField
             name="quantity"
@@ -136,6 +172,8 @@ const BorrowItem = () => {
               setBorrowItemForm({ ...borrowItemForm, remarks: e.target.value })
             }
             label="Remarks"
+            required={false}
+            placeholder="Optional"
           />
           <div className="flex gap-1 justify-end mt-4">
             <DefaultButton btnText="cancel" variant="text" />
@@ -143,6 +181,12 @@ const BorrowItem = () => {
           </div>
         </div>
       </form>
+      <ConfirmBorrow
+        open={openModalBorrow}
+        onClose={() => setopenModalBorrow(false)}
+        handleBorrowItem={handleSubmit}
+        loading={isBorrowLoading}
+      />
     </>
   );
 };

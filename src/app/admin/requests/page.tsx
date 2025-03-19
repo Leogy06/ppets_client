@@ -129,7 +129,10 @@ const ConfirmReturnApproveModal = ({
   return (
     <DefaultModal open={open} onClose={close}>
       <h1 className="text-lg font-bold">Confirm Approve Return Item?</h1>
-      <p> Are you sure you want to approve return this item? </p>
+      <p className="text-sm mb-4">
+        {" "}
+        Are you sure you want to approve return this item?{" "}
+      </p>
       <div className="flex gap-1 justify-end">
         <DefaultButton btnText="cancel" variant="text" onClick={close} />
         <DefaultButton
@@ -246,12 +249,18 @@ const Requests = () => {
     setOpenModalReturnApprove(true);
   };
 
+  //handle close accept return modal
+  const handleCloseReturnModal = () => {
+    setTransactionId(null);
+    setOpenModalReturnApprove(false);
+  };
   //handle approve return transaction
   const handleApproveReturnTransaction = async () => {
     try {
       const result = await approveReturnTransaction(transactionId).unwrap();
 
       openSnackbar(result?.message ?? "Transaction approved. ", "success");
+      handleCloseReturnModal();
     } catch (error) {
       console.error("Unable to approve return transaction.", error);
 
@@ -261,12 +270,6 @@ const Requests = () => {
       );
       openSnackbar(errMsg, "error");
     }
-  };
-
-  //handle close accept return modal
-  const handleCloseReturnModal = () => {
-    setTransactionId(null);
-    setOpenModalReturnApprove(false);
   };
 
   //colums
