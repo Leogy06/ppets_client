@@ -306,7 +306,7 @@ export const apiSlice = createApi({
     createTransferTransaction: builder.mutation({
       query: (data) => ({
         url: "/transaction/create/transfer",
-        method: "PUT",
+        method: "POST",
         body: data,
       }),
     }),

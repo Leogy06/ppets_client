@@ -48,6 +48,7 @@ export interface User {
 }
 
 export interface Employee {
+  fullName: string; // customized
   ID: number;
   ID_NUMBER: number | null;
   DEPARTMENT_ID: number;
