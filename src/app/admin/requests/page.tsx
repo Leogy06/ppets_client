@@ -121,10 +121,12 @@ const ConfirmReturnApproveModal = ({
   open,
   close,
   handleApproveReturnTransaction,
+  loading,
 }: {
   open: boolean;
   close: () => void;
   handleApproveReturnTransaction: () => void;
+  loading: boolean;
 }) => {
   return (
     <DefaultModal open={open} onClose={close}>
@@ -134,10 +136,16 @@ const ConfirmReturnApproveModal = ({
         Are you sure you want to approve return this item?{" "}
       </p>
       <div className="flex gap-1 justify-end">
-        <DefaultButton btnText="cancel" variant="text" onClick={close} />
+        <DefaultButton
+          btnText="cancel"
+          variant="text"
+          onClick={close}
+          disabled={loading}
+        />
         <DefaultButton
           btnText="confirm"
           onClick={handleApproveReturnTransaction}
+          disabled={loading}
         />
       </div>
     </DefaultModal>
@@ -171,9 +179,14 @@ const Requests = () => {
   //open modal approve return item
   const [openModalReturnApprove, setOpenModalReturnApprove] = useState(false);
 
-  //transaction id state
-  const [transactionId, setTransactionId] =
-    useState<BorrowingTransactionTypes["id"]>(null);
+  //transaction for approve reutrn transaction
+  const [transactionDetails, settransactionDetails] =
+    useState<BorrowingTransactionTypes | null>(null);
+
+  //for other transaction
+  const [transactionId, setTransactionId] = useState<
+    BorrowingStatusProps["id"] | null
+  >(null);
 
   //use approve return transaction
   const [approveReturnTransaction, { isLoading: isApproveReturnLoading }] =
@@ -242,22 +255,25 @@ const Requests = () => {
   };
 
   //open return modal
-  const handleOpenReturnModal = (
-    transactionId: BorrowingTransactionTypes["id"]
-  ) => {
-    setTransactionId(transactionId);
+  const handleOpenReturnModal = (transaction: BorrowingTransactionTypes) => {
+    settransactionDetails(transaction);
     setOpenModalReturnApprove(true);
   };
 
   //handle close accept return modal
   const handleCloseReturnModal = () => {
-    setTransactionId(null);
+    settransactionDetails(null);
     setOpenModalReturnApprove(false);
   };
   //handle approve return transaction
   const handleApproveReturnTransaction = async () => {
     try {
-      const result = await approveReturnTransaction(transactionId).unwrap();
+      const result = await approveReturnTransaction({
+        itemId: transactionDetails?.distributed_item_id,
+        newAccountablePerson: empDetails?.ID,
+        quantityTransferred: transactionDetails?.quantity,
+        transaction_id: transactionDetails?.id,
+      }).unwrap();
 
       openSnackbar(result?.message ?? "Transaction approved. ", "success");
       handleCloseReturnModal();
@@ -391,7 +407,7 @@ const Requests = () => {
              */}
             <DefaultButton
               btnText="accept return"
-              onClick={() => handleOpenReturnModal(params.row.id)}
+              onClick={() => handleOpenReturnModal(params.row)}
             />
           </div>
         );
@@ -474,6 +490,7 @@ const Requests = () => {
         open={openModalReturnApprove}
         close={handleCloseReturnModal}
         handleApproveReturnTransaction={handleApproveReturnTransaction}
+        loading={isApproveReturnLoading}
       />
     </>
   );

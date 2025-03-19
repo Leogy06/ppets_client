@@ -4,13 +4,14 @@ import {
   AccountTreeOutlined,
   Autorenew,
   Dashboard,
+  ExpandLess,
+  ExpandMore,
   Inventory,
   ListAlt,
   Logout,
   MoveToInboxOutlined,
   PanToolAltSharp,
   People,
-  RequestQuoteOutlined,
 } from "@mui/icons-material";
 import {
   Box,
@@ -22,11 +23,12 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
 import { useAuth } from "@/context/AuthContext";
 import { getGreeting } from "@/utils/greeting";
+import path from "path";
 
 //global sidebar
 //navigations
@@ -52,6 +54,10 @@ const navigations = [
     label: "Requests",
     icon: <Autorenew />,
     path: "/admin/requests",
+    subMenu: [
+      { label: "All", path: "/admin/requests" },
+      { label: "Transfer", path: "/admin/requests/transfer_item" },
+    ],
   },
   {
     label: "Distributions",
@@ -124,10 +130,7 @@ const SideBarHeader = () => {
 const Sidebar = () => {
   const { user, logoutUser } = useAuth();
   const pathname = usePathname();
-
   const dispatch = useAppDispatch();
-
-  //sidebar
   const isSidebarOpen = useAppSelector(
     (state) => state.global.isSideBarCollapse
   );
@@ -136,20 +139,26 @@ const Sidebar = () => {
     dispatch(setIsSideBarCollapse(false));
   };
 
+  // Track open menus
+  const [openMenus, setOpenMenus] = useState({});
+
+  const userNavigations =
+    user?.role === 1
+      ? navigations
+      : user?.role === 2
+      ? managerNavigations
+      : user?.role === 3
+      ? employeeNavigations
+      : [];
+
+  const toggleSubMenu = (label) => {
+    setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
+
   if (!user) {
     return null;
   }
 
-  const userNavigations =
-    user.role === 1
-      ? navigations
-      : user.role === 2
-      ? managerNavigations
-      : user.role === 3
-      ? employeeNavigations
-      : [];
-
-  //admin sidebar
   return (
     <Drawer open={isSidebarOpen} onClose={closeSidebar}>
       <Box
@@ -164,26 +173,17 @@ const Sidebar = () => {
         <Divider sx={{ borderTopColor: "#375ba5" }} />
         <List>
           {userNavigations.map((navi, index) => (
-            <ListItem
-              key={index}
-              component={Link}
-              href={navi.path}
-              className="flex gap-4 hover:bg-blue-300"
-              sx={(theme) => ({
-                backgroundColor:
-                  pathname === navi.path ? "#375ba5" : "transparent",
-                color:
-                  pathname === navi.path
-                    ? "#fff"
-                    : theme.palette.mode === "dark"
-                    ? "#fff"
-                    : "#000",
-              })}
-            >
-              {navi.icon}
-              <ListItemText
-                primary={navi.label}
+            <div key={index}>
+              <ListItem
+                component={navi.subMenu ? "div" : Link}
+                href={!navi.subMenu ? navi.path : undefined}
+                className="flex gap-4 hover:bg-blue-300 cursor-pointer"
+                onClick={
+                  navi.subMenu ? () => toggleSubMenu(navi.label) : undefined
+                }
                 sx={(theme) => ({
+                  backgroundColor:
+                    pathname === navi.path ? "#375ba5" : "transparent",
                   color:
                     pathname === navi.path
                       ? "#fff"
@@ -191,8 +191,49 @@ const Sidebar = () => {
                       ? "#fff"
                       : "#000",
                 })}
-              />
-            </ListItem>
+              >
+                {navi.icon}
+                <ListItemText
+                  primary={navi.label}
+                  sx={(theme) => ({
+                    color:
+                      pathname === navi.path
+                        ? "#fff"
+                        : theme.palette.mode === "dark"
+                        ? "#fff"
+                        : "#000",
+                  })}
+                />
+                {navi.subMenu &&
+                  (openMenus[navi.label] ? <ExpandLess /> : <ExpandMore />)}
+              </ListItem>
+
+              {/* Sub-menu rendering */}
+              {navi.subMenu && openMenus[navi.label] && (
+                <List sx={{ pl: 4 }}>
+                  {navi.subMenu.map((sub, subIndex) => (
+                    <ListItem
+                      key={subIndex}
+                      component={Link}
+                      href={sub.path}
+                      className="flex gap-4 hover:bg-blue-200"
+                      sx={(theme) => ({
+                        backgroundColor:
+                          pathname === sub.path ? "#375ba5" : "transparent",
+                        color:
+                          pathname === sub.path
+                            ? "#fff"
+                            : theme.palette.mode === "dark"
+                            ? "#fff"
+                            : "#000",
+                      })}
+                    >
+                      <ListItemText primary={sub.label} />
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </div>
           ))}
         </List>
         <div className="self-baseline mt-auto w-full">
