@@ -4,8 +4,9 @@ import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetTransactionsQuery } from "@/features/api/apiSlice";
+import { TransactionProps } from "@/types/global_types";
 import { GridColDef } from "@mui/x-data-grid";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 const BorrowTransaction = () => {
   const { empDetails } = useAuth();
@@ -14,23 +15,32 @@ const BorrowTransaction = () => {
     data: borrowingTransactions,
     isLoading: isBorrowingTransactionsLoading,
   } = useGetTransactionsQuery({
-    DPT_ID: empDetails?.CURRENT_DPT_ID,
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
     TRANSACTION_TYPE: 1,
   });
 
-  const columns: GridColDef[] = [{ field: "id", headerName: "ID", width: 100 }];
+  console.log("type of borrowing transaction ", typeof borrowingTransactions);
 
-  useEffect(() => {
-    if (borrowingTransactions) {
-      console.log("borrowingTransactions", borrowingTransactions);
-    }
-  }, [borrowingTransactions]);
+  console.log("borrowing transactions ", borrowingTransactions);
+
+  const memoizedTransaction = useMemo(
+    () =>
+      borrowingTransactions?.map((transaction) => ({
+        ...transaction,
+        newId: transaction.id,
+      })),
+    [borrowingTransactions]
+  );
+
+  const columns: GridColDef[] = [
+    { field: "newId", headerName: "ID", width: 100 },
+  ];
 
   return (
     <>
       <PageHeader pageHead="Borrow Requests" />
       <DataTable
-        rows={borrowingTransactions}
+        rows={memoizedTransaction || []}
         columns={columns}
         loading={isBorrowingTransactionsLoading}
       />

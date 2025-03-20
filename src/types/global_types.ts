@@ -4,31 +4,26 @@ export interface ErrorParams {
   };
 }
 //item props
-export interface Item {
+export interface DistributedItemProps {
   id?: number;
   ITEM_ID: number | null;
-  name: string;
-  description?: string;
+  undistributedItemDetails: UndistributedItem;
   quantity: number | null;
-  ics?: string;
-  are_no: string;
   prop_no: string;
   serial_no?: string;
   pis_no?: string;
-  class_no?: string;
   acct_code?: string;
   unit_value: number;
-  accountable_emp?: number | null;
+  accountable_emp?: number;
+  accountableEmpDetails: Employee;
   remarks?: string;
   added_by: number | null;
   category_item: number | null;
   OWNER_EMP: number | null;
   DISTRIBUTED_BY: number;
   DISTRIBUTED_ON: Date;
-  itemDetails: UndistributedItem;
   total_value: number;
   ORIGINAL_QUANTITY: number;
-  accountableEmpDetails: Employee;
 }
 
 export interface ItemCategory {
@@ -77,7 +72,7 @@ export interface Department {
   ENTRY_DATE: Date;
 }
 
-export interface BorrowingTransactionTypes {
+export interface TransactionProps {
   id: number | null;
   distributed_item_id: number | null;
   borrower_emp_id: number | null;
@@ -89,7 +84,7 @@ export interface BorrowingTransactionTypes {
   updatedAt: Date;
   name?: string; //item name, not include in db, but in form
   DPT_ID: number | null;
-  itemDetails: UndistributedItem;
+  distributedItemDetails: DistributedItemProps;
   ownerEmp: Employee;
 }
 
@@ -108,7 +103,7 @@ export interface NotificationProps {
   MESSAGE: string;
   createdAt: Date;
   READ: number;
-  borrowingTransactionDetails: BorrowingTransactionTypes;
+  borrowingTransactionDetails: TransactionProps;
 }
 
 export interface NotificationPropsOther {

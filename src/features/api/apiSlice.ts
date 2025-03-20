@@ -1,8 +1,8 @@
 import {
-  BorrowingTransactionTypes,
+  TransactionProps,
   Department,
   Employee,
-  Item,
+  DistributedItemProps,
   StatusProcess,
   UndistributedItem,
 } from "@/types/global_types";
@@ -109,13 +109,13 @@ export const apiSlice = createApi({
 
     //items
     //view
-    getItems: builder.query<Item[], void>({
+    getItems: builder.query<DistributedItemProps[], void>({
       query: () => "/item",
       providesTags: ["Items"],
     }),
 
     //get items by id
-    getItemsById: builder.query<Item, number>({
+    getItemsById: builder.query<DistributedItemProps, number>({
       query: (itemId: number) => `/item/byId/${itemId}`,
       providesTags: ["Items"],
     }),
@@ -145,7 +145,7 @@ export const apiSlice = createApi({
       providesTags: ["Items"],
     }),
     //get items by department
-    getItemsDepartment: builder.query<Item[], number>({
+    getItemsDepartment: builder.query<DistributedItemProps[], number>({
       query: (department) => `/item/byDepartment/${department}`,
       providesTags: ["Items"],
     }),
@@ -161,7 +161,7 @@ export const apiSlice = createApi({
     }),
 
     getItemsNotOwned: builder.query<
-      Item[],
+      DistributedItemProps[],
       { empId: number | undefined; departmentId: number | undefined }
     >({
       query: ({ empId, departmentId }) =>
@@ -262,7 +262,10 @@ export const apiSlice = createApi({
 
     //transactions
     //get transactions
-    getTransactions: builder.query({
+    getTransactions: builder.query<
+      TransactionProps[],
+      { DPT_ID: number; TRANSACTION_TYPE: number }
+    >({
       query: ({ DPT_ID, TRANSACTION_TYPE }) =>
         `/transaction?DPT_ID=${DPT_ID}&TRANSACTION_TYPE=${TRANSACTION_TYPE}`,
       providesTags: ["Transactions"],

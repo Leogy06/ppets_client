@@ -55,9 +55,10 @@ const navigations = [
     icon: <Autorenew />,
     path: "/admin/requests",
     subMenu: [
-      { label: "All", path: "/admin/requests" },
       { label: "Borrows", path: "/admin/requests/borrow_item" },
+      { label: "Lend", path: "/admin/requests/lend_item" },
       { label: "Transfer", path: "/admin/requests/transfer_item" },
+      { label: "Return", path: "/admin/requests/return_item" },
     ],
   },
   {
