@@ -25,15 +25,15 @@ const BorrowTransaction = () => {
 
   const memoizedTransaction = useMemo(
     () =>
-      borrowingTransactions?.map((transaction) => ({
+      borrowingTransactions?.map((transaction: TransactionProps) => ({
         ...transaction,
-        newId: transaction.id,
       })),
     [borrowingTransactions]
   );
 
   const columns: GridColDef[] = [
-    { field: "newId", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "itemName", headerName: "Item", width: 200 },
   ];
 
   return (

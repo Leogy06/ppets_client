@@ -162,7 +162,7 @@ export const apiSlice = createApi({
 
     getItemsNotOwned: builder.query<
       DistributedItemProps[],
-      { empId: number | undefined; departmentId: number | undefined }
+      { empId: number; departmentId: number }
     >({
       query: ({ empId, departmentId }) =>
         `/item/notOwned/${empId}?departmentId=${departmentId}`,

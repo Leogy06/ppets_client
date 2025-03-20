@@ -4,7 +4,7 @@ import React from "react";
 
 import { useAuth } from "@/context/AuthContext";
 import { Dashboard } from "@mui/icons-material";
-import PageHeader from "../(component)/pageheader";
+import PageHeader from "@/app/(component)/pageheader";
 
 const AdminDashboard = () => {
   const { empDetails } = useAuth();

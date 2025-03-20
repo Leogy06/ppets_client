@@ -79,6 +79,7 @@ const managerNavigations = [
     label: "Request",
     icon: <Autorenew />,
     path: "/manager/request",
+    subMenu: [{ label: "Borrow Item", path: "/manager/request/borrow_items" }],
   },
   {
     label: "On Lend Items",
