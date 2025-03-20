@@ -8,11 +8,20 @@ interface PageHeaderProps {
   icon?: SvgIconComponent;
   onClick?: () => void;
   pathTo?: string;
+  hasMarginBottom?: boolean;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ pageHead, icon }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({
+  pageHead,
+  icon,
+  hasMarginBottom = true,
+}) => {
   return (
-    <h1 className={`font-bold text-lg mb-4 flex gap-1 rounded `}>
+    <h1
+      className={`font-bold text-lg ${
+        hasMarginBottom && "mb-4"
+      } flex gap-1 rounded `}
+    >
       {icon && React.createElement(icon)}
       {pageHead}
     </h1>

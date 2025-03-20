@@ -279,6 +279,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
+    getBorrowingTransactionByEmpId: builder.query<
+      TransactionProps[],
+      { empId: number; limit: number }
+    >({
+      query: ({ empId, limit }) =>
+        `/transaction/borrow?empId=${empId}&limit=${limit}`,
+      providesTags: ["Transactions"],
+    }),
   }),
 });
 
@@ -334,6 +342,8 @@ export const {
 
   //transactions
   useGetTransactionsQuery,
-  //borrow
+  //post borrow
   useCreateBorrowingTransactionMutation,
+  //get
+  useGetBorrowingTransactionByEmpIdQuery,
 } = apiSlice;

@@ -19,12 +19,16 @@ import {
 import { mapDistributedItems } from "@/utils/arrayUtils";
 import { handleError } from "@/utils/errorHandler";
 import { GridColDef } from "@mui/x-data-grid";
+import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 
 // - /manager/request/borrow_items
 const BorrowItem = () => {
   //emp user details
   const { empDetails } = useAuth();
+
+  //router for navigation
+  const router = useRouter();
 
   //get items
   const { data: items, isLoading: isItemLoading } = useGetItemsNotOwnedQuery({
@@ -144,7 +148,17 @@ const BorrowItem = () => {
 
   return (
     <>
-      <PageHeader pageHead="Borrow Items" />
+      <div className="flex justify-between items-center mb-2">
+        <PageHeader pageHead="Borrow Items" hasMarginBottom={false} />
+        <button
+          onClick={() =>
+            router.push("/manager/request/borrow_items/transactions")
+          }
+          className="text-sm font-extralight hover:text-gray-500"
+        >
+          See requests
+        </button>
+      </div>
       <DataTable
         columns={columns}
         rows={mappedDistributeditem}
