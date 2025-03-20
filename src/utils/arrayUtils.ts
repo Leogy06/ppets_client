@@ -1,8 +1,8 @@
-import { DistributedItemProps, UndistributedItem } from "@/types/global_types";
+import { DistributedItemProps } from "@/types/global_types";
 
 //distributed item array mapper
 export const mapDistributedItems = (items: DistributedItemProps[]) => {
-  return items.map((item: DistributedItemProps) => {
+  return items.map((item: DistributedItemProps, index: number) => {
     //destructure item details in items
 
     //destructure undistributed item
@@ -12,7 +12,9 @@ export const mapDistributedItems = (items: DistributedItemProps[]) => {
       item.accountableEmpDetails;
 
     return {
+      ...item,
       id: item.id,
+      index,
       itemName: ITEM_NAME,
       itemPar: PAR_NO,
       quantity: item.quantity,

@@ -270,6 +270,15 @@ export const apiSlice = createApi({
         `/transaction?DPT_ID=${DPT_ID}&TRANSACTION_TYPE=${TRANSACTION_TYPE}`,
       providesTags: ["Transactions"],
     }),
+    // borrow transactions
+    createBorrowingTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction/borrow",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
   }),
 });
 
@@ -325,4 +334,6 @@ export const {
 
   //transactions
   useGetTransactionsQuery,
+  //borrow
+  useCreateBorrowingTransactionMutation,
 } = apiSlice;

@@ -5,25 +5,26 @@ export interface ErrorParams {
 }
 //item props
 export interface DistributedItemProps {
-  id?: number;
-  ITEM_ID: number | null;
-  undistributedItemDetails: UndistributedItem;
-  quantity: number | null;
-  prop_no: string;
-  serial_no?: string;
-  pis_no?: string;
-  acct_code?: string;
-  unit_value: number;
-  accountable_emp?: number;
+  id: number;
   accountableEmpDetails: Employee;
-  remarks?: string;
+  accountable_emp: number;
+  acct_code?: string;
   added_by: number | null;
+  borrower_emp_id: number | null;
   category_item: number | null;
-  OWNER_EMP: number | null;
   DISTRIBUTED_BY: number;
   DISTRIBUTED_ON: Date;
-  total_value: number;
+  ITEM_ID: number;
+  OWNER_EMP: number | null;
   ORIGINAL_QUANTITY: number;
+  pis_no?: string;
+  prop_no: string;
+  quantity: number;
+  remarks?: string;
+  serial_no?: string;
+  total_value: number;
+  undistributedItemDetails: UndistributedItem;
+  unit_value: number;
 }
 
 export interface ItemCategory {
@@ -74,7 +75,7 @@ export interface Department {
 
 export interface TransactionProps {
   id: number | null;
-  distributed_item_id: number | null;
+  distributed_item_id: number | null; //undistributed item id
   borrower_emp_id: number | null;
   owner_emp_id: number | null;
   quantity: number | null;
@@ -86,6 +87,8 @@ export interface TransactionProps {
   DPT_ID: number | null;
   distributedItemDetails: DistributedItemProps;
   ownerEmp: Employee;
+  DISTRIBUTED_ITM_ID: number; // distributed item id
+  TRANSACTION_DESCRIPTION: string;
 }
 
 export interface StatusProcess {
