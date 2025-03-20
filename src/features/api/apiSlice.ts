@@ -19,7 +19,7 @@ export const apiSlice = createApi({
     "User",
     "Items",
     "ItemCategories",
-    "BorrowingTransaction",
+    "Transactions",
     "StatusProcess",
     "Notifications",
     "UndistributedItem",
@@ -188,129 +188,6 @@ export const apiSlice = createApi({
         body: { description },
       }),
     }),
-
-    //transaction
-    //get borrowing by dpt id
-    getBorrowingTransactionByDpt: builder.query({
-      query: (dptId) => `/transaction/byDpt?departmentId=${dptId}`,
-      providesTags: ["BorrowingTransaction"],
-    }),
-    addBorrowingTransaction: builder.mutation({
-      query: ({ borrowedItems, borrower, owner }) => ({
-        url: `/borrowing?owner=${owner}&borrower=${borrower}`,
-        method: "POST",
-        body: { borrowedItems },
-      }),
-      invalidatesTags: ["BorrowingTransaction", "Items"],
-    }),
-
-    //get request by borrower
-    getBorrowingTransactionByBorrower: builder.query({
-      query: ({ empId }) => ({
-        url: `/transaction/borrower?empId=${empId}`,
-      }),
-      providesTags: ["BorrowingTransaction"],
-    }),
-
-    getBorrowingTransactionByOwner: builder.query({
-      query: (owner) => ({
-        url: `/transaction?owner=${owner}`,
-      }),
-      providesTags: ["BorrowingTransaction"],
-    }),
-    editBorrowingTransaction: builder.mutation({
-      query: ({ borrowId, updateEntry }) => ({
-        url: `/borrowing/update?borrowId=${borrowId}`,
-        method: "PUT",
-        body: { status: updateEntry },
-      }),
-      invalidatesTags: ["BorrowingTransaction", "Items"],
-    }),
-    //lend transaciton
-    createLendTransaction: builder.mutation({
-      query: (data) => ({
-        url: "/transaction/lend",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["Items", "BorrowingTransaction"],
-    }),
-
-    createBorrowTransaction: builder.mutation({
-      query: (data) => ({
-        url: "/transaction/borrow",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["Items", "BorrowingTransaction"],
-    }),
-    //approve transaction
-    approveTransaction: builder.mutation({
-      query: ({ transactionId, approverId }) => ({
-        url: `/transaction/approve/${transactionId}/${approverId}`,
-        method: "PUT",
-      }),
-      invalidatesTags: ["BorrowingTransaction"],
-    }),
-    //reject
-    rejectTransaction: builder.mutation({
-      query: (transactionId: BorrowingTransactionTypes["id"]) => ({
-        url: `/transaction/reject/${transactionId}`,
-        method: "PUT",
-      }),
-      invalidatesTags: ["BorrowingTransaction"],
-    }),
-    //get own transaction that is approved
-    getOwnApprovedTransaction: builder.query({
-      query: ({ empId }: { empId: Employee["ID"] }) => ({
-        url: `/transaction/get/approved/${empId}`,
-      }),
-      providesTags: ["BorrowingTransaction"],
-    }),
-    //transaction count all time
-    getCountAllTimeRequestDepartment: builder.query({
-      query: ({ DPT_ID }) => `/transaction/count/all_time/${DPT_ID}`,
-      providesTags: ["TransactionCount"],
-    }),
-    //transaction count by today
-    getCountTodayRequestDepartment: builder.query({
-      query: ({ DPT_ID }) => `/transaction/count/today/${DPT_ID}`,
-      providesTags: ["TransactionCount"],
-    }),
-    //get only borrowed transaction that has been approved
-    getBorrowedItems: builder.query({
-      query: (borrowerId) => ({
-        url: `/transaction/borrowed_items?borrower_emp_id=${borrowerId}`,
-      }),
-      providesTags: ["BorrowingTransaction"],
-    }),
-    //create return request
-    createReturnTransaction: builder.mutation({
-      query: (data) => ({
-        url: "/transaction/return",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["BorrowingTransaction", "Items"],
-    }),
-    //approve return request
-    approveReturnTransaction: builder.mutation({
-      query: (transactionId) => ({
-        url: `/transaction/approve/return`,
-        method: "PUT",
-        body: { id: transactionId },
-      }),
-      invalidatesTags: ["BorrowingTransaction"],
-    }),
-    //create transfer transaction
-    createTransferTransaction: builder.mutation({
-      query: (data) => ({
-        url: "/transaction/create/transfer",
-        method: "POST",
-        body: data,
-      }),
-    }),
-
     //status
     getStatusProcess: builder.query<StatusProcess[], void>({
       query: () => "/status_process",
@@ -382,6 +259,14 @@ export const apiSlice = createApi({
       query: () => "/account_code",
       providesTags: ["AccountCodes"],
     }),
+
+    //transactions
+    //get transactions
+    getTransactions: builder.query({
+      query: ({ DPT_ID, TRANSACTION_TYPE }) =>
+        `/transaction?DPT_ID=${DPT_ID}&TRANSACTION_TYPE=${TRANSACTION_TYPE}`,
+      providesTags: ["Transactions"],
+    }),
   }),
 });
 
@@ -418,33 +303,6 @@ export const {
   useAddCategoryItemMutation,
   useEditCategoryItemMutation,
 
-  //transactions
-  useAddBorrowingTransactionMutation,
-  useGetBorrowingTransactionByBorrowerQuery,
-  useGetBorrowingTransactionByOwnerQuery,
-  useEditBorrowingTransactionMutation,
-  useGetBorrowingTransactionByDptQuery,
-  //lend
-  useCreateLendTransactionMutation,
-  //approve
-  useApproveTransactionMutation,
-  //reject
-  useRejectTransactionMutation,
-  //get own transaction approved
-  useGetOwnApprovedTransactionQuery,
-  //transction count by department
-  useGetCountAllTimeRequestDepartmentQuery,
-  useGetCountTodayRequestDepartmentQuery,
-  //borrow
-  useCreateBorrowTransactionMutation,
-  //get borrowed items
-  useGetBorrowedItemsQuery,
-  //create return
-  useCreateReturnTransactionMutation,
-  //approve return
-  useApproveReturnTransactionMutation,
-  useCreateTransferTransactionMutation,
-
   //status process
   useGetStatusProcessQuery,
 
@@ -461,4 +319,7 @@ export const {
 
   //account items
   useGetAccountItemQuery,
+
+  //transactions
+  useGetTransactionsQuery,
 } = apiSlice;

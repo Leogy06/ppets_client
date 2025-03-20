@@ -56,6 +56,7 @@ const navigations = [
     path: "/admin/requests",
     subMenu: [
       { label: "All", path: "/admin/requests" },
+      { label: "Borrows", path: "/admin/requests/borrow_item" },
       { label: "Transfer", path: "/admin/requests/transfer_item" },
     ],
   },
