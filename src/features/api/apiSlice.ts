@@ -279,10 +279,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
-    getBorrowingTransactionByEmpId: builder.query<
-      TransactionProps[],
-      { empId: number; limit: number }
-    >({
+    getBorrowingTransactionByEmpId: builder.query({
       query: ({ empId, limit }) =>
         `/transaction/borrow?empId=${empId}&limit=${limit}`,
       providesTags: ["Transactions"],

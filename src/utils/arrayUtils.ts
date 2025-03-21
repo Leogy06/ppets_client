@@ -1,4 +1,4 @@
-import { DistributedItemProps } from "@/types/global_types";
+import { DistributedItemProps, TransactionProps } from "@/types/global_types";
 
 //distributed item array mapper
 export const mapDistributedItems = (items: DistributedItemProps[]) => {
@@ -21,6 +21,25 @@ export const mapDistributedItems = (items: DistributedItemProps[]) => {
       accountableEmp: `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${
         SUFFIX ?? ""
       }`,
+    };
+  });
+};
+
+//for transaction array mapper
+export const mapTransactions = (transactions: TransactionProps[]) => {
+  return transactions.map((transaction: TransactionProps, index: number) => {
+    const { DISTRIBUTED_ITM_ID, TRANSACTION_DESCRIPTION } = transaction;
+
+    //undistributed item
+    const { ITEM_NAME, PAR_NO, MR_NO } =
+      transaction.distributedItemDetails.undistributedItemDetails;
+
+    return {
+      ...transaction,
+      id: transaction.id,
+      index: index + 1,
+      borrowedItem: `${ITEM_NAME} (${PAR_NO} - ${MR_NO})`,
+      transactionDescription: TRANSACTION_DESCRIPTION,
     };
   });
 };
