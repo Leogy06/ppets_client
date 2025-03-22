@@ -3,8 +3,8 @@ import {
   Department,
   Employee,
   DistributedItemProps,
-  StatusProcess,
   UndistributedItem,
+  TransactionStatusProps,
 } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
@@ -189,7 +189,7 @@ export const apiSlice = createApi({
       }),
     }),
     //status
-    getStatusProcess: builder.query<StatusProcess[], void>({
+    getStatusProcess: builder.query<TransactionStatusProps[], void>({
       query: () => "/status_process",
       providesTags: ["StatusProcess"],
     }),

@@ -16,17 +16,20 @@ interface DataTableProps<T> extends Partial<DataGridProps> {
   onRowSelectionModelChange?: (
     rowSelectionModel: GridRowSelectionModel
   ) => void;
+  setRowLimit(limit: number): void;
+  rowLimit: number;
 }
 
 const DataTable = <T,>({
   columns,
   rows,
   getRowId,
-  pageSize = 5,
   checkboxSelection = false,
   onRowSelectionModelChange,
   loading = false,
   sx = {},
+  rowLimit,
+  setRowLimit,
 }: DataTableProps<T>) => {
   return (
     <div className="h-[400px] w-full overflow-auto">
@@ -35,7 +38,11 @@ const DataTable = <T,>({
         columns={columns}
         getRowId={getRowId}
         pageSizeOptions={[5, 10, 20]}
-        initialState={{ pagination: { paginationModel: { pageSize } } }}
+        pagination
+        paginationMode="server"
+        rowCount={rows.length}
+        paginationModel={{ pageSize: rowLimit, page: 0 }} // Ensure correct pagination model usage
+        onPaginationModelChange={(model) => setRowLimit(model.pageSize)} // Use the correct event
         checkboxSelection={checkboxSelection}
         onRowSelectionModelChange={(rowSelectionModel) =>
           onRowSelectionModelChange?.(rowSelectionModel)
@@ -45,19 +52,17 @@ const DataTable = <T,>({
         sx={{
           // header style
           "& .MuiDataGrid-columnHeaders": {
-            background: "#3A7CA5", // Change this to your desired color
+            background: "#3A7CA5",
             fontWeight: "bold",
           },
           "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "#3A7CA5", // **Cell color inside headers**
-            color: "white", // Text color for better contrast
-            // Optional: add borders between header cells
+            backgroundColor: "#3A7CA5",
+            color: "white",
           },
           "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: "bold", // Make header text bold
+            fontWeight: "bold",
             textTransform: "uppercase",
           },
-
           "& .MuiDataGrid-footerContainer": {
             color: "black",
             border: "2px solid #ccc",
@@ -70,11 +75,10 @@ const DataTable = <T,>({
             noRowsVariant: "skeleton",
           },
         }}
-        getRowClassName={
-          (params) =>
-            params.indexRelativeToCurrentPage % 2 === 0
-              ? "bg-gray-100" //light gray for even rows
-              : "bg-white" //for odd rows
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0
+            ? "bg-gray-100"
+            : "bg-white"
         }
       />
     </div>

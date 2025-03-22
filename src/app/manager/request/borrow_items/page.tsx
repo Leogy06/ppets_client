@@ -36,6 +36,9 @@ const BorrowItem = () => {
     departmentId: Number(empDetails?.CURRENT_DPT_ID),
   });
 
+  //set row limit rows
+  const [rowLimit, setRowLimit] = useState<number>(10);
+
   //use snackbar
   const { openSnackbar } = useSnackbar();
 
@@ -114,6 +117,11 @@ const BorrowItem = () => {
       width: 200,
     },
     {
+      field: "itemMr",
+      headerName: "MR",
+      width: 200,
+    },
+    {
       field: "quantity",
       headerName: "Quantity",
       width: 100,
@@ -127,7 +135,7 @@ const BorrowItem = () => {
       field: "actions",
       headerName: "Actions",
       headerAlign: "center",
-      width: 200,
+      width: 300,
       renderCell: (params) => (
         <div className="flex justify-center gap-1">
           <DefaultButton
@@ -135,6 +143,10 @@ const BorrowItem = () => {
             btnText="select"
             title="Borrow this Item"
             placement="left"
+            disabled={
+              params.row.accountable_emp_id === empDetails?.ID ||
+              params.row.quantity === 0
+            }
           />
         </div>
       ),
@@ -163,6 +175,8 @@ const BorrowItem = () => {
         columns={columns}
         rows={mappedDistributeditem}
         loading={isItemLoading}
+        rowLimit={rowLimit}
+        setRowLimit={setRowLimit}
       />
       <ConfirmBorrowItemModal
         open={openBorrowModal}

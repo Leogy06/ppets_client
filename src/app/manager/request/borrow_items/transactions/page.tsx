@@ -11,7 +11,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 const BorrowTransactions = () => {
   const { empDetails } = useAuth();
-  const [rowLimit, setRowLimit] = useState(10);
+  const [rowLimit, setRowLimit] = useState<number>(10);
   const {
     data: borrowingTransactions,
     isLoading: isBorrowingTransactionsLoading,
@@ -22,8 +22,26 @@ const BorrowTransactions = () => {
     DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
   });
   const columns: GridColDef[] = [
-    { field: "index", headerName: "#", width: 100 },
+    {
+      field: "index",
+      headerName: "#",
+      width: 50,
+      headerAlign: "center",
+      align: "center",
+    },
     { field: "borrowedItem", headerName: "Item", width: 380 },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 100,
+      type: "number",
+      headerAlign: "center",
+      align: "center",
+    },
+    { field: "borrower", headerName: "Item Borrower", width: 280 },
+    { field: "owner", headerName: "Item Owner", width: 280 },
+    { field: "transaction", headerName: "Status", width: 200 },
+    { field: "remarks", headerName: "Transaction", width: 200 },
   ];
 
   const arrMappedTransaction = useMemo(
@@ -45,6 +63,8 @@ const BorrowTransactions = () => {
         columns={columns}
         rows={arrMappedTransaction || []}
         loading={isBorrowingTransactionsLoading}
+        setRowLimit={setRowLimit}
+        rowLimit={rowLimit}
       />
     </>
   );

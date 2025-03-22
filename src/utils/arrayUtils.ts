@@ -6,7 +6,7 @@ export const mapDistributedItems = (items: DistributedItemProps[]) => {
     //destructure item details in items
 
     //destructure undistributed item
-    const { ITEM_NAME, PAR_NO } = item.undistributedItemDetails;
+    const { ITEM_NAME, PAR_NO, MR_NO } = item.undistributedItemDetails;
     //destructure accountable employee
     const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
       item.accountableEmpDetails;
@@ -17,6 +17,7 @@ export const mapDistributedItems = (items: DistributedItemProps[]) => {
       index,
       itemName: ITEM_NAME,
       itemPar: PAR_NO,
+      itemMr: MR_NO,
       quantity: item.quantity,
       accountableEmp: `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${
         SUFFIX ?? ""
@@ -32,6 +33,24 @@ export const mapTransactions = (transactions: TransactionProps[]) => {
     const { ITEM_NAME, PAR_NO, MR_NO } =
       transaction?.distributedItemDetails?.undistributedItemDetails || {};
 
+    //borrower item employee
+    const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
+      transaction?.borrowerEmpDetails || {};
+
+    //owner item employee
+    const {
+      FIRSTNAME: OWNER_FIRSTNAME,
+      LASTNAME: OWNER_LASTNAME,
+      MIDDLENAME: OWNER_MIDDLENAME,
+      SUFFIX: OWNER_SUFFIX,
+    } = transaction?.ownerEmpDetails || {};
+
+    //transaction status
+    const { description } = transaction.transactionStatusDetails;
+
+    //remarks
+    const { DESCRIPTION } = transaction.transactionRemarksDetails;
+
     return {
       ...transaction,
       id: transaction.id,
@@ -39,6 +58,17 @@ export const mapTransactions = (transactions: TransactionProps[]) => {
       borrowedItem: ITEM_NAME
         ? `${ITEM_NAME} - (${PAR_NO ?? "N/A"} - ${MR_NO ?? "N/A"})`
         : "N/A",
+      quantity: transaction.quantity,
+      borrower: FIRSTNAME
+        ? `${LASTNAME}, ${FIRSTNAME ?? ""} ${MIDDLENAME} ${SUFFIX ?? ""}`
+        : "N/A",
+      owner: OWNER_FIRSTNAME
+        ? `${OWNER_LASTNAME}, ${OWNER_FIRSTNAME} ${OWNER_MIDDLENAME ?? ""} ${
+            OWNER_SUFFIX ?? ""
+          }`
+        : "N/A",
+      transaction: description.toUpperCase(),
+      remarks: DESCRIPTION,
     };
   });
 };

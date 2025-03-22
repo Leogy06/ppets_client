@@ -77,23 +77,31 @@ export interface TransactionProps {
   id: number | null;
   distributed_item_id: number | null; //undistributed item id
   borrower_emp_id: number | null;
+  borrowerEmpDetails: Employee;
   owner_emp_id: number | null;
+  ownerEmpDetails: Employee;
   quantity: number | null;
   status: number | null;
+  transactionStatusDetails: TransactionStatusProps;
   remarks: string;
+  transactionRemarksDetails: TransactionRemarksProps;
   createdAt: Date;
   updatedAt: Date;
   name?: string; //item name, not include in db, but in form
   DPT_ID: number | null;
   distributedItemDetails: DistributedItemProps;
-  ownerEmp: Employee;
   DISTRIBUTED_ITM_ID: number; // distributed item id
   TRANSACTION_DESCRIPTION: string;
 }
 
-export interface StatusProcess {
+export interface TransactionStatusProps {
   id: number;
   description: string;
+}
+
+export interface TransactionRemarksProps {
+  id: number;
+  DESCRIPTION: string;
 }
 
 export interface ItemStatus {
@@ -119,11 +127,6 @@ export interface NotificationPropsOther {
   TRANSACTION_ID?: number;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface BorrowingStatusProps {
-  id: number;
-  description: string;
 }
 
 export interface UndistributedItem {
