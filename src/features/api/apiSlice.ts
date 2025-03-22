@@ -264,10 +264,15 @@ export const apiSlice = createApi({
     //get transactions
     getTransactions: builder.query<
       TransactionProps[],
-      { DPT_ID: number; TRANSACTION_TYPE: number }
+      {
+        DPT_ID: number;
+        TRANSACTION_TYPE: number;
+        EMP_ID: number;
+        LIMIT: number;
+      }
     >({
-      query: ({ DPT_ID, TRANSACTION_TYPE }) =>
-        `/transaction?DPT_ID=${DPT_ID}&TRANSACTION_TYPE=${TRANSACTION_TYPE}`,
+      query: ({ DPT_ID, TRANSACTION_TYPE, EMP_ID, LIMIT }) =>
+        `/transaction?DPT_ID=${DPT_ID}&TRANSACTION_TYPE=${TRANSACTION_TYPE}&EMP_ID=${EMP_ID}&LIMIT=${LIMIT}`,
       providesTags: ["Transactions"],
     }),
     // borrow transactions
@@ -278,11 +283,6 @@ export const apiSlice = createApi({
         body: data,
       }),
       invalidatesTags: ["Transactions"],
-    }),
-    getBorrowingTransactionByEmpId: builder.query({
-      query: ({ empId, limit }) =>
-        `/transaction/borrow?empId=${empId}&limit=${limit}`,
-      providesTags: ["Transactions"],
     }),
   }),
 });
@@ -341,6 +341,4 @@ export const {
   useGetTransactionsQuery,
   //post borrow
   useCreateBorrowingTransactionMutation,
-  //get
-  useGetBorrowingTransactionByEmpIdQuery,
 } = apiSlice;

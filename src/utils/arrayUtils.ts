@@ -28,18 +28,17 @@ export const mapDistributedItems = (items: DistributedItemProps[]) => {
 //for transaction array mapper
 export const mapTransactions = (transactions: TransactionProps[]) => {
   return transactions.map((transaction: TransactionProps, index: number) => {
-    const { DISTRIBUTED_ITM_ID, TRANSACTION_DESCRIPTION } = transaction;
-
     //undistributed item
     const { ITEM_NAME, PAR_NO, MR_NO } =
-      transaction.distributedItemDetails.undistributedItemDetails;
+      transaction?.distributedItemDetails?.undistributedItemDetails || {};
 
     return {
       ...transaction,
       id: transaction.id,
       index: index + 1,
-      borrowedItem: `${ITEM_NAME} (${PAR_NO} - ${MR_NO})`,
-      transactionDescription: TRANSACTION_DESCRIPTION,
+      borrowedItem: ITEM_NAME
+        ? `${ITEM_NAME} - (${PAR_NO ?? "N/A"} - ${MR_NO ?? "N/A"})`
+        : "N/A",
     };
   });
 };
