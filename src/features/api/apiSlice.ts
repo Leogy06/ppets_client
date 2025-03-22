@@ -111,68 +111,6 @@ export const apiSlice = createApi({
       providesTags: ["User"],
     }),
 
-    //items
-    //view
-    getItems: builder.query<DistributedItemProps[], void>({
-      query: () => "/item",
-      providesTags: ["Items"],
-    }),
-
-    //get items by id
-    getItemsById: builder.query<DistributedItemProps, number>({
-      query: (itemId: number) => `/item/byId/${itemId}`,
-      providesTags: ["Items"],
-    }),
-
-    //add
-    addItem: builder.mutation({
-      query: (data) => ({
-        url: "/item",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["Items"],
-    }),
-    //edit
-    editItem: builder.mutation({
-      query: ({ id, data }) => ({
-        url: `/item/${id}`,
-        method: "PUT",
-        body: data,
-      }),
-      invalidatesTags: ["Items"],
-    }),
-
-    //get items by owner
-    getItemsByOwner: builder.query({
-      query: ({ empId, limit }) => `/item/${empId}?limit=${limit}`,
-      providesTags: ["Items"],
-    }),
-    //get items by department
-    getItemsDepartment: builder.query<DistributedItemProps[], number>({
-      query: (department) => `/item/byDepartment/${department}`,
-      providesTags: ["Items"],
-    }),
-
-    //delete item
-    deleteItems: builder.mutation({
-      query: ({ ids }) => ({
-        url: "/item",
-        method: "DELETE",
-        body: ids,
-      }),
-      invalidatesTags: ["Items"],
-    }),
-
-    getItemsNotOwned: builder.query<
-      DistributedItemProps[],
-      { empId: number; departmentId: number; limit: number }
-    >({
-      query: ({ empId, departmentId, limit }) =>
-        `/item/notOwned/${empId}?departmentId=${departmentId}&limit=${limit}`,
-      providesTags: ["Items"],
-    }),
-
     //item category
     getItemCategories: builder.query({
       query: () => "/item-category",
@@ -264,7 +202,10 @@ export const apiSlice = createApi({
       providesTags: ["AccountCodes"],
     }),
 
-    //transactions
+    /**
+     *
+     *Transactions
+     */
     //get transactions
     getTransactions: builder.query<
       TransactionProps[],
@@ -289,9 +230,15 @@ export const apiSlice = createApi({
       invalidatesTags: ["Transactions"],
     }),
 
-    //distributed ites
+    /**
+     * Distributed Items
+     */
+    //distributed item
     getDistributedItems: builder.query<
-      DistributedItemProps[],
+      {
+        ownedItems: DistributedItemProps[];
+        notOwnedItems: DistributedItemProps[];
+      },
       { department: number; limit: number; owner_emp_id: number }
     >({
       query: ({ department, limit, owner_emp_id }) =>
@@ -324,16 +271,6 @@ export const {
 
   //departments
   useGetDepartmentQuery,
-
-  //item(distrubuted)
-  useGetItemsQuery,
-  useAddItemMutation,
-  useEditItemMutation,
-  useDeleteItemsMutation,
-  useGetItemsByOwnerQuery,
-  useGetItemsDepartmentQuery,
-  useGetItemsByIdQuery,
-  useGetItemsNotOwnedQuery,
 
   //item-category
   useGetItemCategoriesQuery,

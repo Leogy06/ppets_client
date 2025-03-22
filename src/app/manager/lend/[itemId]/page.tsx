@@ -3,15 +3,23 @@
 import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
+import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
+import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
+  useCreateTransactionMutation,
   useGetDistributedItemByIdQuery,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
-import { DistributedItemProps, Employee } from "@/types/global_types";
+import {
+  DistributedItemProps,
+  Employee,
+  TransactionProps,
+} from "@/types/global_types";
 import { mapEmployees } from "@/utils/arrayUtils";
+import { handleError } from "@/utils/errorHandler";
 import { GridColDef } from "@mui/x-data-grid";
 import { useParams } from "next/navigation";
 import React, { useMemo, useState } from "react";
@@ -20,6 +28,9 @@ const LendItem = () => {
   const { itemId } = useParams();
 
   const { empDetails } = useAuth();
+
+  //snack bar
+  const { openSnackbar } = useSnackbar();
 
   //row limit
   const [rowLimit, setRowLimit] = useState(10);
@@ -43,17 +54,67 @@ const LendItem = () => {
   //employee details
   const [employeeDetails, setemployeeDetails] = useState<Employee | null>(null);
 
+  //use create lend transaction
+  const [createLendTransaction, { isLoading: isCreateLendLoading }] =
+    useCreateTransactionMutation();
+  const [createLendTransactionForm, setCreateLendTransactionForm] = useState<
+    Partial<TransactionProps>
+  >({
+    DISTRIBUTED_ITM_ID: 0,
+    distributed_item_id: 0,
+    borrower_emp_id: 0,
+    owner_emp_id: empDetails?.ID,
+    status: 2, // lending
+    quantity: 0,
+    DPT_ID: empDetails?.CURRENT_DPT_ID,
+    remarks: 2, //lending
+  });
+
   //handle open modal
   const handleOpenModal = (
-    item: DistributedItemProps,
-    empDetails: Employee
+    borrowerDetails: Employee //borrower
   ) => {
     setIsConfirmLendModalOpen(true);
-    setemployeeDetails(empDetails);
+    setemployeeDetails(borrowerDetails);
+    setCreateLendTransactionForm((prev) => ({
+      ...prev,
+      DISTRIBUTED_ITM_ID: distributedItemDetails?.id,
+      distributed_item_id: distributedItemDetails?.ITEM_ID,
+      borrower_emp_id: borrowerDetails.ID,
+      quantity: 1,
+    }));
   };
+
+  //handle close modal
+  const handleCloseModal = () => {
+    setIsConfirmLendModalOpen(false);
+  };
+
   //handle submit
-  const handleSubmit = () => {
-    console.log("submited, ", employeeDetails);
+  const handleSubmit = async () => {
+    try {
+      const result = await createLendTransaction(
+        createLendTransactionForm
+      ).unwrap();
+      console.log("form ", createLendTransactionForm);
+
+      console.log("result ", result);
+      openSnackbar("Transaction created successfully.", "success");
+      handleCloseModal();
+    } catch (error) {
+      console.error("Unable to create lend Transaction. ", error);
+      const errMsg = handleError(error, "Unable to create lend Transaction.");
+      openSnackbar(errMsg, "error");
+    }
+  };
+
+  //handle change form
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCreateLendTransactionForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const memoisedEmployees = useMemo(() => mapEmployees(employees), [employees]);
@@ -78,7 +139,7 @@ const LendItem = () => {
         <div className="flex justify-center">
           <DefaultButton
             btnText="select"
-            onClick={() => handleOpenModal(distributedItemDetails!, params.row)}
+            onClick={() => handleOpenModal(params.row)}
           />
         </div>
       ),
@@ -115,14 +176,17 @@ const LendItem = () => {
         checkboxSelection={false}
         rowLimit={rowLimit}
         setRowLimit={setRowLimit}
+        getRowId={(row) => row.ID}
       />
       <ConfirmLendModal
         open={isConfirmLendModalOpen}
         onClose={() => setIsConfirmLendModalOpen(false)}
         employeeDetails={employeeDetails}
         distributedItem={distributedItemDetails}
-        loading={false}
+        loading={isCreateLendLoading}
         handleSubmit={handleSubmit}
+        createForm={createLendTransactionForm}
+        onChange={handleFormChange}
       />
     </>
   );
@@ -135,6 +199,8 @@ const ConfirmLendModal = ({
   distributedItem,
   employeeDetails,
   loading,
+  createForm,
+  onChange,
 }: {
   open: boolean;
   onClose: () => void;
@@ -142,6 +208,8 @@ const ConfirmLendModal = ({
   distributedItem: DistributedItemProps | undefined;
   employeeDetails: Employee | null;
   loading: boolean;
+  createForm: Partial<TransactionProps>;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <DefaultModal open={open} onClose={onClose}>
@@ -160,13 +228,20 @@ const ConfirmLendModal = ({
             {employeeDetails?.fullName ?? "Unknown"}
           </span>
         </p>
-        <p className="flex gap-1">
+        <p className="flex gap-1 mb-4">
           Available quantity:
           <span className="underline underline-offset-1">
             {distributedItem?.quantity}
           </span>
         </p>
-        <div className="flex gap-1 justify-end">
+        <DefaultTextField
+          name="quantity"
+          label="Quantity"
+          type="number"
+          onChange={onChange}
+          value={createForm?.quantity ? String(createForm?.quantity) : ""}
+        />
+        <div className="flex gap-1 justify-end mt-4">
           <DefaultButton
             btnText="cancel"
             onClick={onClose}

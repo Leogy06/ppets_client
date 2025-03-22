@@ -8,6 +8,8 @@ import {
 export const mapDistributedItems = (
   items: DistributedItemProps[] | undefined
 ) => {
+  // console.log("item from map ", items);
+
   return (
     items?.map((item: DistributedItemProps, index: number) => {
       //destructure item details in items
@@ -17,7 +19,7 @@ export const mapDistributedItems = (
       //destructure accountable employee
       const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
         item.accountableEmpDetails;
-      console.log("item ", item);
+      // console.log("item ", item);
 
       return {
         ...item,
@@ -88,7 +90,7 @@ export const mapEmployees = (employees: Employee[] | undefined) => {
     employees?.map((employee: Employee, index: number) => {
       const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } = employee;
       return {
-        id: employee.ID,
+        ID: employee.ID,
         index: index + 1,
         fullName: FIRSTNAME
           ? `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${SUFFIX ?? ""}`

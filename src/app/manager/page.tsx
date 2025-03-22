@@ -19,7 +19,7 @@ const OwnedItems = () => {
   const [rowLimit, setRowLimit] = useState(10);
 
   //get owned items
-  const { data: ownedItems, isLoading: isOwnedItemsLoading } =
+  const { data: distributeItems, isLoading: isOwnedItemsLoading } =
     useGetDistributedItemsQuery({
       department: Number(empDetails?.CURRENT_DPT_ID),
       limit: rowLimit,
@@ -27,8 +27,8 @@ const OwnedItems = () => {
     });
 
   const mappedOwnedItems = useMemo(
-    () => mapDistributedItems(ownedItems),
-    [ownedItems]
+    () => mapDistributedItems(distributeItems?.ownedItems || []),
+    [distributeItems]
   );
 
   const columns: GridColDef[] = [

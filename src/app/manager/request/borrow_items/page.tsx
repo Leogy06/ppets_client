@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useCreateTransactionMutation,
-  useGetItemsNotOwnedQuery,
+  useGetDistributedItemsQuery,
 } from "@/features/api/apiSlice";
 import {
   DistributedItemProps,
@@ -34,11 +34,12 @@ const BorrowItem = () => {
   const [rowLimit, setRowLimit] = useState<number>(10);
 
   //get items
-  const { data: items, isLoading: isItemLoading } = useGetItemsNotOwnedQuery({
-    empId: Number(empDetails?.ID),
-    departmentId: Number(empDetails?.CURRENT_DPT_ID),
-    limit: rowLimit,
-  });
+  const { data: distributedItems, isLoading: isDistributedItemsLoading } =
+    useGetDistributedItemsQuery({
+      owner_emp_id: Number(empDetails?.ID),
+      department: Number(empDetails?.CURRENT_DPT_ID),
+      limit: rowLimit,
+    });
 
   //use snackbar
   const { openSnackbar } = useSnackbar();
@@ -154,9 +155,11 @@ const BorrowItem = () => {
     },
   ];
 
+  // console.log("distributed items ", distributedItems);
+
   const mappedDistributeditem = useMemo(
-    () => mapDistributedItems(items || []),
-    [items]
+    () => mapDistributedItems(distributedItems?.ownedItems || []),
+    [distributedItems]
   );
 
   return (
@@ -175,7 +178,7 @@ const BorrowItem = () => {
       <DataTable
         columns={columns}
         rows={mappedDistributeditem}
-        loading={isItemLoading}
+        loading={isDistributedItemsLoading}
         rowLimit={rowLimit}
         setRowLimit={setRowLimit}
       />

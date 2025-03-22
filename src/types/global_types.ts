@@ -83,7 +83,7 @@ export interface TransactionProps {
   quantity: number | null;
   status: number | null;
   transactionStatusDetails: TransactionStatusProps;
-  remarks: string;
+  remarks: number;
   transactionRemarksDetails: TransactionRemarksProps;
   createdAt: Date;
   updatedAt: Date;
