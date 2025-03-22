@@ -280,9 +280,9 @@ export const apiSlice = createApi({
       providesTags: ["Transactions"],
     }),
     // borrow transactions
-    createBorrowingTransaction: builder.mutation({
+    createTransaction: builder.mutation({
       query: (data) => ({
-        url: "/transaction/borrow",
+        url: "/transaction",
         method: "POST",
         body: data,
       }),
@@ -361,7 +361,7 @@ export const {
   //get
   useGetTransactionsQuery,
   //post
-  useCreateBorrowingTransactionMutation,
+  useCreateTransactionMutation,
 
   //distributed item
   useGetDistributedItemsQuery,

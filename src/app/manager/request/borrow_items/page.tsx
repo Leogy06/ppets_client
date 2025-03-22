@@ -8,7 +8,7 @@ import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
-  useCreateBorrowingTransactionMutation,
+  useCreateTransactionMutation,
   useGetItemsNotOwnedQuery,
 } from "@/features/api/apiSlice";
 import {
@@ -45,7 +45,7 @@ const BorrowItem = () => {
 
   //create borrow transaction
   const [createBorrowingTransaction, { isLoading: isCreateBorrowLoading }] =
-    useCreateBorrowingTransactionMutation();
+    useCreateTransactionMutation();
 
   //create borro trnrsaciton form
   const [createBorrowForm, setCreateBorrowForm] =
