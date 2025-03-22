@@ -30,14 +30,15 @@ const BorrowItem = () => {
   //router for navigation
   const router = useRouter();
 
+  //set row limit rows
+  const [rowLimit, setRowLimit] = useState<number>(10);
+
   //get items
   const { data: items, isLoading: isItemLoading } = useGetItemsNotOwnedQuery({
     empId: Number(empDetails?.ID),
     departmentId: Number(empDetails?.CURRENT_DPT_ID),
+    limit: rowLimit,
   });
-
-  //set row limit rows
-  const [rowLimit, setRowLimit] = useState<number>(10);
 
   //use snackbar
   const { openSnackbar } = useSnackbar();

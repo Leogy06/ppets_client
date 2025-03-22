@@ -3,310 +3,184 @@
 import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
-import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
 import PageHeader from "@/app/(component)/pageheader";
-import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
-import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
-  useCreateLendTransactionMutation,
+  useGetDistributedItemByIdQuery,
   useGetEmployeesQuery,
-  useGetItemsByIdQuery,
-  useGetUndistributedItemByIdQuery,
 } from "@/features/api/apiSlice";
-import {
-  BorrowingTransactionTypes,
-  Department,
-  Employee,
-} from "@/types/global_types";
-import { handleError } from "@/utils/errorHandler";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DistributedItemProps, Employee } from "@/types/global_types";
+import { mapEmployees } from "@/utils/arrayUtils";
+import { GridColDef } from "@mui/x-data-grid";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 
-//lend modal
-const LendModal = ({
+const LendItem = () => {
+  const { itemId } = useParams();
+
+  const { empDetails } = useAuth();
+
+  //row limit
+  const [rowLimit, setRowLimit] = useState(10);
+
+  const { data: distributedItemDetails, isLoading: isDistributedItemLoading } =
+    useGetDistributedItemByIdQuery(Number(itemId));
+
+  //destructure distibuted item
+  const { ITEM_NAME, PAR_NO, MR_NO } =
+    distributedItemDetails?.undistributedItemDetails || {};
+
+  //get employees
+  const { data: employees, isLoading: isEmployeesLoading } =
+    useGetEmployeesQuery({
+      departmentId: Number(empDetails?.CURRENT_DPT_ID),
+      limit: rowLimit,
+    });
+
+  //modal confirm lend
+  const [isConfirmLendModalOpen, setIsConfirmLendModalOpen] = useState(false);
+  //employee details
+  const [employeeDetails, setemployeeDetails] = useState<Employee | null>(null);
+
+  //handle open modal
+  const handleOpenModal = (
+    item: DistributedItemProps,
+    empDetails: Employee
+  ) => {
+    setIsConfirmLendModalOpen(true);
+    setemployeeDetails(empDetails);
+  };
+  //handle submit
+  const handleSubmit = () => {
+    console.log("submited, ", employeeDetails);
+  };
+
+  const memoisedEmployees = useMemo(() => mapEmployees(employees), [employees]);
+
+  //columnn
+  const columns: GridColDef[] = [
+    {
+      field: "index",
+      headerName: "#",
+      width: 100,
+      headerAlign: "center",
+      align: "center",
+    },
+    { field: "fullName", headerName: "Name", width: 230 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params) => (
+        <div className="flex justify-center">
+          <DefaultButton
+            btnText="select"
+            onClick={() => handleOpenModal(distributedItemDetails!, params.row)}
+          />
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <div className="flex items-center mb-4 gap-2">
+        <BackArrow backTo="/manager" />
+        <PageHeader pageHead="Lend your Item?" hasMarginBottom={false} />
+      </div>
+      {!isDistributedItemLoading && (
+        <div className="flex gap-2 justify-center mb-4">
+          <div className="flex flex-col items-end">
+            <h1>Item:</h1>
+            <p>PAR: </p>
+            <p>MR: </p>
+            <p>Availabel Quantity:</p>
+          </div>
+          <div className="underline items-start underline-offset-4">
+            <p>{ITEM_NAME}</p>
+            <p>{PAR_NO}</p>
+            <p>{MR_NO}</p>
+            <p>{distributedItemDetails?.quantity}</p>
+          </div>
+        </div>
+      )}
+
+      <DataTable
+        loading={isEmployeesLoading}
+        rows={memoisedEmployees || []}
+        columns={columns}
+        checkboxSelection={false}
+        rowLimit={rowLimit}
+        setRowLimit={setRowLimit}
+      />
+      <ConfirmLendModal
+        open={isConfirmLendModalOpen}
+        onClose={() => setIsConfirmLendModalOpen(false)}
+        employeeDetails={employeeDetails}
+        distributedItem={distributedItemDetails}
+        loading={false}
+        handleSubmit={handleSubmit}
+      />
+    </>
+  );
+};
+
+const ConfirmLendModal = ({
   open,
   onClose,
   handleSubmit,
-  onChange,
+  distributedItem,
+  employeeDetails,
   loading,
 }: {
   open: boolean;
   onClose: () => void;
   handleSubmit: () => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  distributedItem: DistributedItemProps | undefined;
+  employeeDetails: Employee | null;
   loading: boolean;
 }) => {
-  //use get darkmode state
-
-  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
-
-  //confirm lend modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsModalOpen(true);
-  };
-
-  //also close child modal when parent modal is close
-  useEffect(() => {
-    if (!open) {
-      setIsModalOpen(false);
-    }
-  }, [open]);
-
   return (
-    <DefaultModal
-      open={open}
-      onClose={onClose}
-      className={`${
-        isDarkMode ? "bg-black text-white" : "bg-white text-black"
-      }`}
-    >
-      <div className="flex flex-col gap-4 w-full ">
-        <h1 className="font-semibold text-lg text-center">Finalized Lend</h1>
-        <form
-          onSubmit={handleOpenModal}
-          className="flex flex-col gap-4 w-full "
-        >
-          <DefaultTextField
-            name="quantity"
-            label="Quantity"
-            type="number"
-            placeholder="Input the quantity of the item to lend"
-            onChange={onChange}
+    <DefaultModal open={open} onClose={onClose}>
+      <div className="flex flex-col max-h-[70vh]">
+        <h1 className="text-lg font-semibold">Lend</h1>
+        <p className="mb-4 text-sm">Are you sure you want to lend this item?</p>
+        <p className="flex gap-1">
+          Item:
+          <span className="underline underline-offset-1">
+            {distributedItem?.undistributedItemDetails?.ITEM_NAME ?? "Unknown"}
+          </span>
+        </p>
+        <p className="flex gap-1">
+          Employee:
+          <span className="underline underline-offset-1">
+            {employeeDetails?.fullName ?? "Unknown"}
+          </span>
+        </p>
+        <p className="flex gap-1">
+          Available quantity:
+          <span className="underline underline-offset-1">
+            {distributedItem?.quantity}
+          </span>
+        </p>
+        <div className="flex gap-1 justify-end">
+          <DefaultButton
+            btnText="cancel"
+            onClick={onClose}
+            variant="text"
+            disabled={loading}
           />
-          <DefaultTextField
-            name="remarks"
-            label="Remarks"
-            placeholder="Lend remarks?"
-            onChange={onChange}
+          <DefaultButton
+            btnText="confirm"
+            onClick={handleSubmit}
+            disabled={loading}
           />
-          <div className="flex gap-1 justify-end">
-            <DefaultButton
-              btnText="cancel"
-              variant="text"
-              color="secondary"
-              onClick={onClose}
-            />
-            <DefaultButton btnText="lend" type="submit" />
-          </div>
-        </form>
-      </div>
-
-      {/**Confirm lend modal */}
-      <DefaultModal
-        className={`${
-          isDarkMode ? "bg-black text-white" : "bg-white text-black"
-        }`}
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      >
-        <div className="flex flex-col gap-4">
-          <h1 className="text-center font-semibold text-lg">Confirm Lend?</h1>
-          <div className="flex gap-1">
-            <DefaultButton
-              btnText="cancel"
-              variant="text"
-              color="secondary"
-              onClick={() => setIsModalOpen(false)}
-            />
-            <DefaultButton
-              btnText="confirm"
-              disabled={loading}
-              onClick={handleSubmit}
-              title="The item lend will need an approval from the Property Custodian"
-            />
-          </div>
         </div>
-      </DefaultModal>
-    </DefaultModal>
-  );
-};
-
-const LendItem = () => {
-  const { itemId } = useParams();
-
-  //get user emp details
-  const { empDetails } = useAuth();
-
-  //use snackbar
-  const { openSnackbar } = useSnackbar();
-
-  //use get employees
-  const { data: employees, isLoading: isEmpLoading } = useGetEmployeesQuery(
-    Number(empDetails?.CURRENT_DPT_ID)
-  );
-
-  //use get item details (distributed)
-  const { data: itemDetails } = useGetItemsByIdQuery(Number(itemId));
-
-  //get undistributed item by id
-  const { data: undistributedItemDetails } = useGetUndistributedItemByIdQuery(
-    Number(itemDetails?.ITEM_ID)
-  );
-
-  //open modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  //create lend transaction
-  const [createLendTransaction, { isLoading: isLendLoading }] =
-    useCreateLendTransactionMutation();
-
-  //use state
-  const [lendForm, setLendForm] = useState<Partial<BorrowingTransactionTypes>>({
-    distributed_item_id: null,
-    borrower_emp_id: null,
-    owner_emp_id: empDetails?.ID,
-    quantity: 1,
-    DPT_ID: empDetails?.CURRENT_DPT_ID,
-    remarks: "",
-  });
-
-  const handleOpenModal = (empId: number) => {
-    setLendForm((prevForm) => ({
-      ...prevForm,
-      borrower_emp_id: empId,
-      distributed_item_id: Number(undistributedItemDetails?.ID),
-    }));
-    setIsModalOpen(true);
-  };
-
-  const columns: GridColDef[] = [
-    { field: "fullName", headerName: "Name", width: 200 },
-    {
-      field: "departmentDetails",
-      headerName: "Department",
-      width: 180,
-      valueGetter: (params: Department) => params.DEPARTMENT_NAME,
-    },
-    {
-      field: "Actions",
-      headerName: "Action",
-      width: 250,
-      flex: 1,
-      headerAlign: "right",
-      align: "right",
-
-      renderCell: (params) => {
-        return (
-          <div>
-            <DefaultButton
-              btnText="select"
-              title="Lend this employee"
-              onClick={() => handleOpenModal(params.row.ID)}
-              disabled={params.row.ID === empDetails?.ID}
-            />
-          </div>
-        );
-      },
-    },
-  ];
-
-  //submit api
-  const handleSubmit = async () => {
-    try {
-      console.log("Lend form ", lendForm);
-
-      await createLendTransaction(lendForm).unwrap();
-
-      openSnackbar(
-        "The item is on request for lent, wait for the admin to approve. ",
-        "success"
-      );
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("unexpected error occured. ", error);
-      const errMsg = handleError(error, "Unexpected error occurred.");
-      openSnackbar(errMsg, "error");
-    }
-  };
-
-  //handle lend form change
-  const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-
-    setLendForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-  };
-
-  //   useEffect(() => {
-  //     if (employees) {
-  //       console.log("employees ", employees);
-  //     }
-  //   }, [employees]);
-
-  // useEffect(() => {
-  //   if (undistributedItemDetails) {
-  //     console.log("undistributed item: ", undistributedItemDetails);
-  //   }
-  // }, [undistributedItemDetails]);
-
-  // useEffect(() => {
-  //   if (undistributedItemDetails) {
-  //     setLendForm((prevForm) => ({
-  //       ...prevForm,
-  //       distributed_item_id: Number(undistributedItemDetails.ID), //set borrowed item
-  //     }));
-  //   }
-  // }, [itemDetails]);
-
-  return (
-    <div className="flex flex-col">
-      <PageHeader pageHead="Select Employee to lend" />
-      <div className="flex justify-between items-start mb-4">
-        <BackArrow backTo="/manager" />
-        {itemDetails && (
-          <div className="flex flex-col items-end">
-            <h2 className="font-semibold text-lg">Item Details</h2>
-            <p>
-              Name |{" "}
-              <span className="font-medium text-base">
-                {itemDetails?.itemDetails?.ITEM_NAME ?? ""}
-              </span>
-            </p>
-            <p>
-              Quantity |{" "}
-              <span className="font-medium text-base">
-                <span className="text-green-700">{itemDetails.quantity}</span> /{" "}
-                {itemDetails.ORIGINAL_QUANTITY}
-              </span>
-            </p>
-            <p>
-              Prop # |{" "}
-              <span className="font-medium text-base">
-                {itemDetails.itemDetails.PROP_NO}
-              </span>
-            </p>
-          </div>
-        )}
       </div>
-      <DataTable
-        rows={
-          employees?.map((emp: Employee) => ({
-            ...emp,
-            fullName: `${emp.LASTNAME}, ${emp.FIRSTNAME} ${
-              emp.MIDDLENAME ?? ""
-            } ${emp.SUFFIX ?? ""}`,
-          })) || []
-        }
-        getRowId={(params) => params.ID}
-        columns={columns}
-        loading={isEmpLoading}
-      />
-      <LendModal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        handleSubmit={handleSubmit}
-        onChange={handleChangeForm}
-        loading={isLendLoading}
-      />
-    </div>
+    </DefaultModal>
   );
 };
 

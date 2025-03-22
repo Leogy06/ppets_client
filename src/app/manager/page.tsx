@@ -1,7 +1,105 @@
-import React from "react";
+"use client";
+import React, { useMemo, useState } from "react";
+import PageHeader from "@/app/(component)/pageheader";
+import { useAuth } from "@/context/AuthContext";
+import { useGetDistributedItemsQuery } from "@/features/api/apiSlice";
+import DataTable from "../(component)/datagrid";
+import { GridColDef } from "@mui/x-data-grid";
+import { mapDistributedItems } from "@/utils/arrayUtils";
+import DefaultButton from "../(component)/buttonDefault";
+import { useRouter } from "next/navigation";
 
-const page = () => {
-  return <div>page</div>;
+const OwnedItems = () => {
+  const { empDetails } = useAuth();
+
+  //nav router
+  const router = useRouter();
+
+  //table row limit
+  const [rowLimit, setRowLimit] = useState(10);
+
+  //get owned items
+  const { data: ownedItems, isLoading: isOwnedItemsLoading } =
+    useGetDistributedItemsQuery({
+      department: Number(empDetails?.CURRENT_DPT_ID),
+      limit: rowLimit,
+      owner_emp_id: Number(empDetails?.ID),
+    });
+
+  const mappedOwnedItems = useMemo(
+    () => mapDistributedItems(ownedItems),
+    [ownedItems]
+  );
+
+  const columns: GridColDef[] = [
+    {
+      field: "index",
+      headerName: "#",
+      width: 50,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "itemName",
+      headerName: "Item Name",
+      width: 300,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 100,
+      headerAlign: "center",
+      type: "number",
+      renderCell: (params) => {
+        return (
+          <div className="flex justify-center">
+            {params.row.quantity}/{params.row.originalQuantity}
+          </div>
+        );
+      },
+    },
+    {
+      field: "accountableEmp",
+      headerName: "Owner",
+      width: 300,
+    },
+    {
+      field: "actions",
+      headerName: "Action",
+      width: 200,
+      headerAlign: "center",
+      renderCell: (params) => {
+        return (
+          <div className="flex gap-2 justify-center">
+            <DefaultButton
+              btnText="lend"
+              onClick={() => router.push(`/manager/lend/${params.row.id}`)}
+              disabled={params.row.quantity === 0}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
+  // useEffect(() => {
+  //   if (ownedItems) {
+  //     console.log("ownedItems ", ownedItems);
+  //   }
+  // }, [ownedItems]);
+
+  return (
+    <>
+      <PageHeader pageHead="Owned Items" />
+      <DataTable
+        columns={columns}
+        rows={mappedOwnedItems || []}
+        rowLimit={rowLimit}
+        setRowLimit={setRowLimit}
+        loading={isOwnedItemsLoading}
+      />
+    </>
+  );
 };
 
-export default page;
+export default OwnedItems;

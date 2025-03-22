@@ -61,8 +61,12 @@ export const apiSlice = createApi({
     }),
 
     //employee api
-    getEmployees: builder.query<Employee[], number>({
-      query: (department) => `/employees?department=${department}`,
+    getEmployees: builder.query<
+      Employee[],
+      { departmentId: number; limit: number }
+    >({
+      query: ({ departmentId, limit }) =>
+        `/employees?departmentId=${departmentId}&limit=${limit}`,
       providesTags: ["Employees"],
     }),
 
@@ -141,7 +145,7 @@ export const apiSlice = createApi({
 
     //get items by owner
     getItemsByOwner: builder.query({
-      query: (empId) => `/item/${empId}`,
+      query: ({ empId, limit }) => `/item/${empId}?limit=${limit}`,
       providesTags: ["Items"],
     }),
     //get items by department
@@ -162,10 +166,10 @@ export const apiSlice = createApi({
 
     getItemsNotOwned: builder.query<
       DistributedItemProps[],
-      { empId: number; departmentId: number }
+      { empId: number; departmentId: number; limit: number }
     >({
-      query: ({ empId, departmentId }) =>
-        `/item/notOwned/${empId}?departmentId=${departmentId}`,
+      query: ({ empId, departmentId, limit }) =>
+        `/item/notOwned/${empId}?departmentId=${departmentId}&limit=${limit}`,
       providesTags: ["Items"],
     }),
 
@@ -284,6 +288,22 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
+
+    //distributed ites
+    getDistributedItems: builder.query<
+      DistributedItemProps[],
+      { department: number; limit: number; owner_emp_id: number }
+    >({
+      query: ({ department, limit, owner_emp_id }) =>
+        `/item?department=${department}&limit=${limit}&owner_emp_id=${owner_emp_id}`,
+      providesTags: ["Items"],
+    }),
+
+    //get distributed item by id
+    getDistributedItemById: builder.query<DistributedItemProps, number>({
+      query: (itemId) => `/item/${itemId}`,
+      providesTags: ["Items"],
+    }),
   }),
 });
 
@@ -338,7 +358,14 @@ export const {
   useGetAccountItemQuery,
 
   //transactions
+  //get
   useGetTransactionsQuery,
-  //post borrow
+  //post
   useCreateBorrowingTransactionMutation,
+
+  //distributed item
+  useGetDistributedItemsQuery,
+
+  //distributed item by id
+  useGetDistributedItemByIdQuery,
 } = apiSlice;

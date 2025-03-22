@@ -1,29 +1,39 @@
-import { DistributedItemProps, TransactionProps } from "@/types/global_types";
+import {
+  DistributedItemProps,
+  Employee,
+  TransactionProps,
+} from "@/types/global_types";
 
 //distributed item array mapper
-export const mapDistributedItems = (items: DistributedItemProps[]) => {
-  return items.map((item: DistributedItemProps, index: number) => {
-    //destructure item details in items
+export const mapDistributedItems = (
+  items: DistributedItemProps[] | undefined
+) => {
+  return (
+    items?.map((item: DistributedItemProps, index: number) => {
+      //destructure item details in items
 
-    //destructure undistributed item
-    const { ITEM_NAME, PAR_NO, MR_NO } = item.undistributedItemDetails;
-    //destructure accountable employee
-    const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
-      item.accountableEmpDetails;
+      //destructure undistributed item
+      const { ITEM_NAME, PAR_NO, MR_NO } = item.undistributedItemDetails;
+      //destructure accountable employee
+      const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
+        item.accountableEmpDetails;
+      console.log("item ", item);
 
-    return {
-      ...item,
-      id: item.id,
-      index,
-      itemName: ITEM_NAME,
-      itemPar: PAR_NO,
-      itemMr: MR_NO,
-      quantity: item.quantity,
-      accountableEmp: `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${
-        SUFFIX ?? ""
-      }`,
-    };
-  });
+      return {
+        ...item,
+        id: item.id,
+        index: index + 1,
+        itemName: ITEM_NAME,
+        itemPar: PAR_NO,
+        itemMr: MR_NO,
+        quantity: item.quantity,
+        originalQuantity: item.ORIGINAL_QUANTITY,
+        accountableEmp: `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${
+          SUFFIX ?? ""
+        }`,
+      };
+    }) || []
+  );
 };
 
 //for transaction array mapper
@@ -71,4 +81,19 @@ export const mapTransactions = (transactions: TransactionProps[]) => {
       remarks: DESCRIPTION,
     };
   });
+};
+
+export const mapEmployees = (employees: Employee[] | undefined) => {
+  return (
+    employees?.map((employee: Employee, index: number) => {
+      const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } = employee;
+      return {
+        id: employee.ID,
+        index: index + 1,
+        fullName: FIRSTNAME
+          ? `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${SUFFIX ?? ""}`
+          : "N/A",
+      };
+    }) || []
+  );
 };
