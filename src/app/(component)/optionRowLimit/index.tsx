@@ -15,17 +15,20 @@ const OptionRowLimitCount = ({
   currentValue,
 }: OptionRowLimitCountProps) => {
   return (
-    <select
-      className={`border rounded px-2 py-1 ${className}`}
-      onChange={(e) => onChange(Number(e.target.value))}
-      value={options.find((limit) => limit === currentValue) || options[0]}
-    >
-      {options.map((limit) => (
-        <option key={limit} onClick={() => onChange(limit)}>
-          {limit}
-        </option>
-      ))}
-    </select>
+    <div className="flex gap-1 items-center">
+      <span>| Show: </span>
+      <select
+        className={`border rounded px-2 py-1 ${className}`}
+        onChange={(e) => onChange(Number(e.target.value))}
+        value={options.find((limit) => limit === currentValue) || options[0]}
+      >
+        {options.map((limit) => (
+          <option key={limit} onClick={() => onChange(limit)}>
+            {limit}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 };
 

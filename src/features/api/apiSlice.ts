@@ -63,7 +63,7 @@ export const apiSlice = createApi({
     //employee api
     getEmployees: builder.query<
       Employee[],
-      { departmentId: number; limit: number }
+      { departmentId: number | undefined; limit: number }
     >({
       query: ({ departmentId, limit }) =>
         `/employees?departmentId=${departmentId}&limit=${limit}`,
@@ -88,7 +88,7 @@ export const apiSlice = createApi({
     }),
     deleteEmployees: builder.mutation({
       query: (IDs: number[]) => ({
-        url: `/employees/delete?DELETED=1`, //change lang 0 kung mag revert
+        url: `/employees`,
         method: "DELETE",
         body: { IDs },
       }),

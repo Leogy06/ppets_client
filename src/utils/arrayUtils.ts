@@ -3,6 +3,7 @@ import {
   Employee,
   TransactionProps,
 } from "@/types/global_types";
+import { dateFormmater } from "./date_formmater";
 
 //distributed item array mapper
 export const mapDistributedItems = (
@@ -88,17 +89,51 @@ export const mapTransactions = (
 };
 
 export const mapEmployees = (employees: Employee[] | undefined) => {
-  return (
-    employees?.map((employee: Employee, index: number) => {
-      const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } = employee;
-      return {
-        ID: employee.ID, //dont remove this
-        id: employee.ID,
-        index: index + 1,
-        fullName: FIRSTNAME
-          ? `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${SUFFIX ?? ""}`
-          : "N/A",
-      };
-    }) || []
-  );
+  return employees?.map((employee: Employee, index: number) => {
+    const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } = employee; //name
+    // console.log("employee ", employee);
+
+    // Ensures creator is always an object
+    const {
+      FIRSTNAME: CREATOR_FIRSTNAME,
+      LASTNAME: CREATOR_LASTNAME,
+      MIDDLENAME: CREATOR_MIDDLENAME,
+      SUFFIX: CREATOR_SUFFIX,
+    } = employee?.creator ?? {};
+
+    // console.log("Employee ", employee.ID_NUMBER, employee.creator);
+
+    //updater
+    const {
+      FIRSTNAME: UPDATER_FIRSTNAME,
+      LASTNAME: UPDATER_LASTNAME,
+      MIDDLENAME: UPDATER_MIDDLENAME,
+      SUFFIX: UPDATER_SUFFIX,
+    } = employee?.updater ?? {};
+
+    return {
+      ...employee,
+      ID: employee.ID, //dont remove this
+      id: employee.ID,
+      idNumber: employee.ID_NUMBER,
+      index: index + 1,
+      fullName: FIRSTNAME
+        ? `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${SUFFIX ?? ""}`.trim()
+        : "N/A",
+      department: employee.departmentDetails.DEPARTMENT_NAME,
+      creator: CREATOR_FIRSTNAME
+        ? `${CREATOR_LASTNAME} ${CREATOR_FIRSTNAME} ${
+            CREATOR_MIDDLENAME ?? ""
+          } ${CREATOR_SUFFIX ?? ""}`.trim()
+        : "",
+      createdWhen: dateFormmater(employee?.CREATED_WHEN, "YYYY-MM-DD"),
+      updater: UPDATER_FIRSTNAME
+        ? `${UPDATER_LASTNAME} ${UPDATER_FIRSTNAME} ${
+            UPDATER_MIDDLENAME ?? ""
+          } ${UPDATER_SUFFIX ?? ""}`.trim()
+        : "",
+
+      updatedWhen: dateFormmater(employee?.UPDATED_WHEN, "YYYY-MM-DD"),
+    };
+  });
 };

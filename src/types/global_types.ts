@@ -56,8 +56,11 @@ export interface Employee {
   CREATED_BY: number | null;
   UPDATED_BY: number | null;
   departmentDetails: Department;
+  creator: Employee; // CREATED_BY
+  updater: Employee; // UPDATED_BY
+  UPDATED_WHEN: Date;
+  CREATED_WHEN: Date;
 }
-
 export interface Credentials {
   username: string;
   password: string;

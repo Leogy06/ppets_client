@@ -4,13 +4,12 @@ import {
   useEditEmployeeMutation,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
-import { dateFormmater } from "@/utils/date_formmater";
 import { Button } from "@mui/material";
 import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/GlobalSnackbar";
-import { Department, Employee as EmployeeProps } from "@/types/global_types";
+import { Employee as EmployeeProps } from "@/types/global_types";
 import { useAuth } from "@/context/AuthContext";
 import PageHeader from "@/app/(component)/pageheader";
 import { Check, Close, Edit, People } from "@mui/icons-material";
@@ -19,6 +18,8 @@ import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import { handleError } from "@/utils/errorHandler";
 import DataTable from "@/app/(component)/datagrid";
+import { mapEmployees } from "@/utils/arrayUtils";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -211,7 +212,8 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
 const Employee = () => {
   const { empDetails } = useAuth();
-
+  //row limit
+  const [rowLimit, setRowLimit] = useState(10);
   //router
   const router = useRouter();
   //modal state for delete confimation
@@ -222,9 +224,10 @@ const Employee = () => {
 
   //get employees
 
-  const { data: employees, isLoading: isEmployeeRdy } = useGetEmployeesQuery(
-    Number(empDetails?.CURRENT_DPT_ID)
-  );
+  const { data: employees, isLoading: isEmployeeRdy } = useGetEmployeesQuery({
+    departmentId: empDetails?.CURRENT_DPT_ID,
+    limit: rowLimit,
+  });
 
   //edit employee
   const [editEmployee, { isLoading: isEditEmployeeLoading }] =
@@ -253,6 +256,9 @@ const Employee = () => {
   const [deleteEmployees, { isLoading: isDeleteEmpLoading }] =
     useDeleteEmployeesMutation();
 
+  //mapped employees
+  const mappedEmployee = useMemo(() => mapEmployees(employees), [employees]);
+
   //edit employee handles
   //handle open edit employee modal
   const handleOpenEditEmployeeModal = (employeeDetails: EmployeeProps) => {
@@ -277,7 +283,7 @@ const Employee = () => {
 
   const columns: GridColDef[] = [
     {
-      field: "ID_NUMBER",
+      field: "idNumber",
       headerName: "ID number",
       width: 150,
       editable: false,
@@ -290,53 +296,47 @@ const Employee = () => {
       valueGetter: (params: string) => params.toUpperCase(),
     },
     {
-      field: "departmentDetails",
+      field: "department",
       headerName: "Department",
       width: 180,
-      valueGetter: (params: Department) => params.DEPARTMENT_NAME ?? "--",
     },
     {
-      field: "creator",
+      field: "Created",
       headerName: "Added by",
-      width: 200,
-      valueGetter: (creator: EmployeeProps) =>
-        creator
-          ? `${creator.LASTNAME} ${creator.FIRSTNAME} ${
-              creator.MIDDLENAME ?? ""
-            } ${creator.SUFFIX ?? ""}`
-          : "--",
-    },
-    {
-      field: "CREATED_WHEN",
-      headerName: "Created When",
-      width: 200,
-      type: "date",
-      valueFormatter: (param) => dateFormmater(param),
+      width: 250,
+      renderCell: (params) => (
+        <div>
+          {params.row.createdWhen === "--" ? (
+            "--"
+          ) : (
+            <p>
+              On {params.row.createdWhen} by {params.row.creator}
+            </p>
+          )}
+        </div>
+      ),
     },
     {
       field: "updater",
-      headerName: "Updated by",
-      width: 200,
-      valueGetter: (creator: EmployeeProps) =>
-        creator
-          ? `${creator.LASTNAME} ${creator.FIRSTNAME} ${
-              creator.MIDDLENAME ?? ""
-            } ${creator.SUFFIX ?? ""}`
-          : "--",
-    },
-    {
-      field: "UPDATED_WHEN",
-      headerName: "Updated When",
-      width: 200,
-      type: "date",
-      valueFormatter: (param) => dateFormmater(param),
+      headerName: "Updated",
+      width: 250,
+      renderCell: (params) => (
+        <div>
+          {params.row.updater && (
+            <p>
+              On {params.row.updatedWhen} by {params.row.updater}
+            </p>
+          )}
+        </div>
+      ),
     },
     {
       field: "Actions",
       width: 170,
+      headerAlign: "center",
       renderCell: (params) => {
         return (
-          <div className="flex">
+          <div className="flex justify-center">
             <DefaultButton
               title="Edit this employee"
               placement="left"
@@ -409,7 +409,18 @@ const Employee = () => {
   return (
     <div className="flex flex-col max-h-[520px]">
       <div className=" flex justify-between mb-4">
-        <PageHeader pageHead="Employees" icon={People} />
+        <div className="flex gap-2 items-center">
+          <PageHeader
+            pageHead="Employees"
+            icon={People}
+            hasMarginBottom={false}
+          />
+          <OptionRowLimitCount
+            currentValue={rowLimit}
+            onChange={setRowLimit}
+            className="bg-white"
+          />
+        </div>
         {selectedRows.length > 0 && (
           <Button
             variant="contained"
@@ -421,14 +432,7 @@ const Employee = () => {
         )}
       </div>
       <DataTable
-        rows={
-          employees?.map((emp) => ({
-            ...emp,
-            fullName: `${emp.LASTNAME}, ${emp.FIRSTNAME} ${
-              emp?.MIDDLENAME ?? ""
-            } ${emp?.SUFFIX ?? ""}`,
-          })) ?? []
-        }
+        rows={mappedEmployee || []}
         columns={columns}
         checkboxSelection
         loading={isEmployeeRdy}
