@@ -56,6 +56,10 @@ const BorrowItem = () => {
     quantity: 1,
     borrower_emp_id: 0,
     owner_emp_id: 0,
+    remarks: 0,
+    status: 0,
+    DPT_ID: 0,
+    distributed_item_id: 0,
   });
   //confirm borrow item modal
   const [openBorrowModal, setOpenBorrowModal] = useState(false);
@@ -69,11 +73,14 @@ const BorrowItem = () => {
     setAccountableEmp(params.accountableEmpDetails); // accountable of distributed item
     setItemDetails(params); //distributed ite self
     setCreateBorrowForm({
-      ...params,
+      distributed_item_id: params.ITEM_ID,
       DISTRIBUTED_ITM_ID: params.id,
       quantity: 1,
       borrower_emp_id: Number(empDetails?.ID),
       owner_emp_id: params.accountable_emp,
+      remarks: 1, //borrowing
+      status: 2, //pending
+      DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
     });
     setOpenBorrowModal(true);
   };
@@ -163,7 +170,7 @@ const BorrowItem = () => {
   // console.log("distributed items ", distributedItems);
 
   const mappedDistributeditem = useMemo(
-    () => mapDistributedItems(distributedItems?.ownedItems || []),
+    () => mapDistributedItems(distributedItems?.notOwnedItems || []),
     [distributedItems]
   );
 
@@ -175,6 +182,7 @@ const BorrowItem = () => {
           <Tooltip title="Row Limit" placement="bottom">
             <OptionRowLimitCount
               className="bg-white"
+              currentValue={rowLimit}
               onChange={(limit) => setRowLimit(limit)}
             />
           </Tooltip>

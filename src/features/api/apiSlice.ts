@@ -212,7 +212,7 @@ export const apiSlice = createApi({
       {
         DPT_ID: number;
         TRANSACTION_TYPE: number;
-        EMP_ID: number;
+        EMP_ID?: number;
         LIMIT: number;
       }
     >({
@@ -220,11 +220,20 @@ export const apiSlice = createApi({
         `/transaction?DPT_ID=${DPT_ID}&TRANSACTION_TYPE=${TRANSACTION_TYPE}&EMP_ID=${EMP_ID}&LIMIT=${LIMIT}`,
       providesTags: ["Transactions"],
     }),
-    // borrow transactions
+    // transactions
     createTransaction: builder.mutation({
       query: (data) => ({
         url: "/transaction",
         method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
+    //edit transaction
+    editTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction",
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: ["Transactions"],
@@ -299,6 +308,8 @@ export const {
   useGetTransactionsQuery,
   //post
   useCreateTransactionMutation,
+  //edit
+  useEditTransactionMutation,
 
   //distributed item
   useGetDistributedItemsQuery,

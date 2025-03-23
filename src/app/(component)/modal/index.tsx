@@ -22,6 +22,7 @@ const DefaultModal = ({
           transform: "translate(-50%, -50%)",
           width: { xs: "90%", sm: "70%", md: "50%", lg: "40%" },
           p: 2,
+          maxHeight: "80vh",
         }}
       >
         {children}

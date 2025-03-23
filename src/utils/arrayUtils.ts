@@ -44,6 +44,8 @@ export const mapTransactions = (
   transactions: TransactionProps[] | undefined
 ) => {
   return transactions?.map((transaction: TransactionProps, index: number) => {
+    // console.log("transaction ", transaction);
+
     //undistributed item
     const { ITEM_NAME, PAR_NO, MR_NO } =
       transaction?.distributedItemDetails?.undistributedItemDetails || {};
@@ -82,8 +84,8 @@ export const mapTransactions = (
             OWNER_SUFFIX ?? ""
           }`
         : "N/A",
-      transaction: description.toUpperCase(),
-      remarks: DESCRIPTION,
+      transactionDescription: description.toUpperCase(),
+      remarksDescription: DESCRIPTION,
     };
   });
 };

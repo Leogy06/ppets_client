@@ -95,6 +95,10 @@ export interface TransactionProps {
   distributedItemDetails: DistributedItemProps;
   DISTRIBUTED_ITM_ID: number; // distributed item id
   TRANSACTION_DESCRIPTION: string;
+  APPROVED_BY: number;
+  owner: string;
+  borrower: string;
+  borrowedItem: string;
 }
 
 export interface TransactionStatusProps {
