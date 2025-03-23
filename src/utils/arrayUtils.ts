@@ -90,7 +90,8 @@ export const mapEmployees = (employees: Employee[] | undefined) => {
     employees?.map((employee: Employee, index: number) => {
       const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } = employee;
       return {
-        ID: employee.ID,
+        ID: employee.ID, //dont remove this
+        id: employee.ID,
         index: index + 1,
         fullName: FIRSTNAME
           ? `${FIRSTNAME} ${MIDDLENAME ?? ""} ${LASTNAME} ${SUFFIX ?? ""}`

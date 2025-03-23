@@ -4,6 +4,7 @@ import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
@@ -18,6 +19,7 @@ import {
 } from "@/types/global_types";
 import { mapDistributedItems } from "@/utils/arrayUtils";
 import { handleError } from "@/utils/errorHandler";
+import { Tooltip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
@@ -49,8 +51,12 @@ const BorrowItem = () => {
     useCreateTransactionMutation();
 
   //create borro trnrsaciton form
-  const [createBorrowForm, setCreateBorrowForm] =
-    useState<Partial<TransactionProps> | null>(null);
+  const [createBorrowForm, setCreateBorrowForm] = useState({
+    DISTRIBUTED_ITM_ID: 0,
+    quantity: 1,
+    borrower_emp_id: 0,
+    owner_emp_id: 0,
+  });
   //confirm borrow item modal
   const [openBorrowModal, setOpenBorrowModal] = useState(false);
   //accountable employee
@@ -66,7 +72,7 @@ const BorrowItem = () => {
       ...params,
       DISTRIBUTED_ITM_ID: params.id,
       quantity: 1,
-      borrower_emp_id: empDetails?.ID,
+      borrower_emp_id: Number(empDetails?.ID),
       owner_emp_id: params.accountable_emp,
     });
     setOpenBorrowModal(true);
@@ -75,7 +81,6 @@ const BorrowItem = () => {
   //handleClose modal
   const handleCloseBorrowModal = () => {
     setOpenBorrowModal(false);
-    setCreateBorrowForm(null);
   };
 
   //handle quantity change
@@ -165,7 +170,15 @@ const BorrowItem = () => {
   return (
     <>
       <div className="flex justify-between items-center mb-2">
-        <PageHeader pageHead="Borrow Items" hasMarginBottom={false} />
+        <div className="flex gap-2 items-center">
+          <PageHeader pageHead="Borrow Items" hasMarginBottom={false} />
+          <Tooltip title="Row Limit" placement="bottom">
+            <OptionRowLimitCount
+              className="bg-white"
+              onChange={(limit) => setRowLimit(limit)}
+            />
+          </Tooltip>
+        </div>
         <button
           onClick={() =>
             router.push("/manager/request/borrow_items/transactions")
@@ -179,8 +192,6 @@ const BorrowItem = () => {
         columns={columns}
         rows={mappedDistributeditem}
         loading={isDistributedItemsLoading}
-        rowLimit={rowLimit}
-        setRowLimit={setRowLimit}
       />
       <ConfirmBorrowItemModal
         open={openBorrowModal}

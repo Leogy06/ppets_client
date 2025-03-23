@@ -8,6 +8,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import { mapDistributedItems } from "@/utils/arrayUtils";
 import DefaultButton from "../(component)/buttonDefault";
 import { useRouter } from "next/navigation";
+import OptionRowLimitCount from "../(component)/optionRowLimit";
 
 const OwnedItems = () => {
   const { empDetails } = useAuth();
@@ -66,14 +67,24 @@ const OwnedItems = () => {
     {
       field: "actions",
       headerName: "Action",
-      width: 200,
+      width: 250,
       headerAlign: "center",
       renderCell: (params) => {
         return (
           <div className="flex gap-2 justify-center">
             <DefaultButton
               btnText="lend"
-              onClick={() => router.push(`/manager/lend/${params.row.id}`)}
+              onClick={() =>
+                router.push(`/manager/request/lend/${params.row.id}`)
+              }
+              disabled={params.row.quantity === 0}
+            />
+            <DefaultButton
+              btnText="transfer"
+              color="secondary"
+              onClick={() =>
+                router.push(`/manager/request/transfer/${params.row.id}`)
+              }
               disabled={params.row.quantity === 0}
             />
           </div>
@@ -90,12 +101,13 @@ const OwnedItems = () => {
 
   return (
     <>
-      <PageHeader pageHead="Owned Items" />
+      <div className="flex gap-2 mb-4">
+        <PageHeader pageHead="Owned Items" hasMarginBottom={false} />
+        <OptionRowLimitCount onChange={setRowLimit} className="bg-white" />
+      </div>
       <DataTable
         columns={columns}
         rows={mappedOwnedItems || []}
-        rowLimit={rowLimit}
-        setRowLimit={setRowLimit}
         loading={isOwnedItemsLoading}
       />
     </>

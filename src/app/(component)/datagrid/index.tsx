@@ -16,8 +16,6 @@ interface DataTableProps<T> extends Partial<DataGridProps> {
   onRowSelectionModelChange?: (
     rowSelectionModel: GridRowSelectionModel
   ) => void;
-  setRowLimit(limit: number): void;
-  rowLimit: number;
 }
 
 const DataTable = <T,>({
@@ -28,8 +26,6 @@ const DataTable = <T,>({
   onRowSelectionModelChange,
   loading = false,
   sx = {},
-  rowLimit,
-  setRowLimit,
 }: DataTableProps<T>) => {
   return (
     <div className="h-[400px] w-full overflow-auto">
@@ -37,12 +33,15 @@ const DataTable = <T,>({
         rows={rows}
         columns={columns}
         getRowId={getRowId}
-        pageSizeOptions={[5, 10, 20, 50, 100, 200]}
+        pageSizeOptions={[5, 10, 20, 50, 100]}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 10,
+            },
+          },
+        }}
         pagination
-        paginationMode="server"
-        rowCount={rows.length}
-        paginationModel={{ pageSize: rowLimit, page: 0 }} // Ensure correct pagination model usage
-        onPaginationModelChange={(model) => setRowLimit(model.pageSize)} // Use the correct event
         checkboxSelection={checkboxSelection}
         onRowSelectionModelChange={(rowSelectionModel) =>
           onRowSelectionModelChange?.(rowSelectionModel)

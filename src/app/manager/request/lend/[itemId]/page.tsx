@@ -5,6 +5,7 @@ import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
@@ -151,6 +152,7 @@ const LendItem = () => {
       <div className="flex items-center mb-4 gap-2">
         <BackArrow backTo="/manager" />
         <PageHeader pageHead="Lend your Item?" hasMarginBottom={false} />
+        <OptionRowLimitCount onChange={setRowLimit} className="bg-white" />
       </div>
       {!isDistributedItemLoading && (
         <div className="flex gap-2 justify-center mb-4">
@@ -168,14 +170,12 @@ const LendItem = () => {
           </div>
         </div>
       )}
-
+      <h1>Select Borrower:</h1>
       <DataTable
         loading={isEmployeesLoading}
         rows={memoisedEmployees || []}
         columns={columns}
         checkboxSelection={false}
-        rowLimit={rowLimit}
-        setRowLimit={setRowLimit}
         getRowId={(row) => row.ID}
       />
       <ConfirmLendModal
