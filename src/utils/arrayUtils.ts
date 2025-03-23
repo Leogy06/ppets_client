@@ -39,8 +39,10 @@ export const mapDistributedItems = (
 };
 
 //for transaction array mapper
-export const mapTransactions = (transactions: TransactionProps[]) => {
-  return transactions.map((transaction: TransactionProps, index: number) => {
+export const mapTransactions = (
+  transactions: TransactionProps[] | undefined
+) => {
+  return transactions?.map((transaction: TransactionProps, index: number) => {
     //undistributed item
     const { ITEM_NAME, PAR_NO, MR_NO } =
       transaction?.distributedItemDetails?.undistributedItemDetails || {};

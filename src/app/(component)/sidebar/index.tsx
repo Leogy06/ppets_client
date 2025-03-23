@@ -28,13 +28,20 @@ import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
 import { useAuth } from "@/context/AuthContext";
 import { getGreeting } from "@/utils/greeting";
-import path from "path";
+
+//interface
+interface NavigationItemProps {
+  label: string;
+  icon: React.ReactNode;
+  path: string;
+  subMenu?: { label: string; path: string }[];
+}
 
 //global sidebar
 //navigations
 
 //admin navigations
-const navigations = [
+const navigations: NavigationItemProps[] = [
   {
     label: "Dashboard",
     icon: <Dashboard />,
@@ -69,7 +76,7 @@ const navigations = [
 ];
 
 //employee
-const managerNavigations = [
+const managerNavigations: NavigationItemProps[] = [
   {
     label: "Items",
     icon: <PanToolAltSharp />,
@@ -79,7 +86,11 @@ const managerNavigations = [
     label: "Request",
     icon: <Autorenew />,
     path: "/manager/request",
-    subMenu: [{ label: "Borrow Item", path: "/manager/request/borrow_items" }],
+    subMenu: [
+      { label: "Borrow Item", path: "/manager/request/borrow_items" },
+      { label: "Lend Item", path: "/manager/request/lend" },
+      { label: "Transfer Item", path: "/manager/request/transfer" },
+    ],
   },
   {
     label: "On Lend Items",
@@ -94,7 +105,7 @@ const managerNavigations = [
 ];
 
 //employee navigations
-const employeeNavigations = [
+const employeeNavigations: NavigationItemProps[] = [
   {
     label: "Borrowed Items",
     icon: <MoveToInboxOutlined />,
@@ -143,7 +154,7 @@ const Sidebar = () => {
   };
 
   // Track open menus
-  const [openMenus, setOpenMenus] = useState({});
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   const userNavigations =
     user?.role === 1
@@ -154,7 +165,7 @@ const Sidebar = () => {
       ? employeeNavigations
       : [];
 
-  const toggleSubMenu = (label) => {
+  const toggleSubMenu = (label: string) => {
     setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
@@ -175,7 +186,7 @@ const Sidebar = () => {
         <SideBarHeader />
         <Divider sx={{ borderTopColor: "#375ba5" }} />
         <List>
-          {userNavigations.map((navi, index) => (
+          {userNavigations.map((navi: NavigationItemProps, index) => (
             <div key={index}>
               <ListItem
                 component={navi.subMenu ? "div" : Link}

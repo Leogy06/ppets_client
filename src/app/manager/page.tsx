@@ -103,7 +103,11 @@ const OwnedItems = () => {
     <>
       <div className="flex gap-2 mb-4">
         <PageHeader pageHead="Owned Items" hasMarginBottom={false} />
-        <OptionRowLimitCount onChange={setRowLimit} className="bg-white" />
+        <OptionRowLimitCount
+          currentValue={rowLimit}
+          onChange={setRowLimit}
+          className="bg-white"
+        />
       </div>
       <DataTable
         columns={columns}
