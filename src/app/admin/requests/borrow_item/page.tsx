@@ -137,6 +137,15 @@ const BorrowTransaction = () => {
     { field: "transactionDescription", headerName: "Status", width: 200 },
     { field: "remarksDescription", headerName: "Transaction", width: 200 },
     {
+      field: "createdAt",
+      headerName: "Requested Date",
+      width: 200,
+      type: "dateTime",
+      valueGetter: (params) => {
+        return params ? new Date(params) : "0000-00-00";
+      },
+    },
+    {
       field: "actions",
       headerName: "Actions",
       width: 200,

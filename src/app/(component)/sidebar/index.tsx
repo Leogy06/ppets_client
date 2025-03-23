@@ -37,7 +37,7 @@ interface NavigationItemProps {
   subMenu?: { label: string; path: string }[];
 }
 
-//global sidebar
+//global sidebars
 //navigations
 
 //admin navigations

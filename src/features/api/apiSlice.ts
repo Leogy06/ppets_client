@@ -210,7 +210,7 @@ export const apiSlice = createApi({
     getTransactions: builder.query<
       TransactionProps[],
       {
-        DPT_ID: number;
+        DPT_ID: number | undefined;
         TRANSACTION_TYPE: number;
         EMP_ID?: number;
         LIMIT: number;

@@ -43,51 +43,53 @@ export const mapDistributedItems = (
 export const mapTransactions = (
   transactions: TransactionProps[] | undefined
 ) => {
-  return transactions?.map((transaction: TransactionProps, index: number) => {
-    // console.log("transaction ", transaction);
+  return (
+    transactions?.map((transaction: TransactionProps, index: number) => {
+      // console.log("transaction ", transaction);
 
-    //undistributed item
-    const { ITEM_NAME, PAR_NO, MR_NO } =
-      transaction?.distributedItemDetails?.undistributedItemDetails || {};
+      //undistributed item
+      const { ITEM_NAME, PAR_NO, MR_NO } =
+        transaction?.distributedItemDetails?.undistributedItemDetails || {};
 
-    //borrower item employee
-    const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
-      transaction?.borrowerEmpDetails || {};
+      //borrower item employee
+      const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
+        transaction?.borrowerEmpDetails || {};
 
-    //owner item employee
-    const {
-      FIRSTNAME: OWNER_FIRSTNAME,
-      LASTNAME: OWNER_LASTNAME,
-      MIDDLENAME: OWNER_MIDDLENAME,
-      SUFFIX: OWNER_SUFFIX,
-    } = transaction?.ownerEmpDetails || {};
+      //owner item employee
+      const {
+        FIRSTNAME: OWNER_FIRSTNAME,
+        LASTNAME: OWNER_LASTNAME,
+        MIDDLENAME: OWNER_MIDDLENAME,
+        SUFFIX: OWNER_SUFFIX,
+      } = transaction?.ownerEmpDetails || {};
 
-    //transaction status
-    const { description } = transaction.transactionStatusDetails;
+      //transaction status
+      const { description } = transaction.transactionStatusDetails;
 
-    //remarks
-    const { DESCRIPTION } = transaction.transactionRemarksDetails;
+      //remarks
+      const { DESCRIPTION } = transaction.transactionRemarksDetails;
 
-    return {
-      ...transaction,
-      id: transaction.id,
-      index: index + 1,
-      borrowedItem: ITEM_NAME
-        ? `${ITEM_NAME} - (${PAR_NO ?? "N/A"} - ${MR_NO ?? "N/A"})`
-        : "N/A",
-      quantity: transaction.quantity,
-      borrower: FIRSTNAME
-        ? `${LASTNAME}, ${FIRSTNAME ?? ""} ${MIDDLENAME} ${SUFFIX ?? ""}`
-        : "N/A",
-      owner: OWNER_FIRSTNAME
-        ? `${OWNER_LASTNAME}, ${OWNER_FIRSTNAME} ${OWNER_MIDDLENAME ?? ""} ${
-            OWNER_SUFFIX ?? ""
-          }`
-        : "N/A",
-      transactionDescription: description.toUpperCase(),
-      remarksDescription: DESCRIPTION,
-    };
-  });
+      return {
+        ...transaction,
+        id: transaction.id,
+        index: index + 1,
+        borrowedItem: ITEM_NAME
+          ? `${ITEM_NAME} - (${PAR_NO ?? "N/A"} - ${MR_NO ?? "N/A"})`
+          : "N/A",
+        quantity: transaction.quantity,
+        borrower: FIRSTNAME
+          ? `${LASTNAME}, ${FIRSTNAME ?? ""} ${MIDDLENAME} ${SUFFIX ?? ""}`
+          : "N/A",
+        owner: OWNER_FIRSTNAME
+          ? `${OWNER_LASTNAME}, ${OWNER_FIRSTNAME} ${OWNER_MIDDLENAME ?? ""} ${
+              OWNER_SUFFIX ?? ""
+            }`
+          : "N/A",
+        transactionDescription: description.toUpperCase(),
+        remarksDescription: DESCRIPTION,
+      };
+    }) || []
+  );
 };
 
 export const mapEmployees = (employees: Employee[] | undefined) => {
