@@ -5,6 +5,7 @@ import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
@@ -231,7 +232,8 @@ const DistributionModal = ({
             onChange={handleOnchange}
             type="number"
           />
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-1">
+            <DefaultButton btnText="cancel" onClick={onClose} variant="text" />
             <DefaultButton
               btnText="submit"
               type="submit"
@@ -262,8 +264,13 @@ const Distribute = () => {
   //user details
   const { empDetails } = useAuth();
 
+  const [rowLimit, setRowLimit] = useState(10);
+
   const { data: undistributedItems, isLoading: isItemsLoading } =
-    useGetUnDistributeItemQuery(Number(empDetails?.CURRENT_DPT_ID));
+    useGetUnDistributeItemQuery({
+      limit: rowLimit,
+      deptID: Number(empDetails?.CURRENT_DPT_ID),
+    });
 
   //use state hooks
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -332,9 +339,19 @@ const Distribute = () => {
 
   return (
     <>
-      <PageHeader pageHead="Select an item to distribute" />
-      <div className="flex gap-2 mb-4 justify-between">
+      <div className="flex gap-2 mb-4 items-center">
         <BackArrow backTo="/admin/distributions" />
+        <PageHeader
+          pageHead="Select an item to distribute"
+          hasMarginBottom={false}
+        />
+        <OptionRowLimitCount
+          currentValue={rowLimit}
+          onChange={setRowLimit}
+          className="bg-white"
+        />
+      </div>
+      <div className="flex gap-2 mb-4 justify-between">
         <div className="flex gap-2">
           <h1 className="text-base font-semibold">Receiver: </h1>
           {!isEmpRecLoading && empReceiver && (

@@ -171,8 +171,12 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["UndistributedItem"],
     }),
-    getUnDistributeItem: builder.query<UndistributedItem[], number>({
-      query: (deptID) => `/api/item?DEPARTMENT_ID=${deptID}`,
+    getUnDistributeItem: builder.query<
+      UndistributedItem[],
+      { deptID: number; limit: number }
+    >({
+      query: ({ deptID, limit }) =>
+        `/api/item?DEPARTMENT_ID=${deptID}&limit=${limit}`,
       providesTags: ["UndistributedItem"],
     }),
     deleteUndistributedItem: builder.mutation({
@@ -276,7 +280,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Items"],
+      invalidatesTags: ["Items", "UndistributedItem"],
     }),
   }),
 });
