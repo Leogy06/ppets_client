@@ -2,10 +2,12 @@
 
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useGetEmployeesQuery } from "@/features/api/apiSlice";
 import { Employee } from "@/types/global_types";
+import { mapEmployees } from "@/utils/arrayUtils";
 import {
   AccountTreeOutlined,
   DifferenceOutlined,
@@ -13,16 +15,41 @@ import {
 } from "@mui/icons-material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 const Distribution = () => {
   const router = useRouter();
   const { empDetails } = useAuth();
-  const { data: employees, isLoading } = useGetEmployeesQuery(
-    Number(empDetails?.CURRENT_DPT_ID)
-  );
+  //row limt
+  const [rowLimit, setRowLimit] = useState(10);
+  const { data: employees, isLoading } = useGetEmployeesQuery({
+    departmentId: empDetails?.CURRENT_DPT_ID,
+    limit: rowLimit,
+  });
+  //map employee
+  const mappedEmployees = useMemo(() => mapEmployees(employees), [employees]);
 
   const columns: GridColDef[] = [
+    {
+      field: "index",
+      headerName: "#",
+      width: 50,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "fullName",
+      headerName: "Full name",
+      width: 280,
+      flex: 1,
+      renderCell: (params) => (
+        <span className="font-bold">
+          {`${params.row.LASTNAME} ${params.row.FIRSTNAME} ${
+            params.row.MIDDLENAME || ""
+          } ${params.row.SUFFIX || ""}`}
+        </span>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -50,19 +77,6 @@ const Distribution = () => {
         </div>
       ),
     },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      width: 280,
-      flex: 1,
-      renderCell: (params) => (
-        <span className="font-bold">
-          {`${params.row.LASTNAME} ${params.row.FIRSTNAME} ${
-            params.row.MIDDLENAME || ""
-          } ${params.row.SUFFIX || ""}`}
-        </span>
-      ),
-    },
   ];
 
   //console log employees
@@ -81,21 +95,24 @@ const Distribution = () => {
 
   return (
     <>
-      <PageHeader pageHead="Distribution" icon={AccountTreeOutlined} />
-
+      <div className="flex gap-2 items-center mb-4">
+        <PageHeader
+          pageHead="Distribution"
+          icon={AccountTreeOutlined}
+          hasMarginBottom={false}
+        />
+        <OptionRowLimitCount
+          onChange={setRowLimit}
+          currentValue={rowLimit}
+          className="bg-white"
+        />
+      </div>
       <DataTable
         loading={isLoading}
         getRowId={(params) => params.ID}
         disableRowSelectionOnClick
         columns={columns}
-        rows={
-          employees?.map((emp: Employee) => ({
-            ...emp,
-            fullName: `${emp.LASTNAME} ${emp.FIRSTNAME} ${emp.SUFFIX ?? ""} ${
-              emp.MIDDLENAME ?? ""
-            }`,
-          })) ?? []
-        }
+        rows={mappedEmployees}
       />
     </>
   );

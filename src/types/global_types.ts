@@ -25,6 +25,7 @@ export interface DistributedItemProps {
   total_value: number;
   undistributedItemDetails: UndistributedItem;
   unit_value: number;
+  current_dpt_id: number;
 }
 
 export interface ItemCategory {

@@ -4,10 +4,10 @@ import BackArrow from "@/app/(component)/backArrow";
 import DataTable from "@/app/(component)/datagrid";
 import PageHeader from "@/app/(component)/pageheader";
 import {
+  useGetDistributedItemsQuery,
   useGetEmployeeByIdQuery,
-  useGetItemsByOwnerQuery,
 } from "@/features/api/apiSlice";
-import { Item } from "@/types/global_types";
+import { DistributedItemProps } from "@/types/global_types";
 import { PictureAsPdf } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -26,7 +26,7 @@ const DistributedItems = () => {
 
   //get items accountabale person
   const { data: ownedItems, isLoading: isOwnedItemLoading } =
-    useGetItemsByOwnerQuery(Number(emp_id));
+    useGetDistributedItemsQuery(Number(emp_id));
 
   const handlePreviewPdf = async () => {
     try {

@@ -10,6 +10,7 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useEditTransactionMutation,
   useGetTransactionsQuery,
+  useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
 import { TransactionProps } from "@/types/global_types";
 import { mapTransactions } from "@/utils/arrayUtils";
@@ -58,6 +59,10 @@ const BorrowTransaction = () => {
   const [editTransaction, { isLoading: isEditLoading }] =
     useEditTransactionMutation();
 
+  //use reject api
+  const [rejectTransaction, { isLoading: isRejectLoading }] =
+    useRejectTransactionMutation();
+
   //modal reject
   const [openModalReject, setOpenModalReject] = useState(false);
 
@@ -96,7 +101,7 @@ const BorrowTransaction = () => {
   //reject transaction
   const rejectTransactionSubmit = async () => {
     try {
-      const result = await editTransaction(transactionForm).unwrap();
+      const result = await rejectTransaction(transactionForm).unwrap();
       openSnackbar(result?.message ?? "Transaction rejected. ", "success");
       closeTransactionFormModal();
     } catch (error) {

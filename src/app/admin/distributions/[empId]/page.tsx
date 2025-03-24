@@ -10,12 +10,16 @@ import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
-  useAddItemMutation,
+  useAddDistributedItemMutation,
   useGetEmployeeByIdQuery,
   useGetUndistributedItemByIdQuery,
   useGetUnDistributeItemQuery,
 } from "@/features/api/apiSlice";
-import { AccountItem, Item, UndistributedItem } from "@/types/global_types";
+import {
+  AccountItem,
+  DistributedItemProps,
+  UndistributedItem,
+} from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import { CancelOutlined, Check, CompareArrows } from "@mui/icons-material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -42,7 +46,7 @@ const ConfirmDistribute = ({
     <DefaultModal
       open={open}
       onClose={onClose}
-      className={`${
+      className={`border border-red-700 ${
         isDarkMode ? "bg-black text-gray-50" : " bg-white text-gray-900"
       }`}
     >
@@ -50,14 +54,14 @@ const ConfirmDistribute = ({
         <h1 className="text-lg font-semibold">Confirm distribute?</h1>
         <div className="flex gap-1">
           <DefaultButton
-            btnIcon={<CancelOutlined />}
+            btnText="cancel"
             variant="text"
             color="error"
             onClick={onClose}
             disabled={isLoading}
           />
           <DefaultButton
-            btnIcon={<Check />}
+            btnText="confirm"
             onClick={handleSubmit}
             disabled={isLoading}
           />
@@ -95,14 +99,16 @@ const DistributionModal = ({
   // const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   //add item
-  const [addItem, { isLoading: isItemAddLoading }] = useAddItemMutation();
+  const [addItem, { isLoading: isItemAddLoading }] =
+    useAddDistributedItemMutation();
 
-  const [itemForm, setItemForm] = useState<Partial<Item>>({
+  const [itemForm, setItemForm] = useState<Partial<DistributedItemProps>>({
     ITEM_ID: itemDetails?.ID,
     quantity: 0,
-    accountable_emp: null,
-    remarks: "",
-    DISTRIBUTED_BY: Number(empDetails?.ID),
+    accountable_emp: 0,
+    DISTRIBUTED_BY: 0,
+    added_by: 0,
+    current_dpt_id: 0,
   });
 
   //for child modal
@@ -118,7 +124,7 @@ const DistributionModal = ({
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("item form ", itemForm);
+    // console.log("item form ", itemForm);
     setOpenChildOpen(true);
   };
 
@@ -148,6 +154,9 @@ const DistributionModal = ({
         ITEM_ID: itemDetails.ID,
         DISTRIBUTED_BY: Number(empDetails?.ID),
         accountable_emp: empId,
+        added_by: Number(empDetails?.ID),
+        current_dpt_id: Number(empDetails?.CURRENT_DPT_ID),
+        unit_value: itemDetails.UNIT_VALUE,
       }));
     }
   }, [itemDetails, empDetails?.ID, empId]);
@@ -163,9 +172,11 @@ const DistributionModal = ({
     formField: string;
     itemField: string | number;
   }) => (
-    <span className="flex gap-4">
-      {formField}:{" "}
-      <p className="font-semibold underline underline-offset-1">{itemField}</p>
+    <span className="flex gap-2 justify-center items-center">
+      <span className="max-w-[50%] text-end">{formField}:</span>
+      <p className="font-semibold underline underline-offset-1 max-w-[50%]">
+        {itemField}
+      </p>
     </span>
   );
 
@@ -177,12 +188,12 @@ const DistributionModal = ({
     >
       <form
         onSubmit={handleSubmit}
-        className="w-full h-[400px] p-4 overflow-auto"
+        className="w-full max-h-[70vh] mp-4 overflow-auto"
       >
         <div className="flex flex-col gap-4">
           <h1 className="text-lg font-semibold">Finalize the Distribution</h1>
           {itemDetails && !isLoading && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <SpanItemForm
                 formField="Item"
                 itemField={itemDetails?.ITEM_NAME ?? "N/A"}
@@ -201,10 +212,6 @@ const DistributionModal = ({
                 formField="Property Number"
               />
               <SpanItemForm
-                itemField={itemDetails?.PIS_NO ?? "N/A"}
-                formField="PIS Number"
-              />
-              <SpanItemForm
                 itemField={itemDetails?.DESCRIPTION ?? "N/A"}
                 formField="Description"
               />
@@ -216,10 +223,6 @@ const DistributionModal = ({
                 itemField={itemDetails?.MR_NO ?? "N/A"}
                 formField="Material Requisition"
               />
-              <SpanItemForm
-                itemField={itemDetails?.PIS_NO ?? "N/A"}
-                formField="Inventory Custodian Slip"
-              />
             </div>
           )}
           <DefaultTextField
@@ -227,13 +230,6 @@ const DistributionModal = ({
             label="Quantity"
             onChange={handleOnchange}
             type="number"
-          />
-          <DefaultTextField
-            name="remarks"
-            label="Remarks"
-            onChange={handleOnchange}
-            required={false}
-            placeholder="Optional"
           />
           <div className="flex justify-end">
             <DefaultButton
@@ -332,7 +328,7 @@ const Distribute = () => {
     },
   ];
 
-  console.log("undistributed items: ", undistributedItems);
+  // console.log("undistributed items: ", undistributedItems);
 
   return (
     <>

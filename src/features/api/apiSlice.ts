@@ -238,6 +238,15 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
+    //reject transaction
+    rejectTransaction: builder.mutation({
+      query: (data) => ({
+        url: "/transaction/reject",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
 
     /**
      * Distributed Items
@@ -259,6 +268,15 @@ export const apiSlice = createApi({
     getDistributedItemById: builder.query<DistributedItemProps, number>({
       query: (itemId) => `/item/${itemId}`,
       providesTags: ["Items"],
+    }),
+    //add distributed item
+    addDistributedItem: builder.mutation({
+      query: (data) => ({
+        url: "/item",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Items"],
     }),
   }),
 });
@@ -310,10 +328,13 @@ export const {
   useCreateTransactionMutation,
   //edit
   useEditTransactionMutation,
+  //reject
+  useRejectTransactionMutation,
 
   //distributed item
   useGetDistributedItemsQuery,
-
   //distributed item by id
   useGetDistributedItemByIdQuery,
+  //add distributed item
+  useAddDistributedItemMutation,
 } = apiSlice;
