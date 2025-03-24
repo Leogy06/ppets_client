@@ -5,8 +5,10 @@ import DataTable from "@/app/(component)/datagrid";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
-import { useGetEmployeesQuery } from "@/features/api/apiSlice";
-import { Employee } from "@/types/global_types";
+import {
+  useGetEmployeeCountQuery,
+  useGetEmployeesQuery,
+} from "@/features/api/apiSlice";
 import { mapEmployees } from "@/utils/arrayUtils";
 import {
   AccountTreeOutlined,
@@ -26,6 +28,11 @@ const Distribution = () => {
     departmentId: empDetails?.CURRENT_DPT_ID,
     limit: rowLimit,
   });
+  //get employee count
+  const { data: employeeCount } = useGetEmployeeCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
+
   //map employee
   const mappedEmployees = useMemo(() => mapEmployees(employees), [employees]);
 
@@ -102,9 +109,10 @@ const Distribution = () => {
           hasMarginBottom={false}
         />
         <OptionRowLimitCount
-          onChange={setRowLimit}
+          onChange={(limit) => setRowLimit(limit)}
           currentValue={rowLimit}
           className="bg-white"
+          totalCount={employeeCount}
         />
       </div>
       <DataTable

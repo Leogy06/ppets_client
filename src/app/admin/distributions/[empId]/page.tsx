@@ -22,7 +22,7 @@ import {
   UndistributedItem,
 } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
-import { CancelOutlined, Check, CompareArrows } from "@mui/icons-material";
+import { CompareArrows } from "@mui/icons-material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useParams } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -129,7 +129,7 @@ const DistributionModal = ({
     setOpenChildOpen(true);
   };
 
-  //submit api item
+  //submit api itemks
 
   const handleSubmitApi = async () => {
     try {
@@ -160,7 +160,7 @@ const DistributionModal = ({
         unit_value: itemDetails.UNIT_VALUE,
       }));
     }
-  }, [itemDetails, empDetails?.ID, empId]);
+  }, [itemDetails, empDetails?.ID, empId, empDetails?.CURRENT_DPT_ID]);
 
   // useEffect(() => {
   //   console.log("dark mode: ", isDarkMode);
@@ -347,7 +347,8 @@ const Distribute = () => {
         />
         <OptionRowLimitCount
           currentValue={rowLimit}
-          onChange={setRowLimit}
+          totalCount={1000}
+          onChange={(limit) => setRowLimit(limit)}
           className="bg-white"
         />
       </div>

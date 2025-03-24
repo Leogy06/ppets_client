@@ -6,6 +6,7 @@ interface OptionRowLimitCountProps {
   onChange: (limit: number) => void;
   className: string;
   currentValue: number;
+  totalCount: number | undefined;
 }
 
 const OptionRowLimitCount = ({
@@ -13,18 +14,25 @@ const OptionRowLimitCount = ({
   onChange,
   className,
   currentValue,
+  totalCount,
 }: OptionRowLimitCountProps) => {
+  const modifiedOptions = totalCount
+    ? Array.from(
+        new Set([...options.filter((opt) => opt <= totalCount), totalCount])
+      )
+    : options;
+
   return (
     <div className="flex gap-1 items-center">
       <span>| Show: </span>
       <select
         className={`border rounded px-2 py-1 ${className}`}
         onChange={(e) => onChange(Number(e.target.value))}
-        value={options.find((limit) => limit === currentValue) || options[0]}
+        value={currentValue}
       >
-        {options.map((limit) => (
-          <option key={limit} onClick={() => onChange(limit)}>
-            {limit}
+        {modifiedOptions.map((limit) => (
+          <option key={limit} value={limit}>
+            {limit === totalCount ? "All" : limit}
           </option>
         ))}
       </select>

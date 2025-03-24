@@ -2,31 +2,49 @@
 
 import BackArrow from "@/app/(component)/backArrow";
 import DataTable from "@/app/(component)/datagrid";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
+import { useAuth } from "@/context/AuthContext";
 import {
   useGetDistributedItemsQuery,
   useGetEmployeeByIdQuery,
+  useGetUndistributedItemCountQuery,
 } from "@/features/api/apiSlice";
-import { DistributedItemProps } from "@/types/global_types";
+import { mapDistributedItems } from "@/utils/arrayUtils";
 import { PictureAsPdf } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 const base_url = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 
 const DistributedItems = () => {
   const { emp_id } = useParams();
+  //use employee details
+  const { empDetails } = useAuth();
+
+  //employee row limit
+  const [rowLimit, setRowLimit] = useState(10);
 
   //get employee details
   const { data: employee, isLoading: isEmployeeLoading } =
     useGetEmployeeByIdQuery(Number(emp_id));
 
   //get items accountabale person
+  debugger;
   const { data: ownedItems, isLoading: isOwnedItemLoading } =
-    useGetDistributedItemsQuery(Number(emp_id));
+    useGetDistributedItemsQuery({
+      owner_emp_id: Number(emp_id),
+      limit: rowLimit,
+      department: Number(employee?.CURRENT_DPT_ID),
+    });
+  debugger;
+  //get distribbuted items count
+  const { data: unDistributedItemsCount } = useGetUndistributedItemCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
 
   const handlePreviewPdf = async () => {
     try {
@@ -47,28 +65,38 @@ const DistributedItems = () => {
     }
   };
 
+  //maped own items
+  const ownedItemsData = useMemo(() => {
+    return mapDistributedItems(ownedItems?.ownedItems);
+  }, [ownedItems]);
+
   //owned item columns
   const columns: GridColDef[] = [
+    {
+      field: "index",
+      headerName: "#",
+      width: 50,
+      headerAlign: "center",
+      align: "center",
+    },
+
     { field: "itemName", headerName: "Item Name", width: 200 },
-    { field: "srnNo", headerName: "Serial No", width: 200 },
-    { field: "pisNo", headerName: "Property Inventory Slip", width: 200 },
-    { field: "propNo", headerName: "Property No", width: 200 },
-    { field: "mrNo", headerName: "MR No", width: 200 },
-    { field: "parNo", headerName: "PAR No", width: 200 },
     {
-      field: "accountCode",
-      headerName: "Account Code",
-      width: 300,
-    },
-    {
-      field: "unitValue",
-      headerName: "Unit Value in ₱",
+      field: "quantity",
+      headerName: "Quantity",
       width: 200,
-      type: "number",
+      headerAlign: "center",
+      renderCell: (params) => (
+        <div className="flex justify-center">
+          {params.row.quantity}/{params.row.originalQuantity}
+        </div>
+      ),
     },
+    { field: "itemPar", headerName: "PAR #", width: 200 },
+    { field: "itemMr", headerName: "MR #", width: 200 },
     {
-      field: "accountablePerson",
-      headerName: "Accountable Person",
+      field: "accountableEmp",
+      headerName: "Accountable Employee",
       width: 200,
     },
   ];
@@ -112,43 +140,25 @@ const DistributedItems = () => {
   // }, [employee]);
 
   // console.log("ownedItems", ownedItems);
-  useEffect(() => {
-    console.log("ownedItems", ownedItems);
-  }, [ownedItems]);
-
-  const ownedItemsData = useMemo(() => {
-    return ownedItems?.map((item: Item) => {
-      return {
-        ...item,
-        itemName: item.itemDetails.ITEM_NAME,
-        serialNo: item.itemDetails.SERIAL_NO,
-        parNo: item.itemDetails.PAR_NO,
-        icsNo: item.itemDetails.ICS_NO,
-        pisNo: item.itemDetails.PIS_NO,
-        propNo: item.itemDetails.PROP_NO,
-        srnNo: item.itemDetails.SERIAL_NO,
-        mrNo: item.itemDetails.MR_NO,
-        unitValue: item.itemDetails.UNIT_VALUE,
-        accountablePerson: `${item.accountableEmpDetails.LASTNAME}, ${
-          item.accountableEmpDetails.FIRSTNAME
-        } ${item.accountableEmpDetails?.MIDDLENAME ?? ""} ${
-          item.accountableEmpDetails?.SUFFIX ?? ""
-        }`,
-        accountCode: `${
-          item.itemDetails?.accountCodeDetails?.ACCOUNT_CODE ?? ""
-        } - ${item.itemDetails?.accountCodeDetails?.ACCOUNT_TITLE ?? ""}`,
-      };
-    });
-  }, [ownedItems]);
+  // useEffect(() => {
+  //   console.log("ownedItems", ownedItems);
+  // }, [ownedItems]);
 
   // if (isEmployeeLoading) {
   //   return <p>Loading...</p>;
   // }
+
   return (
     <>
-      <PageHeader pageHead="Distributed Items" />
-      <div className="mb-2">
+      <div className="mb-2 flex gap-1 items-center">
         <BackArrow backTo="/admin/distributions" />
+        <PageHeader pageHead="Distributed Items" hasMarginBottom={false} />
+        <OptionRowLimitCount
+          onChange={(limit) => setRowLimit(limit)}
+          currentValue={rowLimit}
+          totalCount={unDistributedItemsCount}
+          className="bg-white"
+        />
       </div>
       <EmployeeDetails />
       <DataTable
