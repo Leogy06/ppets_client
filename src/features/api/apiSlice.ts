@@ -386,6 +386,8 @@ export const {
   //approve transfer transaction
   useApproveTransferTransactionMutation,
   useGetTransactionCountQuery,
+  //use approve return
+  useApproveReturnTransactionMutation,
 
   //distributed item
   useGetDistributedItemsQuery,
