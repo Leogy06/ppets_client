@@ -2,11 +2,13 @@
 
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useDeleteUndistributedItemMutation,
+  useGetUndistributedItemCountQuery,
   useGetUnDistributeItemQuery,
   useRestoreUndistributedItemMutation,
 } from "@/features/api/apiSlice";
@@ -141,9 +143,20 @@ const Inventory = () => {
   //employee details
   const { empDetails } = useAuth();
 
+  //item limit undistributed
+  const [rowLimit, setRowLimit] = useState(10);
+
   //get undistributed items
   const { data: undistributtedItems, isLoading: isUndistributeLoading } =
-    useGetUnDistributeItemQuery(Number(empDetails?.CURRENT_DPT_ID));
+    useGetUnDistributeItemQuery({
+      deptID: Number(empDetails?.CURRENT_DPT_ID),
+      limit: rowLimit,
+    });
+
+  //get undistributed items count
+  const { data: undistributedItemsCount } = useGetUndistributedItemCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
 
   //delete item
   const [deleteItem, { isLoading: isDeleteLoading }] =
@@ -337,7 +350,19 @@ const Inventory = () => {
     <>
       <div className="flex justify-between mb-4">
         <div className="flex gap-2 items-start relative">
-          <PageHeader pageHead="Inventory" icon={Inventory2Outlined} />
+          <span className="flex gap-1 items-center">
+            <PageHeader
+              pageHead="Inventory"
+              icon={Inventory2Outlined}
+              hasMarginBottom={false}
+            />
+            <OptionRowLimitCount
+              onChange={(limit) => setRowLimit(limit)}
+              currentValue={rowLimit}
+              className="bg-white"
+              totalCount={undistributedItemsCount}
+            />
+          </span>
           <button
             className="hover:text-gray-500 "
             onClick={() => setIsOpen((prevState) => !prevState)}

@@ -69,7 +69,6 @@ export const apiSlice = createApi({
         `/employees?departmentId=${departmentId}&limit=${limit}`,
       providesTags: ["Employees"],
     }),
-
     addEmployee: builder.mutation({
       query: (data) => ({
         url: "/employees",
@@ -97,6 +96,10 @@ export const apiSlice = createApi({
     getEmployeeById: builder.query<Employee, number>({
       query: (empId) => `/employees/${empId}`,
       providesTags: ["Employees"],
+    }),
+    getEmployeeCount: builder.query<number, number>({
+      query: (departmentId) =>
+        `/employees/api/count?CURRENT_DPT_ID=${departmentId}`,
     }),
 
     //department api
@@ -199,6 +202,11 @@ export const apiSlice = createApi({
       query: (itemId) => `/api/item/${itemId}`,
       providesTags: ["UndistributedItem"],
     }),
+    getUndistributedItemCount: builder.query<number, number>({
+      query: (departmentId) =>
+        `/api/item/api/count?DEPARTMENT_ID=${departmentId}`,
+      providesTags: ["UndistributedItem"],
+    }),
 
     //get account item
     getAccountItem: builder.query({
@@ -275,7 +283,6 @@ export const apiSlice = createApi({
         `/item?department=${department}&limit=${limit}&owner_emp_id=${owner_emp_id}`,
       providesTags: ["Items"],
     }),
-
     //get distributed item by id
     getDistributedItemById: builder.query<DistributedItemProps, number>({
       query: (itemId) => `/item/${itemId}`,
@@ -289,6 +296,11 @@ export const apiSlice = createApi({
         body: data,
       }),
       invalidatesTags: ["Items", "UndistributedItem"],
+    }),
+    //get distrubuted item count
+    getDistributedItemCount: builder.query<number, number>({
+      query: (employeeId) => `/item/api/count?employeeId=${employeeId}`,
+      providesTags: ["Items"],
     }),
   }),
 });
@@ -307,6 +319,7 @@ export const {
   useDeleteEmployeesMutation,
   useEditEmployeeMutation,
   useGetEmployeeByIdQuery,
+  useGetEmployeeCountQuery,
 
   //departments
   useGetDepartmentQuery,
@@ -329,6 +342,7 @@ export const {
   useDeleteUndistributedItemMutation,
   useGetUndistributedItemByIdQuery,
   useRestoreUndistributedItemMutation,
+  useGetUndistributedItemCountQuery,
 
   //account items
   useGetAccountItemQuery,
@@ -351,4 +365,6 @@ export const {
   useGetDistributedItemByIdQuery,
   //add distributed item
   useAddDistributedItemMutation,
+  //get distributed item count
+  useGetDistributedItemCountQuery,
 } = apiSlice;

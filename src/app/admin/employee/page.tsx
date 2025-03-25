@@ -2,6 +2,7 @@
 import {
   useDeleteEmployeesMutation,
   useEditEmployeeMutation,
+  useGetEmployeeCountQuery,
   useGetEmployeesQuery,
 } from "@/features/api/apiSlice";
 import { Button } from "@mui/material";
@@ -223,11 +224,14 @@ const Employee = () => {
   //department filter
 
   //get employees
-
   const { data: employees, isLoading: isEmployeeRdy } = useGetEmployeesQuery({
     departmentId: empDetails?.CURRENT_DPT_ID,
     limit: rowLimit,
   });
+  //get employee count
+  const { data: employeeCount } = useGetEmployeeCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
 
   //edit employee
   const [editEmployee, { isLoading: isEditEmployeeLoading }] =
@@ -400,11 +404,11 @@ const Employee = () => {
   };
 
   // //use effect
-  // useEffect(() => {
-  //   if (employees) {
-  //     console.log("employees ", employees);
-  //   }
-  // }, [employees]);
+  useEffect(() => {
+    if (employeeCount) {
+      console.log("employees count ", employeeCount);
+    }
+  }, [employeeCount]);
 
   return (
     <div className="flex flex-col max-h-[520px]">
@@ -416,8 +420,9 @@ const Employee = () => {
             hasMarginBottom={false}
           />
           <OptionRowLimitCount
+            totalCount={Number(employeeCount)}
             currentValue={rowLimit}
-            onChange={setRowLimit}
+            onChange={(limit) => setRowLimit(limit)}
             className="bg-white"
           />
         </div>
