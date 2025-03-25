@@ -1,314 +1,314 @@
 "use client";
 
+import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
-import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultModal from "@/app/(component)/modal";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
-  useEditTransactionMutation,
+  useApproveTransferTransactionMutation,
   useGetTransactionsQuery,
+  useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
-import { TransactionProps } from "@/types/global_types";
+import { DistributedItemProps, TransactionProps } from "@/types/global_types";
 import { mapTransactions } from "@/utils/arrayUtils";
 import { handleError } from "@/utils/errorHandler";
 import { GridColDef } from "@mui/x-data-grid";
 import React, { useMemo, useState } from "react";
 
-const TransferTransaction = () => {
+const TransactionRequests = () => {
   //use snackbar
   const { openSnackbar } = useSnackbar();
   const { empDetails } = useAuth();
-  //row limt
+  //row limit
   const [rowLimit, setRowLimit] = useState(10);
-
-  //approve transaction
-  const [transactionForm, setTransactionForm] = useState<
-    Partial<TransactionProps>
-  >({
-    id: 0,
-    status: 0,
-    remarks: 0,
-    DISTRIBUTED_ITM_ID: 0,
-    quantity: 0,
-    borrower_emp_id: 0,
-    owner_emp_id: 0,
-    APPROVED_BY: 0,
-    owner: "",
-    borrower: "",
-    borrowedItem: "",
-    DPT_ID: 0,
-    distributed_item_id: 0,
-  });
-  //modal transction
-  const [openModalApprove, setOpenModalApprove] = useState(false);
-
+  //get transfer transaction
   const {
     data: transferTransactions,
     isLoading: isTransferTransactionsLoading,
   } = useGetTransactionsQuery({
-    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
-    TRANSACTION_TYPE: 4, //lend
     LIMIT: rowLimit,
+    TRANSACTION_TYPE: 4,
+    DPT_ID: empDetails?.CURRENT_DPT_ID,
   });
 
-  //edit transaction
-  const [editTransaction, { isLoading: isEditLoading }] =
-    useEditTransactionMutation();
-
-  //modal reject
-  const [openModalReject, setOpenModalReject] = useState(false);
-
-  //close transaction form modal
-  const handleOpenRejectModal = (transaction: TransactionProps) => {
-    setOpenModalReject(true);
-    setTransactionForm({
-      ...transaction,
-      status: 4, //reject
-    });
-  };
-
-  //open Transaction form modal
-  const openTransactionFormModal = (transaction: TransactionProps) => {
-    setOpenModalApprove(true);
-    setTransactionForm({
-      ...transaction,
-      APPROVED_BY: empDetails?.ID, //approving by user
-      status: 1, //approved
-    });
-  };
-
-  //approve transaction
-  const approveTransactionSubmit = async () => {
-    try {
-      const result = await editTransaction(transactionForm).unwrap();
-      openSnackbar(result?.message ?? "Transaction approved. ", "success");
-      closeTransactionFormModal();
-    } catch (error) {
-      console.error("Unable to approve transaction. ", error);
-      const errMgs = handleError(error, "Unable to approve transaction.");
-      openSnackbar(errMgs, "error");
-    }
-  };
-
-  //reject transaction
-  const rejectTransactionSubmit = async () => {
-    try {
-      const result = await editTransaction(transactionForm).unwrap();
-      openSnackbar(result?.message ?? "Transaction rejected. ", "success");
-      closeTransactionFormModal();
-    } catch (error) {
-      console.error("Unable to reject transaction. ", error);
-      const errMgs = handleError(error, "Unable to reject transaction.");
-      openSnackbar(errMgs, "error");
-    }
-  };
-
-  //close Transaction form modal
-  const closeTransactionFormModal = () => {
-    setOpenModalApprove(false);
-    setTransactionForm({
-      id: 0,
-      status: 0,
-      remarks: 0,
-      DISTRIBUTED_ITM_ID: 0,
-      quantity: 0,
-      borrower_emp_id: 0,
-      owner_emp_id: 0,
-      APPROVED_BY: 0,
-      borrower: "",
-      owner: "",
-    });
-  };
-
-  const memoizedTransaction = useMemo(
-    () => mapTransactions(transferTransactions || []),
+  //map transfer transaction
+  const mapTransferTransactions = useMemo(
+    () => mapTransactions(transferTransactions),
     [transferTransactions]
   );
 
+  //use reject transaction
+  const [rejectTransaction, { isLoading: isRejectTransactionLoading }] =
+    useRejectTransactionMutation();
+
+  //columns
   const columns: GridColDef[] = [
-    { field: "index", headerName: "#", width: 100 },
-    { field: "borrowedItem", headerName: "Item", width: 200 },
-    { field: "quantity", headerName: "Quantity", width: 100 },
-    { field: "borrower", headerName: "Item Borrower", width: 200 },
-    { field: "owner", headerName: "Item Owner", width: 200 },
-    { field: "transactionDescription", headerName: "Status", width: 200 },
-    { field: "remarksDescription", headerName: "Transaction", width: 200 },
     {
-      field: "createdAt",
-      headerName: "Requested Date",
+      field: "id",
+      headerName: "ID",
+      width: 50,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "index",
+      headerName: "#",
+      width: 50,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "borrowedItem",
+      headerName: "Borrowed Item",
       width: 200,
-      type: "dateTime",
-      valueGetter: (params) => {
-        return params ? new Date(params) : "0000-00-00";
-      },
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 100,
+      headerAlign: "center",
+      align: "center",
+      type: "number",
+    },
+    {
+      field: "borrower",
+      headerName: "Transfer to",
+      width: 200,
+    },
+    {
+      field: "owner",
+      headerName: "Transfer from",
+      width: 200,
+    },
+    {
+      field: "transactionDescription",
+      headerName: "Status",
+      width: 200,
+    },
+    {
+      field: "remarksDescription",
+      headerName: "Remarks",
+      width: 200,
     },
     {
       field: "actions",
       headerName: "Actions",
       width: 200,
       renderCell: (params) => (
-        <div className="flex justify-center gap-1">
+        <div className="flex gap-1">
           <DefaultButton
-            onClick={() => handleOpenRejectModal(params.row)}
+            onClick={() => handleOpenRejectTransfer(params.row)}
             btnText="reject"
             variant="outlined"
             color="error"
             disabled={params.row.status !== 2}
           />
           <DefaultButton
-            disabled={params.row.status !== 2}
-            onClick={() => {
-              // console.log("params.row ", params.row);
-              openTransactionFormModal(params.row);
-            }}
             btnText="approve"
+            onClick={() => handleOpenConfirmTransferModal(params.row)}
+            disabled={params.row.status !== 2}
           />
         </div>
       ),
     },
   ];
 
+  //use approve transfer transction
+  const [
+    approveTransferTransaction,
+    { isLoading: isApproveTransferTransactionLoading },
+  ] = useApproveTransferTransactionMutation();
+
+  //openmodal confirm apprve transaction
+  const [isConfirmTransferOpen, setIsConfirmTransferOpen] = useState(false);
+  //set item to approve
+  const [transactionToApprove, settransactionToApprove] =
+    useState<TransactionProps | null>(null);
+
+  const [openRejectTransferModal, setOpenRejectTransferModal] = useState(false);
+
+  //handle open Confirm Transfer Modal
+  const handleOpenConfirmTransferModal = (transaction: TransactionProps) => {
+    settransactionToApprove(transaction);
+    setIsConfirmTransferOpen(true);
+    // console.log("params: ", transaction);
+  };
+
+  //handle onclick approve transfer
+  const handleOnclickApproveTransfer = async () => {
+    try {
+      const result = await approveTransferTransaction({
+        transactionId: transactionToApprove?.id,
+        APPROVED_BY: empDetails?.ID,
+      }).unwrap();
+      openSnackbar("Transfer Approved.", "success");
+      setIsConfirmTransferOpen(false);
+      console.log("result ", result);
+    } catch (error) {
+      console.error(
+        "Unable to approve transfer unexpected error occured.",
+        error
+      );
+      const errMsg = handleError(
+        error,
+        "Unable to approve transfer unexpected error occured."
+      );
+      openSnackbar(errMsg, "error");
+    }
+  };
+
+  //handle modal
+  const OpenConfirmTransferModal = () => (
+    <DefaultModal
+      open={isConfirmTransferOpen}
+      onClose={() => setIsConfirmTransferOpen(false)}
+    >
+      <div className="flex flex-col gap-4">
+        <h1 className="font-bold text-lg">Approve this Transfer</h1>
+        <p>Are you sure you want to approve this transfer?</p>
+        <div className="flex flex-col">
+          <h1>
+            Item:{" "}
+            <span className="font-bold underline underline-offset-2">
+              {transactionToApprove?.borrowedItem}
+            </span>
+          </h1>
+          <p>
+            Transfer to:{" "}
+            <span className="font-semibold underline underline-offset-1">
+              {transactionToApprove?.borrower}
+            </span>
+          </p>
+          <p>
+            From:{" "}
+            <span className="font-semibold underline underline-offset-1">
+              {transactionToApprove?.owner}
+            </span>
+          </p>
+          <p>
+            From:{" "}
+            <span className="font-semibold underline underline-offset-1">
+              {transactionToApprove?.quantity}
+            </span>
+          </p>
+        </div>
+        <div className="flex gap-1 justify-end">
+          <DefaultButton
+            onClick={() => setIsConfirmTransferOpen(false)}
+            btnText="cancel"
+            variant="text"
+            color="error"
+            disabled={isApproveTransferTransactionLoading}
+          />
+          <DefaultButton
+            btnText="approve"
+            onClick={handleOnclickApproveTransfer}
+            disabled={isApproveTransferTransactionLoading}
+          />
+        </div>
+      </div>
+    </DefaultModal>
+  );
+
+  //handle reject
+  const handleOpenRejectTransfer = (transaction: TransactionProps) => {
+    setOpenRejectTransferModal(true);
+    settransactionToApprove(transaction);
+  };
+  //handle onclick reject transfer
+  const handleOnclickRejectTransfer = async () => {
+    try {
+      const result = await rejectTransaction(transactionToApprove?.id).unwrap();
+      openSnackbar("Transfer Rejected.", "success");
+      setOpenRejectTransferModal(false);
+      // console.log("result ", result);
+    } catch (error) {
+      console.error(
+        "Unable to reject transfer unexpected error occured.",
+        error
+      );
+      const errMsg = handleError(
+        error,
+        "Unable to reject transfer unexpected error occured."
+      );
+      openSnackbar(errMsg, "error");
+    }
+  };
+
+  const OpenRejectTransferModal = () => (
+    <DefaultModal
+      open={openRejectTransferModal}
+      onClose={() => setOpenRejectTransferModal(false)}
+    >
+      <h1>Reject Transfer Request</h1>
+      <p>Are you sure you want to reject this transfer request</p>
+      <div className="flex flex-col">
+        <p>
+          Item:{" "}
+          <span className="font-bold underline underline-offset-2">
+            {transactionToApprove?.borrowedItem}
+          </span>
+        </p>
+        <p>
+          Transfer to:{" "}
+          <span className="font-semibold underline underline-offset-1">
+            {transactionToApprove?.borrower}
+          </span>
+        </p>
+        <p>
+          From:{" "}
+          <span className="font-semibold underline underline-offset-1">
+            {transactionToApprove?.owner}
+          </span>
+        </p>
+        <p>
+          From:{" "}
+          <span className="font-semibold underline underline-offset-1">
+            {transactionToApprove?.quantity}
+          </span>
+        </p>
+      </div>
+      <div className="flex gap-1 justify-end">
+        <DefaultButton
+          btnText="cancel"
+          onClick={() => setOpenRejectTransferModal(false)}
+          variant="text"
+          color="success"
+          disabled={isApproveTransferTransactionLoading}
+        />
+        <DefaultButton
+          onClick={handleOnclickRejectTransfer}
+          btnText="reject"
+          color="error"
+          disabled={isApproveTransferTransactionLoading}
+        />
+      </div>
+    </DefaultModal>
+  );
+
   return (
     <>
-      <div className="flex items-center gap-2 mb-4">
-        <PageHeader pageHead="Borrow Requests" hasMarginBottom={false} />
+      <div className="flex gap-1 items-center mb-4">
+        <PageHeader pageHead="Transfer Requests" hasMarginBottom={false} />
         <OptionRowLimitCount
-          className="bg-white"
-          onChange={setRowLimit}
           currentValue={rowLimit}
+          onChange={(limit) => setRowLimit(limit)}
+          className="bg-white"
         />
       </div>
       <DataTable
-        rows={memoizedTransaction || []}
-        columns={columns}
+        rows={mapTransferTransactions}
         loading={isTransferTransactionsLoading}
+        columns={columns}
       />
-      <ApproveModal
-        open={openModalApprove}
-        onClose={() => setOpenModalApprove(false)}
-        transactionForm={transactionForm}
-        handleApprove={approveTransactionSubmit}
-        loading={isEditLoading}
-      />
-
-      <RejectModal
-        onClose={() => setOpenModalReject(false)}
-        open={openModalReject}
-        transactionForm={transactionForm}
-        handleReject={rejectTransactionSubmit}
-        loading={isEditLoading}
-      />
+      <OpenConfirmTransferModal />
+      <OpenRejectTransferModal />
     </>
   );
 };
 
-interface ModalProps {
-  open: boolean;
-  onClose: () => void;
-  transactionForm: Partial<TransactionProps>;
-  handleApprove?: () => void;
-  loading: boolean;
-  handleReject?: () => void;
-  setTransactionForm: (transactionForm: Partial<TransactionProps>) => void;
-}
-
-const ApproveModal = ({
-  open,
-  onClose,
-  transactionForm,
-  handleApprove,
-  loading,
-  setTransactionForm,
-}: ModalProps) => {
-  // console.log("transactionForm ", transactionForm);
-
-  return (
-    <DefaultModal open={open} onClose={onClose}>
-      <h1 className="text-lg font-bold">Approve Transaction</h1>
-      <p className="mb-4">Are you sure you want to approve this transaction?</p>
-      <div className="flex flex-col mb-4">
-        <p>Item: {transactionForm?.borrowedItem}</p>
-        <p>Quantity: {transactionForm?.quantity}</p>
-        <p>From: {transactionForm?.owner}</p>
-        <p>Transfer to: {transactionForm?.borrower}</p>
-      </div>
-
-      <div className="flex flex-col">
-        <DefaultTextField
-          name="quantity"
-          label="Quantity"
-          type="number"
-          value={
-            transactionForm?.quantity ? String(transactionForm?.quantity) : ""
-          }
-          onChange={(e) => setTransactionForm((prevForm) => ({
-            ...prevForm,
-            quantity: Number(e.target.value),
-          }))}
-        />
-      </div>
-
-      <div className="flex gap-1 justify-end">
-        <DefaultButton
-          btnText="cancel"
-          variant="text"
-          onClick={onClose}
-          color="error"
-          disabled={loading}
-        />
-        <DefaultButton
-          btnText="approve"
-          onClick={handleApprove}
-          disabled={loading}
-        />
-      </div>
-    </DefaultModal>
-  );
-};
-
-//reject modal
-const RejectModal = ({
-  open,
-  onClose,
-  transactionForm,
-  handleReject,
-  loading,
-}: ModalProps) => {
-  // console.log("transactionForm ", transactionForm);
-
-  return (
-    <DefaultModal open={open} onClose={onClose}>
-      <h1 className="text-lg font-bold">Reject Transaction</h1>
-      <p className="mb-4">Are you sure you want to reject this transaction?</p>
-      <div className="flex flex-col mb-4">
-        <p>Item: {transactionForm?.borrowedItem}</p>
-        <p>Quantity: {transactionForm?.quantity}</p>
-        <p>Borrower: {transactionForm?.borrower}</p>
-        <p>Owner: {transactionForm?.owner}</p>
-      </div>
-
-     
-
-      <div className="flex gap-1 justify-end">
-        <DefaultButton
-          btnText="cancel"
-          variant="text"
-          onClick={onClose}
-          color="error"
-          disabled={loading}
-        />
-        <DefaultButton
-          btnText="approve"
-          onClick={handleReject}
-          disabled={loading}
-        />
-      </div>
-    </DefaultModal>
-  );
-};
-
-export default TransferTransaction;
+export default TransactionRequests;

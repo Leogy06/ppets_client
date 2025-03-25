@@ -45,17 +45,17 @@ const LoginPage = () => {
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("loginForm ", loginForm);
+    // console.log("loginForm ", loginForm);
 
     //check if first time login
     if (loginForm.username === loginForm.password) {
       try {
-        console.log("first time login detected");
+        // console.log("first time login detected");
 
         //call api to check if id is first time login
         const result = await firstTimeLoginApi(loginForm.username).unwrap();
 
-        console.log("result ", result);
+        // console.log("result ", result);
 
         //check if the input id has in employee
         if (result?.firstTimeLogin) {
@@ -79,7 +79,7 @@ const LoginPage = () => {
     }
 
     //login user
-    console.log("login user");
+    // console.log("login user");
 
     loginUser(loginForm);
   };

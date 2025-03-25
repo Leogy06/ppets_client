@@ -247,7 +247,15 @@ export const apiSlice = createApi({
       query: (data) => ({
         url: "/transaction/reject",
         method: "PUT",
-        body: data,
+        body: { data },
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
+    approveTransferTransaction: builder.mutation({
+      query: ({ transactionId, APPROVED_BY }) => ({
+        url: `/transaction/approve/transfer?APPROVED_BY=${APPROVED_BY}`,
+        method: "PUT",
+        body: { transactionId },
       }),
       invalidatesTags: ["Transactions"],
     }),
@@ -334,6 +342,8 @@ export const {
   useEditTransactionMutation,
   //reject
   useRejectTransactionMutation,
+  //approve transfer transaction
+  useApproveTransferTransactionMutation,
 
   //distributed item
   useGetDistributedItemsQuery,
