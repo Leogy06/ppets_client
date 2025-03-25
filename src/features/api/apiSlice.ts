@@ -267,6 +267,33 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
+    //approve return transaction
+    approveReturnTransaction: builder.mutation({
+      query: ({
+        transactionId,
+        APPROVED_BY,
+      }: {
+        transactionId: TransactionProps["id"];
+        APPROVED_BY: TransactionProps["APPROVED_BY"];
+      }) => ({
+        url: `/transaction/approve/return?APPROVED_BY=${APPROVED_BY}`,
+        method: "PUT",
+        body: { transactionId },
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
+    //gettransaction count by remarks
+    getTransactionCount: builder.query<
+      number,
+      {
+        remarks: TransactionProps["remarks"];
+        DPT_ID: Employee["CURRENT_DPT_ID"];
+      }
+    >({
+      query: ({ remarks, DPT_ID }) =>
+        `/transaction/count?remarks=${remarks}&DPT_ID=${DPT_ID}`,
+      providesTags: ["Transactions"],
+    }),
 
     /**
      * Distributed Items
@@ -358,6 +385,7 @@ export const {
   useRejectTransactionMutation,
   //approve transfer transaction
   useApproveTransferTransactionMutation,
+  useGetTransactionCountQuery,
 
   //distributed item
   useGetDistributedItemsQuery,

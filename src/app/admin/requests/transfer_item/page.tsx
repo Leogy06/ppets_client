@@ -1,6 +1,5 @@
 "use client";
 
-import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
 import DefaultModal from "@/app/(component)/modal";
@@ -10,10 +9,11 @@ import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useApproveTransferTransactionMutation,
+  useGetTransactionCountQuery,
   useGetTransactionsQuery,
   useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
-import { DistributedItemProps, TransactionProps } from "@/types/global_types";
+import { TransactionProps } from "@/types/global_types";
 import { mapTransactions } from "@/utils/arrayUtils";
 import { handleError } from "@/utils/errorHandler";
 import { GridColDef } from "@mui/x-data-grid";
@@ -23,6 +23,12 @@ const TransactionRequests = () => {
   //use snackbar
   const { openSnackbar } = useSnackbar();
   const { empDetails } = useAuth();
+
+  //get transaction count
+  const { data: transactionCount } = useGetTransactionCountQuery({
+    remarks: 4,
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+  });
   //row limit
   const [rowLimit, setRowLimit] = useState(10);
   //get transfer transaction
@@ -298,6 +304,7 @@ const TransactionRequests = () => {
           currentValue={rowLimit}
           onChange={(limit) => setRowLimit(limit)}
           className="bg-white"
+          totalCount={transactionCount}
         />
       </div>
       <DataTable
