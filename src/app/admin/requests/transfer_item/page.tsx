@@ -147,13 +147,12 @@ const TransactionRequests = () => {
   //handle onclick approve transfer
   const handleOnclickApproveTransfer = async () => {
     try {
-      const result = await approveTransferTransaction({
+      await approveTransferTransaction({
         transactionId: transactionToApprove?.id,
         APPROVED_BY: empDetails?.ID,
       }).unwrap();
       openSnackbar("Transfer Approved.", "success");
       setIsConfirmTransferOpen(false);
-      console.log("result ", result);
     } catch (error) {
       console.error(
         "Unable to approve transfer unexpected error occured.",
@@ -228,10 +227,9 @@ const TransactionRequests = () => {
   //handle onclick reject transfer
   const handleOnclickRejectTransfer = async () => {
     try {
-      const result = await rejectTransaction(transactionToApprove?.id).unwrap();
+      await rejectTransaction(transactionToApprove?.id).unwrap();
       openSnackbar("Transfer Rejected.", "success");
       setOpenRejectTransferModal(false);
-      // console.log("result ", result);
     } catch (error) {
       console.error(
         "Unable to reject transfer unexpected error occured.",
@@ -284,13 +282,13 @@ const TransactionRequests = () => {
           onClick={() => setOpenRejectTransferModal(false)}
           variant="text"
           color="success"
-          disabled={isApproveTransferTransactionLoading}
+          disabled={isRejectTransactionLoading}
         />
         <DefaultButton
           onClick={handleOnclickRejectTransfer}
           btnText="reject"
           color="error"
-          disabled={isApproveTransferTransactionLoading}
+          disabled={isRejectTransactionLoading}
         />
       </div>
     </DefaultModal>

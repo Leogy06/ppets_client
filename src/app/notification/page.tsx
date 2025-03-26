@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import { Notifications } from "@mui/icons-material";
 import { useGetNotificationQuery } from "@/features/api/apiSlice";
@@ -10,18 +10,14 @@ import { NotificationProps } from "@/types/global_types";
 const NotificationList = () => {
   const { empDetails } = useAuth();
 
-  const [notificationLimit, setNotificationLimit] = useState<number>(10);
-  const {
-    data: notifications,
-    isLoading: isGetNotifLoading,
-    refetch: refetchNotifications,
-  } = useGetNotificationQuery({
-    empId: empDetails?.ID,
-    limit: notificationLimit,
-  });
+  const { data: notifications, isLoading: isGetNotifLoading } =
+    useGetNotificationQuery({
+      empId: empDetails?.ID,
+      limit: 10,
+    });
 
-  console.log("notifcations ", notifications);
-  console.log("emp details ", empDetails);
+  // console.log("notifcations ", notifications);
+  // console.log("emp details ", empDetails);
 
   //mapped notification
   const mappedNotifications = useMemo(() => {

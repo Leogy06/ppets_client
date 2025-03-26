@@ -1,4 +1,4 @@
-export const handleError = (error: any, fallBackMsg: string) => {
+export const handleError = (error: unknown, fallBackMsg: string) => {
   const errMsg =
     (error as { data?: { message?: string } }).data?.message ?? fallBackMsg;
 

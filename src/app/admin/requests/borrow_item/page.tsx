@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useEditTransactionMutation,
+  useGetEmployeeCountQuery,
   useGetTransactionsQuery,
   useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
@@ -22,6 +23,10 @@ const BorrowTransaction = () => {
   //use snackbar
   const { openSnackbar } = useSnackbar();
   const { empDetails } = useAuth();
+  //get employee count
+  const { data: employeeCount } = useGetEmployeeCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
   //row limt
   const [rowLimit, setRowLimit] = useState(10);
 
@@ -184,6 +189,7 @@ const BorrowTransaction = () => {
           className="bg-white"
           onChange={setRowLimit}
           currentValue={rowLimit}
+          totalCount={employeeCount}
         />
       </div>
       <DataTable
@@ -204,7 +210,7 @@ const BorrowTransaction = () => {
         open={openModalReject}
         transactionForm={transactionForm}
         handleReject={rejectTransactionSubmit}
-        loading={isEditLoading}
+        loading={isRejectLoading}
       />
     </>
   );
