@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useEditTransactionMutation,
+  useGetTransactionCountQuery,
   useGetTransactionsQuery,
 } from "@/features/api/apiSlice";
 import { TransactionProps } from "@/types/global_types";
@@ -21,6 +22,11 @@ const LendTransaction = () => {
   //use snackbar
   const { openSnackbar } = useSnackbar();
   const { empDetails } = useAuth();
+  //get lend transactions count
+  const { data: lendTransactionsCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 2,
+  });
   //row limt
   const [rowLimit, setRowLimit] = useState(10);
 
@@ -175,8 +181,9 @@ const LendTransaction = () => {
         <PageHeader pageHead="Borrow Requests" hasMarginBottom={false} />
         <OptionRowLimitCount
           className="bg-white"
-          onChange={setRowLimit}
+          onChange={(limit) => setRowLimit(limit)}
           currentValue={rowLimit}
+          totalCount={lendTransactionsCount}
         />
       </div>
       <DataTable
