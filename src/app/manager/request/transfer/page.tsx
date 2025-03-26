@@ -4,7 +4,10 @@ import DataTable from "@/app/(component)/datagrid";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
-import { useGetTransactionsQuery } from "@/features/api/apiSlice";
+import {
+  useGetTransactionCountQuery,
+  useGetTransactionsQuery,
+} from "@/features/api/apiSlice";
 import { mapTransactions } from "@/utils/arrayUtils";
 import { GridColDef } from "@mui/x-data-grid";
 import React, { useMemo, useState } from "react";
@@ -22,6 +25,11 @@ const TransferTransactions = () => {
       LIMIT: rowLimit,
       EMP_ID: Number(empDetails?.ID),
     });
+  //get transaction count
+  const { data: transferTransactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 4, //transfer
+  });
 
   //mapped transaction
   const mappedTransferTransaction = useMemo(
@@ -51,8 +59,9 @@ const TransferTransactions = () => {
         <PageHeader pageHead="Transfer Requests" hasMarginBottom={false} />
         <OptionRowLimitCount
           currentValue={rowLimit}
-          onChange={setRowLimit}
+          onChange={(limit) => setRowLimit(limit)}
           className="bg-white"
+          totalCount={transferTransactionCount}
         />
       </div>
 

@@ -13,6 +13,7 @@ import {
   useCreateTransactionMutation,
   useGetDistributedItemByIdQuery,
   useGetEmployeesQuery,
+  useGetTransactionCountQuery,
 } from "@/features/api/apiSlice";
 import {
   DistributedItemProps,
@@ -47,6 +48,11 @@ const TransferItem = () => {
   //get item id in parameter
   const { item_id } = useParams();
   const { empDetails } = useAuth();
+  //get transactio count
+  const { data: transactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 4, //transfer
+  });
   const [rowLimit, setRowLimit] = useState(10);
   const { data: employees, isLoading: isEmployeesLoading } =
     useGetEmployeesQuery({
@@ -129,7 +135,12 @@ const TransferItem = () => {
       <div className="flex gap-2 items-center mb-4">
         <BackArrow backTo="/manager" />
         <PageHeader pageHead="Transfer Item" hasMarginBottom={false} />
-        <OptionRowLimitCount onChange={setRowLimit} className="bg-white" />
+        <OptionRowLimitCount
+          onChange={(limit) => setRowLimit(limit)}
+          className="bg-white"
+          totalCount={transactionCount}
+          currentValue={rowLimit}
+        />
       </div>
       <div>
         <h1 className="text-lg font-bold">

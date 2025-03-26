@@ -4,7 +4,10 @@ import DataTable from "@/app/(component)/datagrid";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
-import { useGetTransactionsQuery } from "@/features/api/apiSlice";
+import {
+  useGetTransactionCountQuery,
+  useGetTransactionsQuery,
+} from "@/features/api/apiSlice";
 import { mapTransactions } from "@/utils/arrayUtils";
 import { GridColDef } from "@mui/x-data-grid";
 import React, { useMemo, useState } from "react";
@@ -12,6 +15,11 @@ import React, { useMemo, useState } from "react";
 //show lend request
 const LendRequests = () => {
   const { empDetails } = useAuth();
+  //get lend transactions count
+  const { data: lendTransactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 2, //lend
+  });
   //row limit
   const [rowLimit, setRowLimit] = useState(10);
   //get lend transactions
@@ -51,8 +59,9 @@ const LendRequests = () => {
         <PageHeader pageHead="Lend Requests" hasMarginBottom={false} />
         <OptionRowLimitCount
           currentValue={rowLimit}
-          onChange={setRowLimit}
+          onChange={(limit) => setRowLimit(limit)}
           className="bg-white"
+          totalCount={lendTransactionCount}
         />
       </div>
 

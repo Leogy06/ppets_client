@@ -2,9 +2,13 @@
 
 import BackArrow from "@/app/(component)/backArrow";
 import DataTable from "@/app/(component)/datagrid";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
-import { useGetTransactionsQuery } from "@/features/api/apiSlice";
+import {
+  useGetTransactionCountQuery,
+  useGetTransactionsQuery,
+} from "@/features/api/apiSlice";
 import { mapTransactions } from "@/utils/arrayUtils";
 import { GridColDef } from "@mui/x-data-grid";
 import React, { useEffect, useMemo, useState } from "react";
@@ -12,6 +16,11 @@ import React, { useEffect, useMemo, useState } from "react";
 const BorrowTransactions = () => {
   const { empDetails } = useAuth();
   const [rowLimit, setRowLimit] = useState<number>(10);
+  //get transaction count
+  const { data: borrowTransactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 1,
+  });
   const {
     data: borrowingTransactions,
     isLoading: isBorrowingTransactionsLoading,
@@ -57,14 +66,20 @@ const BorrowTransactions = () => {
 
   return (
     <>
-      <BackArrow backTo="/manager/request/borrow_items" />
-      <PageHeader pageHead="Borrow Requests" />
+      <div className="flex items-center gap-2">
+        <BackArrow backTo="/manager/request/borrow_items" />
+        <PageHeader pageHead="Borrow Requests" hasMarginBottom={false} />
+        <OptionRowLimitCount
+          onChange={(limit) => setRowLimit(limit)}
+          totalCount={borrowTransactionCount}
+          currentValue={rowLimit}
+          className="bg-white"
+        />
+      </div>
       <DataTable
         columns={columns}
         rows={arrMappedTransaction || []}
         loading={isBorrowingTransactionsLoading}
-        setRowLimit={setRowLimit}
-        rowLimit={rowLimit}
       />
     </>
   );

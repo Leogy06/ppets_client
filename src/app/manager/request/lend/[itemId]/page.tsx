@@ -13,6 +13,7 @@ import {
   useCreateTransactionMutation,
   useGetDistributedItemByIdQuery,
   useGetEmployeesQuery,
+  useGetTransactionCountQuery,
 } from "@/features/api/apiSlice";
 import {
   DistributedItemProps,
@@ -29,6 +30,11 @@ const LendItem = () => {
   const { itemId } = useParams();
 
   const { empDetails } = useAuth();
+  //get transaciton count
+  const { data: lendTransactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 2,
+  });
 
   //snack bar
   const { openSnackbar } = useSnackbar();
@@ -152,7 +158,12 @@ const LendItem = () => {
       <div className="flex items-center mb-4 gap-2">
         <BackArrow backTo="/manager" />
         <PageHeader pageHead="Lend your Item?" hasMarginBottom={false} />
-        <OptionRowLimitCount onChange={setRowLimit} className="bg-white" />
+        <OptionRowLimitCount
+          onChange={(limit) => setRowLimit(limit)}
+          className="bg-white"
+          totalCount={lendTransactionCount}
+          currentValue={rowLimit}
+        />
       </div>
       {!isDistributedItemLoading && (
         <div className="flex gap-2 justify-center mb-4">

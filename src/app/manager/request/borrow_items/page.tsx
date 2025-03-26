@@ -11,6 +11,7 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useCreateTransactionMutation,
   useGetDistributedItemsQuery,
+  useGetTransactionCountQuery,
 } from "@/features/api/apiSlice";
 import {
   DistributedItemProps,
@@ -28,6 +29,12 @@ import React, { useMemo, useState } from "react";
 const BorrowItem = () => {
   //emp user details
   const { empDetails } = useAuth();
+
+  //get borrow transaciton count
+  const { data: borrowTransactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 1,
+  });
 
   //router for navigation
   const router = useRouter();
@@ -184,6 +191,7 @@ const BorrowItem = () => {
               className="bg-white"
               currentValue={rowLimit}
               onChange={(limit) => setRowLimit(limit)}
+              totalCount={borrowTransactionCount}
             />
           </Tooltip>
         </div>
