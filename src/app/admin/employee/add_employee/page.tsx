@@ -142,11 +142,15 @@ const AddEmployee = () => {
 
   return (
     <>
-      <PageHeader pageHead="Add Employee" icon={People} />
-      <div>
+      <div className="flex gap-1">
         <BackArrow backTo="/admin/employee" />
+        <PageHeader
+          pageHead="Add Employee"
+          icon={People}
+          hasMarginBottom={false}
+        />
       </div>
-      <div className="flex items-center justify-center w-full">
+      <div className="flex items-center justify-center w-full max-h-[70vh] overflow-x-auto">
         <form
           onSubmit={handleSubmitForm}
           className="flex flex-col gap-4 w-full md:w-96"
@@ -180,12 +184,16 @@ const AddEmployee = () => {
             name="SUFFIX"
             onChange={handleInputChange}
           />
-          <div className=" flex flex-col">
+          <div className=" flex gap-1 justify-end">
+            <Button
+              type="reset"
+              onClick={() => router.push("/admin/employee")}
+              color="error"
+            >
+              cancel
+            </Button>
             <Button variant="contained" type="submit">
               Submit
-            </Button>
-            <Button type="reset" onClick={() => router.push("/admin/employee")}>
-              cancel
             </Button>
           </div>
         </form>
