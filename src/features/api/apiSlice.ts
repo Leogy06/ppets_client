@@ -329,6 +329,11 @@ export const apiSlice = createApi({
       query: (employeeId) => `/item/api/count?employeeId=${employeeId}`,
       providesTags: ["Items"],
     }),
+    //get distributed item count by employee id
+    getItemsCountByEmpId: builder.query<number, number>({
+      query: (employeeId) => `/item/api/count?employeeId=${employeeId}`,
+      providesTags: ["Items"],
+    }),
   }),
 });
 
@@ -397,4 +402,6 @@ export const {
   useAddDistributedItemMutation,
   //get distributed item count
   useGetDistributedItemCountQuery,
+  //get distributed item count by employee id
+  useGetItemsCountByEmpIdQuery,
 } = apiSlice;

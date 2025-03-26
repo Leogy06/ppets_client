@@ -2,7 +2,10 @@
 import React, { useMemo, useState } from "react";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
-import { useGetDistributedItemsQuery } from "@/features/api/apiSlice";
+import {
+  useGetDistributedItemsQuery,
+  useGetItemsCountByEmpIdQuery,
+} from "@/features/api/apiSlice";
 import DataTable from "../(component)/datagrid";
 import { GridColDef } from "@mui/x-data-grid";
 import { mapDistributedItems } from "@/utils/arrayUtils";
@@ -12,6 +15,10 @@ import OptionRowLimitCount from "../(component)/optionRowLimit";
 
 const OwnedItems = () => {
   const { empDetails } = useAuth();
+  //use get count of owned items
+  const { data: ownedItemsCount } = useGetItemsCountByEmpIdQuery(
+    Number(empDetails?.ID)
+  );
 
   //nav router
   const router = useRouter();
@@ -105,8 +112,9 @@ const OwnedItems = () => {
         <PageHeader pageHead="Owned Items" hasMarginBottom={false} />
         <OptionRowLimitCount
           currentValue={rowLimit}
-          onChange={setRowLimit}
+          onChange={(limit) => setRowLimit(limit)}
           className="bg-white"
+          totalCount={ownedItemsCount}
         />
       </div>
       <DataTable
