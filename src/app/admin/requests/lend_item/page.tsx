@@ -102,7 +102,7 @@ const LendTransaction = () => {
     try {
       const result = await editTransaction(transactionForm).unwrap();
       openSnackbar(result?.message ?? "Transaction rejected. ", "success");
-      closeTransactionFormModal();
+      setOpenModalReject(false);
     } catch (error) {
       console.error("Unable to reject transaction. ", error);
       const errMgs = handleError(error, "Unable to reject transaction.");
@@ -178,7 +178,7 @@ const LendTransaction = () => {
   return (
     <>
       <div className="flex items-center gap-2 mb-4">
-        <PageHeader pageHead="Borrow Requests" hasMarginBottom={false} />
+        <PageHeader pageHead="Lend Requests" hasMarginBottom={false} />
         <OptionRowLimitCount
           className="bg-white"
           onChange={(limit) => setRowLimit(limit)}

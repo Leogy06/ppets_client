@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useEditTransactionMutation,
-  useGetEmployeeCountQuery,
+  useGetTransactionCountQuery,
   useGetTransactionsQuery,
   useRejectTransactionMutation,
 } from "@/features/api/apiSlice";
@@ -23,10 +23,12 @@ const BorrowTransaction = () => {
   //use snackbar
   const { openSnackbar } = useSnackbar();
   const { empDetails } = useAuth();
-  //get employee count
-  const { data: employeeCount } = useGetEmployeeCountQuery(
-    Number(empDetails?.CURRENT_DPT_ID)
-  );
+  //get transaction count
+  const { data: transactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    remarks: 1,
+  });
+
   //row limt
   const [rowLimit, setRowLimit] = useState(10);
 
@@ -108,7 +110,7 @@ const BorrowTransaction = () => {
     try {
       const result = await rejectTransaction(transactionForm).unwrap();
       openSnackbar(result?.message ?? "Transaction rejected. ", "success");
-      closeTransactionFormModal();
+      setOpenModalReject(false);
     } catch (error) {
       console.error("Unable to reject transaction. ", error);
       const errMgs = handleError(error, "Unable to reject transaction.");
@@ -189,7 +191,7 @@ const BorrowTransaction = () => {
           className="bg-white"
           onChange={setRowLimit}
           currentValue={rowLimit}
-          totalCount={employeeCount}
+          totalCount={transactionCount}
         />
       </div>
       <DataTable

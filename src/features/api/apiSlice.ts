@@ -291,7 +291,7 @@ export const apiSlice = createApi({
       }
     >({
       query: ({ remarks, DPT_ID }) =>
-        `/transaction/count?remarks=${remarks}&DPT_ID=${DPT_ID}`,
+        `/transaction/api/count?remarks=${remarks}&DPT_ID=${DPT_ID}`,
       providesTags: ["Transactions"],
     }),
 
