@@ -2,14 +2,16 @@ import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { setIsDarkMode, setIsSideBarCollapse } from "@/state";
 import { DarkMode, LightMode, Menu, Notifications } from "@mui/icons-material";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import logo_img from "@/assets/images/adts.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Topbar = () => {
   const dispatch = useDispatch();
   const { user } = useAuth();
+  const router = useRouter();
   //sidebar
   const isSidebarOpen = useAppSelector(
     (state) => state.global.isSideBarCollapse
@@ -44,7 +46,7 @@ const Topbar = () => {
         <button onClick={toggleDarkMode} className=" hover:text-gray-500">
           {isDarkMode ? <DarkMode /> : <LightMode />}
         </button>
-        <button>
+        <button onClick={() => router.push("/notification")}>
           <Notifications />
         </button>
       </div>

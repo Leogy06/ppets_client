@@ -1,47 +1,26 @@
 "use client";
 
-import React, { useMemo } from "react";
 import PageHeader from "@/app/(component)/pageheader";
-import { Notifications } from "@mui/icons-material";
-import { useGetNotificationQuery } from "@/features/api/apiSlice";
-import { useAuth } from "@/context/AuthContext";
-import { NotificationProps } from "@/types/global_types";
+import { ArrowBack, NotificationsActiveOutlined } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import React from "react";
 
-const NotificationList = () => {
-  const { empDetails } = useAuth();
-
-  const { data: notifications, isLoading: isGetNotifLoading } =
-    useGetNotificationQuery({
-      empId: empDetails?.ID,
-      limit: 10,
-    });
-
-  // console.log("notifcations ", notifications);
-  // console.log("emp details ", empDetails);
-
-  //mapped notification
-  const mappedNotifications = useMemo(() => {
-    return notifications.map((notification: NotificationProps) => ({
-      ...notification,
-      // borrowingTransactionDetails:
-      //   notification.borrowingTransactionDetails.status,
-    }));
-  }, [notifications]);
-
-  if (isGetNotifLoading) {
-    return <span className="animate-pulse"> Loading...</span>;
-  }
-
+const Notifications = () => {
+  const router = useRouter();
   return (
-    <div className="flex flex-col">
-      <PageHeader icon={Notifications} pageHead="Notification List" />
-      {mappedNotifications.map((notification: NotificationProps) => (
-        <div key={notification.ID}>
-          <span>Status: la pa</span>
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="flex gap-2 items-center">
+        <button onClick={() => router.back()}>
+          <ArrowBack />
+        </button>
+        <PageHeader
+          pageHead="Notifications"
+          icon={NotificationsActiveOutlined}
+          hasMarginBottom={false}
+        />
+      </div>
+    </>
   );
 };
 
-export default NotificationList;
+export default Notifications;

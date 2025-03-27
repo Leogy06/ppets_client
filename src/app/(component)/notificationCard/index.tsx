@@ -4,7 +4,7 @@ import "./notificationCard.css";
 
 const NotificationCard = () => {
   return (
-    // <!-- From Uiverse.io by anniekoop -->
+    //  <!-- From Uiverse.io by anniekoop -->
     <div className="card">
       <div className="container">
         <div className="left">
