@@ -286,12 +286,22 @@ export const apiSlice = createApi({
     getTransactionCount: builder.query<
       number,
       {
-        remarks: TransactionProps["remarks"];
+        remarks?: TransactionProps["remarks"];
         DPT_ID: Employee["CURRENT_DPT_ID"];
       }
     >({
       query: ({ remarks, DPT_ID }) =>
         `/transaction/api/count?remarks=${remarks}&DPT_ID=${DPT_ID}`,
+      providesTags: ["Transactions"],
+    }),
+    getTransactionCountToday: builder.query<
+      number,
+      {
+        remarks?: TransactionProps["remarks"];
+        DPT_ID: Employee["CURRENT_DPT_ID"]; // Use Employee type for CURRENT_DPT_ID
+      }
+    >({
+      query: ({ DPT_ID }) => `/transaction/api/count/today?DPT_ID=${DPT_ID}`,
       providesTags: ["Transactions"],
     }),
 
@@ -393,6 +403,8 @@ export const {
   useGetTransactionCountQuery,
   //use approve return
   useApproveReturnTransactionMutation,
+  //use get transaction count today
+  useGetTransactionCountTodayQuery,
 
   //distributed item
   useGetDistributedItemsQuery,

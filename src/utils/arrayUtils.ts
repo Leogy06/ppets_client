@@ -9,14 +9,14 @@ import { dateFormmater } from "./date_formmater";
 export const mapDistributedItems = (
   items: DistributedItemProps[] | undefined
 ) => {
-  // console.log("item from map ", items);
+  console.log("item from map ", items);
 
   return (
     items?.map((item: DistributedItemProps, index: number) => {
       //destructure item details in items
 
       //destructure undistributed item
-      const { ITEM_NAME, PAR_NO, MR_NO } = item.undistributedItemDetails;
+      const { ITEM_NAME, PAR_NO, MR_NO } = item?.undistributedItemDetails;
       //destructure accountable employee
       const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
         item.accountableEmpDetails;
@@ -26,7 +26,7 @@ export const mapDistributedItems = (
         ...item,
         id: item.id,
         index: index + 1,
-        itemName: ITEM_NAME,
+        itemName: ITEM_NAME === null ? "" : ITEM_NAME,
         itemPar: PAR_NO,
         itemMr: MR_NO,
         quantity: item.quantity,

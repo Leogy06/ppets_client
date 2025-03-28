@@ -5,9 +5,35 @@ import React from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Dashboard } from "@mui/icons-material";
 import PageHeader from "@/app/(component)/pageheader";
+import {
+  useGetEmployeeCountQuery,
+  useGetTransactionCountQuery,
+  useGetTransactionCountTodayQuery,
+  useGetUndistributedItemCountQuery,
+} from "@/features/api/apiSlice";
 
 const AdminDashboard = () => {
   const { empDetails } = useAuth();
+
+  //get employee count
+  const { data: employeeCount } = useGetEmployeeCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
+
+  //get requests counts
+  const { data: transactionCount } = useGetTransactionCountQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+  });
+
+  //get distributed item base on department
+  const { data: undistributedItemCount } = useGetUndistributedItemCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
+
+  //get tranasciton count today
+  const { data: transactionCountToday } = useGetTransactionCountTodayQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+  });
 
   return (
     <div className="p-4">
@@ -31,29 +57,33 @@ const AdminDashboard = () => {
           <h2 className="text-lg font-semibold mb-1">
             All Time Total Requests
           </h2>
-          <p className="text-3xl font-bold text-green-600">100</p>
+          <p className="text-3xl font-bold text-green-600">
+            {transactionCount}
+          </p>
         </div>
 
-        {/**Item count */}
+        {/**undistributed Item count distributed Item count */}
         <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
           <h2 className="text-lg font-semibold mb-1">
             Items count per measure: unit / pieces
           </h2>
-          <p className="text-3xl font-bold text-blue-600 ">200</p>
+          <p className="text-3xl font-bold text-blue-600 ">
+            {undistributedItemCount}
+          </p>
         </div>
 
         {/* Today's Requests Card */}
         <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
           <h2 className="text-lg font-semibold mb-1">Today&apos;s Requests</h2>
-          <p className="text-3xl font-bold text-amber-700">300</p>
+          <p className="text-3xl font-bold text-amber-700">
+            {transactionCountToday}
+          </p>
         </div>
 
         {/* Employee count's Requests Card */}
         <div className="bg-white shadow-md p-4 rounded-lg border border-gray-300">
-          <h2 className="text-lg font-semibold mb-1">
-            Total Employees of {empDetails?.departmentDetails.DEPARTMENT_NAME}
-          </h2>
-          <p className="text-3xl font-bold text-yellow-600">400</p>
+          <h2 className="text-lg font-semibold mb-1">Total Employees of:</h2>
+          <p className="text-3xl font-bold text-yellow-600">{employeeCount}</p>
         </div>
       </div>
     </div>
