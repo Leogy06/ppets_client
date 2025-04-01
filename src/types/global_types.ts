@@ -61,6 +61,7 @@ export interface Employee {
   updater: Employee; // UPDATED_BY
   UPDATED_WHEN: Date;
   CREATED_WHEN: Date;
+  DELETED: 0 | 1;
 }
 export interface Credentials {
   username: string;
