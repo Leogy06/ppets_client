@@ -7,7 +7,7 @@ import { GlobalSnackbarProvider } from "@/context/GlobalSnackbar";
 import { AuthProvider } from "@/context/AuthContext";
 import Sidebar from "@/app/(component)/sidebar";
 import Topbar from "@/app/(component)/topbar";
-import SocketProvider from "./provider/SocketProvider";
+import SocketProvider from "../provider/SocketProvider";
 import { usePathname } from "next/navigation";
 import Loader from "@/app/(component)/loader";
 
