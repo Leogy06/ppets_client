@@ -11,19 +11,16 @@ socket.on("connect", () => {
   console.log(`✅ Connected to server with ID: ${socket.id}`);
 });
 
-const useSocket = (userId: Employee["ID"], onNotification: () => void) => {
+const useSocket = (emp_id: Employee["ID"], onNotification: () => void) => {
   useEffect(() => {
-    if (!userId) return;
-
-    //register employee id to socket user
-    socket.emit("registerUser", userId);
+    if (!emp_id) return;
 
     socket.on("newTransactionNotification", onNotification);
 
     return () => {
       socket.off("newTransactionNotification", onNotification);
     };
-  }, [userId, onNotification]);
+  }, [emp_id, onNotification]);
 };
 
 export default useSocket;
