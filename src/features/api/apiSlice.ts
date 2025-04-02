@@ -64,10 +64,10 @@ export const apiSlice = createApi({
     //employee api
     getEmployees: builder.query<
       Employee[],
-      { departmentId: number | undefined; limit: number }
+      { departmentId: number | undefined; limit: number; DELETED?: number }
     >({
-      query: ({ departmentId, limit }) =>
-        `/employees?departmentId=${departmentId}&limit=${limit}`,
+      query: ({ departmentId, limit, DELETED }) =>
+        `/employees?departmentId=${departmentId}&limit=${limit}&DELETED=${DELETED}`,
       providesTags: ["Employees"],
     }),
     addEmployee: builder.mutation({

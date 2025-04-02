@@ -13,7 +13,15 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import { Employee as EmployeeProps } from "@/types/global_types";
 import { useAuth } from "@/context/AuthContext";
 import PageHeader from "@/app/(component)/pageheader";
-import { Check, Close, Edit, People } from "@mui/icons-material";
+import {
+  Check,
+  Close,
+  Delete,
+  DeleteForever,
+  Edit,
+  People,
+  RestoreFromTrash,
+} from "@mui/icons-material";
 import DefaultModal from "@/app/(component)/modal";
 import DefaultTextField from "@/app/(component)/defaultTextField";
 import DefaultButton from "@/app/(component)/buttonDefault";
@@ -206,12 +214,17 @@ const Employee = () => {
   const [openDltConfMdl, setOpenDltConfMdl] = useState(false);
   //use snackbar
   const { openSnackbar } = useSnackbar();
-  //department filter
+  //deleted query params
+  const [deletedQuery, setDeletedQuery] = useState<number>(0);
+
+  //open confirm restor employee
+  const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
 
   //get employees
   const { data: employees, isLoading: isEmployeeRdy } = useGetEmployeesQuery({
     departmentId: empDetails?.CURRENT_DPT_ID,
     limit: rowLimit,
+    DELETED: deletedQuery,
   });
   //get employee count
   const { data: employeeCount } = useGetEmployeeCountQuery(
@@ -233,6 +246,8 @@ const Employee = () => {
     MIDDLENAME: "",
     SUFFIX: "",
     UPDATED_BY: empDetails?.ID,
+    DELETED: 0,
+    fullName: "",
   });
   //edit form modal open
   const [openEditEmployeeModal, setOpenEditEmployeeModal] = useState(false);
@@ -262,12 +277,15 @@ const Employee = () => {
       MIDDLENAME,
       SUFFIX,
     }));
+
     setOpenEditEmployeeModal(true);
   };
 
   //handle close edit employee modal
+  //include close restore
   const handleCloseEditEmployeeModal = () => {
-    setOpenEditEmployeeModal(false);
+    if (openEditEmployeeModal) setOpenEditEmployeeModal(false);
+    if (isConfirmRestoreOpen) setIsConfirmRestoreOpen(false);
   };
 
   const columns: GridColDef[] = [
@@ -326,15 +344,25 @@ const Employee = () => {
       renderCell: (params) => {
         return (
           <div className="flex justify-center">
-            <DefaultButton
-              title="Edit this employee"
-              placement="left"
-              btnIcon={<Edit />}
-              onClick={() =>
-                //on click set employee id to edit
-                handleOpenEditEmployeeModal(params.row)
-              }
-            />
+            {deletedQuery === 0 ? (
+              <DefaultButton
+                title="Edit this employee"
+                placement="left"
+                btnIcon={<Edit />}
+                onClick={() =>
+                  //on click set employee id to edit
+                  handleOpenEditEmployeeModal(params.row)
+                }
+              />
+            ) : (
+              <DefaultButton
+                title="Restore this employee"
+                color="success"
+                placement="left"
+                btnIcon={<RestoreFromTrash />}
+                onClick={() => handleOpenRestoreEmployee(params.row)}
+              />
+            )}
           </div>
         );
       },
@@ -388,12 +416,67 @@ const Employee = () => {
     }
   };
 
-  // //use effect
-  useEffect(() => {
-    if (employeeCount) {
-      console.log("employees count ", employeeCount);
-    }
-  }, [employeeCount]);
+  //set deleted query component
+  const DeletedQuery = () => (
+    <>
+      {deletedQuery === 0 ? (
+        <DefaultButton
+          btnIcon={<DeleteForever />}
+          placement="right"
+          title="See deleted employee(s)"
+          onClick={() => setDeletedQuery(1)}
+        />
+      ) : (
+        <DefaultButton
+          btnIcon={<Delete />}
+          placement="right"
+          title="See active employee(s)"
+          onClick={() => setDeletedQuery(0)}
+        />
+      )}
+    </>
+  );
+
+  const handleOpenRestoreEmployee = (employee: EmployeeProps) => {
+    setEditEmployeeForm({
+      ID: employee.ID,
+      ID_NUMBER: employee.ID_NUMBER, // to prevent from null
+      UPDATED_BY: empDetails?.ID,
+      DELETED: 0, //restore
+      fullName: employee.fullName,
+    });
+    setIsConfirmRestoreOpen(true);
+  };
+
+  //confirm restore modal
+  const ConfirmRestoreEmployee = () => (
+    <DefaultModal
+      open={isConfirmRestoreOpen}
+      onClose={() => setIsConfirmRestoreOpen(false)}
+    >
+      <h1 className="font-bold text-lg">Restore Employee</h1>
+      <p className="mb-4">Are you sure you want to restore this employee?</p>
+      <div className="mb-4">
+        Employee to Restore:{" "}
+        <span className="underline underline-offset-1">
+          {editEmployeeForm.fullName}
+        </span>
+      </div>
+      <div className="flex gap-1 justify-end">
+        <DefaultButton
+          btnText="cancel"
+          onClick={() => setIsConfirmRestoreOpen(false)}
+          variant="outlined"
+          color="error"
+        />
+        <DefaultButton
+          btnText="confirm"
+          onClick={handleEditEmployeeSubmit}
+          disabled={isEditEmployeeLoading}
+        />
+      </div>
+    </DefaultModal>
+  );
 
   return (
     <div className="flex flex-col max-h-[520px]">
@@ -410,6 +493,7 @@ const Employee = () => {
             onChange={(limit) => setRowLimit(limit)}
             className="bg-white"
           />
+          <DeletedQuery />
         </div>
         {selectedRows.length > 0 && (
           <Button
@@ -457,6 +541,8 @@ const Employee = () => {
         handleSubmit={handleEditEmployeeSubmit}
         isLoading={isEditEmployeeLoading}
       />
+
+      <ConfirmRestoreEmployee />
     </div>
   );
 };
