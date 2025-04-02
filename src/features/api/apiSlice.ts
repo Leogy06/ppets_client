@@ -5,6 +5,7 @@ import {
   DistributedItemProps,
   UndistributedItem,
   TransactionStatusProps,
+  NotificationProps,
 } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
@@ -141,7 +142,13 @@ export const apiSlice = createApi({
 
     //notifications
     //get notification
-    getNotification: builder.query({
+    getNotification: builder.query<
+      NotificationProps[],
+      {
+        empId: Employee["ID"];
+        limit: number;
+      }
+    >({
       query: ({ empId, limit }) =>
         `/notification?empId=${empId}&limit=${limit}`,
       providesTags: ["Notifications"],
