@@ -183,7 +183,7 @@ const BorrowItem = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-4">
         <div className="flex gap-2 items-center">
           <PageHeader pageHead="Borrow Items" hasMarginBottom={false} />
           <Tooltip title="Row Limit" placement="bottom">

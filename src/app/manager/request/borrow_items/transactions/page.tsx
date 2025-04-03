@@ -66,7 +66,7 @@ const BorrowTransactions = () => {
 
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 mb-4">
         <BackArrow backTo="/manager/request/borrow_items" />
         <PageHeader pageHead="Borrow Requests" hasMarginBottom={false} />
         <OptionRowLimitCount
