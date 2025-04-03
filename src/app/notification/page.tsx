@@ -109,7 +109,7 @@ const Notifications = () => {
         </div>
 
         <Paper sx={{ maxHeight: "70vh", overflow: "auto" }}>
-          {notifications?.map((notification, index) => (
+          {notifications?.map((notification) => (
             <NotificationRow key={notification.ID} {...notification} />
           ))}
         </Paper>
