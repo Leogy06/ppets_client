@@ -49,8 +49,8 @@ const BorrowTransactions = () => {
     },
     { field: "borrower", headerName: "Item Borrower", width: 280 },
     { field: "owner", headerName: "Item Owner", width: 280 },
-    { field: "transaction", headerName: "Status", width: 200 },
-    { field: "remarks", headerName: "Transaction", width: 200 },
+    { field: "transactionDescription", headerName: "Status", width: 200 },
+    { field: "remarksDescription", headerName: "Transaction", width: 200 },
   ];
 
   const arrMappedTransaction = useMemo(

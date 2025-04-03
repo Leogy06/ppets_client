@@ -50,8 +50,8 @@ const TransferTransactions = () => {
     },
     { field: "borrower", headerName: "Borrower", width: 250 },
     { field: "owner", headerName: "Owner", width: 250 },
-    { field: "transaction", headerName: "Status", width: 200 },
-    { field: "remarks", headerName: "Transaction", width: 200 },
+    { field: "transactionDescription", headerName: "Status", width: 200 },
+    { field: "remarksDescription", headerName: "Transaction", width: 200 },
   ];
   return (
     <>
