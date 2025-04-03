@@ -4,7 +4,7 @@ import PageHeader from "@/app/(component)/pageheader";
 import { ArrowBack, NotificationsActiveOutlined } from "@mui/icons-material";
 import { Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useGetNotificationCountQuery,
   useGetNotificationQuery,
@@ -15,6 +15,9 @@ import useSocket from "@/hooks/useSocket";
 import OptionRowLimitCount from "../(component)/optionRowLimit";
 import { NotificationProps } from "@/types/global_types";
 import { dateFormmater } from "@/utils/date_formmater";
+import transactionType from "@/utils/transactionType";
+import fullNamer from "@/utils/fullNamer";
+import getItemName from "@/utils/getItemName";
 
 const Notifications = () => {
   const router = useRouter();
@@ -37,8 +40,30 @@ const Notifications = () => {
 
   //notification row
   const NotificationRow = (props: NotificationProps) => (
-    <div className="border-b px-4 py-2">{dateFormmater(props.createdAt)}</div>
+    <div
+      className={`flex items-center hover:bg-gray-500 gap-4 cursor-pointer justify-between border-b border-gray-300 px-4 py-2  ${
+        props.READ === 0 && "bg-gray-200"
+      }`}
+    >
+      <div className="flex flex-col max-w-[40%] gap-2">
+        <span className="font-semibold text-lg">
+          {transactionType(props.TRANSACTION)}
+        </span>
+        <span>Owner: {fullNamer(props.ownerEmpDetails)}</span>
+        <span>Borrower: {fullNamer(props.borrowerEmpDetails)}</span>
+      </div>
+      <span className="max-w-[33%] text-start">
+        Item: {getItemName(props.itemDetails)}
+      </span>
+      <span className="w-auto">{dateFormmater(props.createdAt)}</span>
+    </div>
   );
+
+  useEffect(() => {
+    if (notifications) {
+      console.log("notifications ", notifications);
+    }
+  }, [notifications]);
 
   //initialized socket connection
   useSocket(Number(user?.emp_id), () => refetchNotifications());
@@ -69,7 +94,7 @@ const Notifications = () => {
           )}
         </div>
 
-        <Paper>
+        <Paper sx={{ maxHeight: "70vh", overflow: "auto" }}>
           {notifications?.map((notification, index) => (
             <NotificationRow key={notification.ID} {...notification} />
           ))}

@@ -123,7 +123,10 @@ export interface NotificationProps {
   MESSAGE: string;
   createdAt: Date;
   READ: number;
-  borrowingTransactionDetails: TransactionProps;
+  TRANSACTION: number;
+  borrowerEmpDetails: Employee;
+  ownerEmpDetails: Employee;
+  itemDetails: UndistributedItem;
 }
 
 export interface NotificationPropsOther {
