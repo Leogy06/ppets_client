@@ -7,7 +7,6 @@ import {
   ExpandLess,
   ExpandMore,
   Inventory,
-  ListAlt,
   Logout,
   MoveToInboxOutlined,
   PanToolAltSharp,
@@ -91,16 +90,6 @@ const managerNavigations: NavigationItemProps[] = [
       { label: "Lend Item", path: "/manager/request/lend" },
       { label: "Transfer Item", path: "/manager/request/transfer" },
     ],
-  },
-  {
-    label: "On Lend Items",
-    icon: <ListAlt />,
-    path: "/manager/on_lend",
-  },
-  {
-    label: "Borrowed Items",
-    icon: <MoveToInboxOutlined />,
-    path: "/manager/borrowed_items",
   },
 ];
 
