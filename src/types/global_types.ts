@@ -127,6 +127,7 @@ export interface NotificationProps {
   borrowerEmpDetails: Employee;
   ownerEmpDetails: Employee;
   itemDetails: UndistributedItem;
+  REQUEST_STATUS: number;
 }
 
 export interface NotificationPropsOther {

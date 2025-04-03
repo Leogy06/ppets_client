@@ -1,0 +1,35 @@
+//transaction type
+//-remarks, 1-borrowing, 2-lending, 3-distribution, 4-transfer
+export const transactionType = (type: number) => {
+  switch (type) {
+    case 1:
+      return "Borrowing Item";
+    case 2:
+      return "Lending Item";
+    case 3:
+      return "Distribution Item";
+    case 4:
+      return "Transfer Item";
+
+    case 5:
+      return "Returning Item";
+    default:
+      return "Unknown transaction type";
+  }
+};
+
+//transaction status
+export const transactionStatus = (status: number) => {
+  switch (status) {
+    case 1:
+      return "Approved";
+    case 2:
+      return "Pending";
+    case 3:
+      return "Cancelled";
+    case 4:
+      return "Rejected";
+    default:
+      return "Unknown transaction status";
+  }
+};

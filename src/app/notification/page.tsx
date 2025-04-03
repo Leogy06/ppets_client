@@ -1,8 +1,12 @@
 "use client";
 
 import PageHeader from "@/app/(component)/pageheader";
-import { ArrowBack, NotificationsActiveOutlined } from "@mui/icons-material";
-import { Paper } from "@mui/material";
+import {
+  ArrowBack,
+  NotificationsActiveOutlined,
+  Refresh,
+} from "@mui/icons-material";
+import { Paper, Tooltip } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,7 +19,7 @@ import useSocket from "@/hooks/useSocket";
 import OptionRowLimitCount from "../(component)/optionRowLimit";
 import { NotificationProps } from "@/types/global_types";
 import { dateFormmater } from "@/utils/date_formmater";
-import transactionType from "@/utils/transactionType";
+import { transactionStatus, transactionType } from "@/utils/transactions";
 import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
 
@@ -46,9 +50,12 @@ const Notifications = () => {
       }`}
     >
       <div className="flex flex-col max-w-[40%] gap-2">
-        <span className="font-semibold text-lg">
-          {transactionType(props.TRANSACTION)}
-        </span>
+        <div className="flex flex-col">
+          <h1 className="font-semibold text-lg">
+            {transactionType(props.TRANSACTION)}
+          </h1>
+          <span>Status: {transactionStatus(props.REQUEST_STATUS)}</span>
+        </div>{" "}
         <span>Owner: {fullNamer(props.ownerEmpDetails)}</span>
         <span>Borrower: {fullNamer(props.borrowerEmpDetails)}</span>
       </div>
@@ -75,23 +82,30 @@ const Notifications = () => {
   return (
     <>
       <div className="flex flex-col">
-        <div className="flex items-center gap-1 mb-4">
-          <button onClick={() => router.back()}>
-            <ArrowBack />
-          </button>
-          <PageHeader
-            pageHead="Notifications"
-            icon={NotificationsActiveOutlined}
-            hasMarginBottom={false}
-          />
-          {!isNotificationCountLoading && (
-            <OptionRowLimitCount
-              onChange={(limit) => setNotificationLimit(limit)}
-              className="bg-white"
-              currentValue={notificationLimit}
-              totalCount={notificationCount}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-1">
+            <button onClick={() => router.back()}>
+              <ArrowBack />
+            </button>
+            <PageHeader
+              pageHead="Notifications"
+              icon={NotificationsActiveOutlined}
+              hasMarginBottom={false}
             />
-          )}
+            {!isNotificationCountLoading && (
+              <OptionRowLimitCount
+                onChange={(limit) => setNotificationLimit(limit)}
+                className="bg-white"
+                currentValue={notificationLimit}
+                totalCount={notificationCount}
+              />
+            )}
+          </div>
+          <Tooltip title="Refresh Notifications">
+            <button onClick={refetchNotifications}>
+              <Refresh />
+            </button>
+          </Tooltip>
         </div>
 
         <Paper sx={{ maxHeight: "70vh", overflow: "auto" }}>
