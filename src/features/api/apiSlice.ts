@@ -6,6 +6,7 @@ import {
   UndistributedItem,
   TransactionStatusProps,
   NotificationProps,
+  User,
 } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
@@ -170,6 +171,11 @@ export const apiSlice = createApi({
         body: editEntries,
       }),
       invalidatesTags: ["Notifications"],
+    }),
+    //get notificaiton count
+    getNotificationCount: builder.query<number, number>({
+      query: (empId) => `/notification/count?empId=${empId}`,
+      providesTags: ["Notifications"],
     }),
 
     //the undistributed items item
@@ -384,6 +390,7 @@ export const {
   //notification
   useGetNotificationQuery,
   useEditNotificationMutation,
+  useGetNotificationCountQuery,
 
   //item(not distrbuted)
   useCreateUndistributedItemMutation,

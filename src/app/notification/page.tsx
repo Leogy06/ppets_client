@@ -5,10 +5,16 @@ import { ArrowBack, NotificationsActiveOutlined } from "@mui/icons-material";
 import { Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useGetNotificationQuery } from "../../features/api/apiSlice";
+import {
+  useGetNotificationCountQuery,
+  useGetNotificationQuery,
+} from "../../features/api/apiSlice";
 import { useAuth } from "@/context/AuthContext";
 import { skipToken } from "@reduxjs/toolkit/query";
 import useSocket from "@/hooks/useSocket";
+import OptionRowLimitCount from "../(component)/optionRowLimit";
+import { NotificationProps } from "@/types/global_types";
+import { dateFormmater } from "@/utils/date_formmater";
 
 const Notifications = () => {
   const router = useRouter();
@@ -25,10 +31,13 @@ const Notifications = () => {
       ? { limit: notificationLimit, empId: Number(user.emp_id) }
       : skipToken
   );
+  //get notificaiton count
+  const { data: notificationCount, isLoading: isNotificationCountLoading } =
+    useGetNotificationCountQuery(Number(user?.emp_id));
 
   //notification row
-  const NotificationRow = ({ index }: { index: number }) => (
-    <div className="border-b px-4 py-2">{index}</div>
+  const NotificationRow = (props: NotificationProps) => (
+    <div className="border-b px-4 py-2">{dateFormmater(props.createdAt)}</div>
   );
 
   //initialized socket connection
@@ -40,8 +49,8 @@ const Notifications = () => {
 
   return (
     <>
-      <div className="flex flex-col mb-4">
-        <div className="flex items-center gap-1">
+      <div className="flex flex-col">
+        <div className="flex items-center gap-1 mb-4">
           <button onClick={() => router.back()}>
             <ArrowBack />
           </button>
@@ -50,11 +59,19 @@ const Notifications = () => {
             icon={NotificationsActiveOutlined}
             hasMarginBottom={false}
           />
+          {!isNotificationCountLoading && (
+            <OptionRowLimitCount
+              onChange={(limit) => setNotificationLimit(limit)}
+              className="bg-white"
+              currentValue={notificationLimit}
+              totalCount={notificationCount}
+            />
+          )}
         </div>
 
         <Paper>
           {notifications?.map((notification, index) => (
-            <NotificationRow key={notification.ID} index={index} />
+            <NotificationRow key={notification.ID} {...notification} />
           ))}
         </Paper>
       </div>

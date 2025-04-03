@@ -2,7 +2,7 @@ import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { setIsDarkMode, setIsSideBarCollapse } from "@/state";
 import { DarkMode, LightMode, Menu, Notifications } from "@mui/icons-material";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import logo_img from "@/assets/images/adts.png";
 import Image from "next/image";
