@@ -12,6 +12,7 @@ import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
   useCreateTransactionMutation,
   useGetDistributedItemByIdQuery,
+  useGetEmployeeCountQuery,
   useGetEmployeesQuery,
   useGetTransactionCountQuery,
 } from "@/features/api/apiSlice";
@@ -59,6 +60,10 @@ const TransferItem = () => {
       departmentId: Number(empDetails?.CURRENT_DPT_ID),
       limit: rowLimit,
     });
+  //get employee count
+  const { data: employeeCount } = useGetEmployeeCountQuery(
+    Number(empDetails?.CURRENT_DPT_ID)
+  );
 
   const { data: distributeItem } = useGetDistributedItemByIdQuery(
     Number(item_id)
@@ -138,7 +143,7 @@ const TransferItem = () => {
         <OptionRowLimitCount
           onChange={(limit) => setRowLimit(limit)}
           className="bg-white"
-          totalCount={transactionCount}
+          totalCount={employeeCount}
           currentValue={rowLimit}
         />
       </div>
