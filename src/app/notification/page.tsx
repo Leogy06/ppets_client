@@ -60,9 +60,12 @@ const Notifications = () => {
         <span>Owner: {fullNamer(props.ownerEmpDetails)}</span>
         <span>Borrower: {fullNamer(props.borrowerEmpDetails)}</span>
       </div>
-      <span className="max-w-[33%] text-start">
-        Item: {getItemName(props.itemDetails)}
-      </span>
+      <div className="flex flex-col max-w-[33%]">
+        <span className=" text-start">
+          Item: {getItemName(props.itemDetails)}
+        </span>
+        <span>Quantity: {props.QUANTITY}</span>
+      </div>
       <span className="w-auto">{dateFormmater(props.createdAt)}</span>
     </div>
   );

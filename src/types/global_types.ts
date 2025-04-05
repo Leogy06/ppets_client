@@ -122,6 +122,7 @@ export interface NotificationProps {
   ID: number;
   MESSAGE: string;
   createdAt: Date;
+  QUANTITY: number;
   READ: number;
   TRANSACTION: number;
   borrowerEmpDetails: Employee;
