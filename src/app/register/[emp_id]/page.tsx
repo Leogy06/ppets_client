@@ -84,9 +84,7 @@ const Register = () => {
   //submit add user
   const handleAddUser = async () => {
     try {
-      const result = await addUser(registerForm).unwrap();
-
-      console.log("result ", result);
+      await addUser(registerForm).unwrap();
 
       setIsConfirmAddUserModal(false);
       openSnackbar("User added successfully.", "success");

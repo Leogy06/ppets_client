@@ -9,8 +9,6 @@ import { dateFormmater } from "./date_formmater";
 export const mapDistributedItems = (
   items: DistributedItemProps[] | undefined
 ) => {
-  console.log("item from map ", items);
-
   return (
     items?.map((item: DistributedItemProps, index: number) => {
       //destructure item details in items
@@ -20,7 +18,6 @@ export const mapDistributedItems = (
       //destructure accountable employee
       const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } =
         item.accountableEmpDetails;
-      // console.log("item ", item);
 
       return {
         ...item,
@@ -45,8 +42,6 @@ export const mapTransactions = (
 ) => {
   return (
     transactions?.map((transaction: TransactionProps, index: number) => {
-      // console.log("transaction ", transaction);
-
       //undistributed item
       const { ITEM_NAME, PAR_NO, MR_NO } =
         transaction?.distributedItemDetails?.undistributedItemDetails || {};
@@ -96,7 +91,6 @@ export const mapEmployees = (employees: Employee[] | undefined) => {
   return (
     employees?.map((employee: Employee, index: number) => {
       const { FIRSTNAME, LASTNAME, MIDDLENAME, SUFFIX } = employee; //name
-      // console.log("employee ", employee);
 
       // Ensures creator is always an object
       const {
@@ -105,8 +99,6 @@ export const mapEmployees = (employees: Employee[] | undefined) => {
         MIDDLENAME: CREATOR_MIDDLENAME,
         SUFFIX: CREATOR_SUFFIX,
       } = employee?.creator ?? {};
-
-      // console.log("Employee ", employee.ID_NUMBER, employee.creator);
 
       //updater
       const {

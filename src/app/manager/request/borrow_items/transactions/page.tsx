@@ -11,7 +11,7 @@ import {
 } from "@/features/api/apiSlice";
 import { mapTransactions } from "@/utils/arrayUtils";
 import { GridColDef } from "@mui/x-data-grid";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const BorrowTransactions = () => {
   const { empDetails } = useAuth();
@@ -57,12 +57,6 @@ const BorrowTransactions = () => {
     () => mapTransactions(borrowingTransactions || []),
     [borrowingTransactions]
   );
-
-  useEffect(() => {
-    if (borrowingTransactions) {
-      console.log("borrowing transactions ", borrowingTransactions);
-    }
-  }, [borrowingTransactions]);
 
   return (
     <>

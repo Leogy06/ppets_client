@@ -86,20 +86,6 @@ const Distribution = () => {
     },
   ];
 
-  //console log employees
-  // useEffect(() => {
-  //   if (employees) {
-  //     console.log("Employees ", employees);
-  //   }
-  // }, [employees]);
-
-  //console log dpt id
-  // useEffect(() => {
-  //   if (empDetails) {
-  //     console.log("DPT id ", empDetails?.CURRENT_DPT_ID);
-  //   }
-  // }, [empDetails]);
-
   return (
     <>
       <div className="flex gap-2 items-center mb-4">

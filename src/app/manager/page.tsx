@@ -100,12 +100,6 @@ const OwnedItems = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   if (ownedItems) {
-  //     console.log("ownedItems ", ownedItems);
-  //   }
-  // }, [ownedItems]);
-
   return (
     <>
       <div className="flex gap-2 mb-4">

@@ -103,14 +103,11 @@ const BorrowItem = () => {
       ...prevForm,
       quantity: Number(e.target.value),
     }));
-
-    // console.log("createBorrowForm ", createBorrowForm);
   };
 
   const handleSubmitBorrow = async () => {
     try {
       await createBorrowingTransaction(createBorrowForm).unwrap();
-      // console.log("result ", result);
       openSnackbar("Successfully created a request to borrow item.", "success");
       handleCloseBorrowModal();
     } catch (error) {
@@ -173,8 +170,6 @@ const BorrowItem = () => {
       ),
     },
   ];
-
-  // console.log("distributed items ", distributedItems);
 
   const mappedDistributeditem = useMemo(
     () => mapDistributedItems(distributedItems?.notOwnedItems || []),
@@ -243,14 +238,6 @@ const ConfirmBorrowItemModal = ({
   onChangeQuantity: (e: React.ChangeEvent<HTMLInputElement>) => void;
   createBorrowForm: Partial<TransactionProps> | null;
 }) => {
-  // useEffect(() => {
-  //   if (itemDetails) {
-  //     console.log("item details ", itemDetails);
-  //   } else {
-  //     console.log("no item details");
-  //   }
-  // }, [itemDetails]);
-
   return (
     <DefaultModal open={open} onClose={onClose}>
       <h1 className="text-lg font-semibold">Borrow Item</h1>

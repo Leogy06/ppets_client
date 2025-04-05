@@ -143,7 +143,6 @@ const TransactionRequests = () => {
   const handleOpenConfirmTransferModal = (transaction: TransactionProps) => {
     settransactionToApprove(transaction);
     setIsConfirmTransferOpen(true);
-    // console.log("params: ", transaction);
   };
 
   //handle onclick approve transfer

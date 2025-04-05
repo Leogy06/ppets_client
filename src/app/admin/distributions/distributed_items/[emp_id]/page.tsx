@@ -134,20 +134,6 @@ const DistributedItems = () => {
     );
   };
 
-  // console.log("employee", employee);
-  // useEffect(() => {
-  //   console.log("employee", employee);
-  // }, [employee]);
-
-  // console.log("ownedItems", ownedItems);
-  // useEffect(() => {
-  //   console.log("ownedItems", ownedItems);
-  // }, [ownedItems]);
-
-  // if (isEmployeeLoading) {
-  //   return <p>Loading...</p>;
-  // }
-
   return (
     <>
       <div className="mb-2 flex gap-1 items-center">

@@ -100,12 +100,7 @@ const LendItem = () => {
   //handle submit
   const handleSubmit = async () => {
     try {
-      const result = await createLendTransaction(
-        createLendTransactionForm
-      ).unwrap();
-      console.log("form ", createLendTransactionForm);
-
-      console.log("result ", result);
+      await createLendTransaction(createLendTransactionForm).unwrap();
       openSnackbar("Transaction created successfully.", "success");
       handleCloseModal();
     } catch (error) {

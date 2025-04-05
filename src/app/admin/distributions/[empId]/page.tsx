@@ -125,7 +125,6 @@ const DistributionModal = ({
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // console.log("item form ", itemForm);
     setOpenChildOpen(true);
   };
 
@@ -161,10 +160,6 @@ const DistributionModal = ({
       }));
     }
   }, [itemDetails, empDetails?.ID, empId, empDetails?.CURRENT_DPT_ID]);
-
-  // useEffect(() => {
-  //   console.log("dark mode: ", isDarkMode);
-  // }, [isDarkMode]);
 
   const SpanItemForm = ({
     formField,
@@ -334,8 +329,6 @@ const Distribute = () => {
         `${params?.ACCOUNT_CODE ?? ""} - ${params?.ACCOUNT_TITLE ?? ""}`,
     },
   ];
-
-  // console.log("undistributed items: ", undistributedItems);
 
   return (
     <>

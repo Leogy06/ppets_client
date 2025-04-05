@@ -42,22 +42,14 @@ const LoginPage = () => {
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // console.log("loginForm ", loginForm);
-
     //check if first time login
     if (loginForm.username === loginForm.password) {
       try {
-        // console.log("first time login detected");
-
         //call api to check if id is first time login
         const result = await firstTimeLoginApi(loginForm.username).unwrap();
 
-        // console.log("result ", result);
-
         //check if the input id has in employee
         if (result?.firstTimeLogin) {
-          console.log("first time login detected");
-
           //redirect to register page
           router.push(`/register/${loginForm.username}`);
           //show snackbar message
@@ -74,9 +66,6 @@ const LoginPage = () => {
         return; // necessary to display error
       }
     }
-
-    //login user
-    // console.log("login user");
 
     loginUser(loginForm);
   };

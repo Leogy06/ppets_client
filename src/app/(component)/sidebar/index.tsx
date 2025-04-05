@@ -110,12 +110,6 @@ const employeeNavigations: NavigationItemProps[] = [
 const SideBarHeader = () => {
   const { empDetails } = useAuth();
 
-  // useEffect(() => {
-  //   if (empDetails) {
-  //     console.log("Emp details ", empDetails);
-  //   }
-  // }, [empDetails]);
-
   return (
     /**Side bar header */
     <div className="flex flex-col items-center justify-center gap-2 p-8 text-sm">

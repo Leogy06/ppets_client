@@ -221,7 +221,6 @@ const Inventory = () => {
     try {
       const result = await deleteItem(selectedItemId).unwrap();
       openSnackbar(result.message ?? "Item deleted.", "info");
-      console.log("result ", result);
 
       handleCloseModal();
     } catch (error) {
@@ -240,7 +239,6 @@ const Inventory = () => {
     try {
       const result = await restoreItem(selectedItemId).unwrap();
       openSnackbar(result.message ?? "Item restored.", "success");
-      console.log("result ", result);
 
       handleCloseRestoreItemModal();
     } catch (error) {
@@ -339,12 +337,6 @@ const Inventory = () => {
     setItemShows(option);
     setIsOpen(false);
   };
-
-  // useEffect(() => {
-  //   if (undistributtedItems) {
-  //     console.log("undistrivbute items ", undistributtedItems);
-  //   }
-  // }, [undistributtedItems]);
 
   return (
     <>

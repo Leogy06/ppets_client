@@ -165,7 +165,6 @@ const LendTransaction = () => {
           <DefaultButton
             disabled={params.row.status !== 2}
             onClick={() => {
-              // console.log("params.row ", params.row);
               openTransactionFormModal(params.row);
             }}
             btnText="approve"
@@ -226,8 +225,6 @@ const ApproveModal = ({
   handleApprove,
   loading,
 }: ModalProps) => {
-  // console.log("transactionForm ", transactionForm);
-
   return (
     <DefaultModal open={open} onClose={onClose}>
       <h1 className="text-lg font-bold">Approve Transaction</h1>
@@ -264,8 +261,6 @@ const RejectModal = ({
   handleReject,
   loading,
 }: ModalProps) => {
-  // console.log("transactionForm ", transactionForm);
-
   return (
     <DefaultModal open={open} onClose={onClose}>
       <h1 className="text-lg font-bold">Reject Transaction</h1>
