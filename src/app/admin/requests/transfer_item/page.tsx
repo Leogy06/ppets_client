@@ -16,6 +16,7 @@ import {
 import { TransactionProps } from "@/types/global_types";
 import { mapTransactions } from "@/utils/arrayUtils";
 import { handleError } from "@/utils/errorHandler";
+import { Refresh } from "@mui/icons-material";
 import { GridColDef } from "@mui/x-data-grid";
 import React, { useMemo, useState } from "react";
 
@@ -35,6 +36,7 @@ const TransactionRequests = () => {
   const {
     data: transferTransactions,
     isLoading: isTransferTransactionsLoading,
+    refetch: refetchTransferTransactions,
   } = useGetTransactionsQuery({
     LIMIT: rowLimit,
     TRANSACTION_TYPE: 4,
@@ -304,6 +306,9 @@ const TransactionRequests = () => {
           className="bg-white"
           totalCount={transactionCount}
         />
+        <button onClick={refetchTransferTransactions}>
+          <Refresh />
+        </button>
       </div>
       <DataTable
         rows={mapTransferTransactions}

@@ -6,7 +6,7 @@ interface Props {
 
 const ZeroLength = ({ message }: Props) => {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center p-8">
       <p>{message}</p>
     </div>
   );

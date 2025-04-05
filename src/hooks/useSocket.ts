@@ -13,7 +13,10 @@ socket.on("connect", () => {
 
 const useSocket = (emp_id: Employee["ID"], onNotification: () => void) => {
   useEffect(() => {
-    if (!emp_id) return;
+    if (!emp_id) {
+      console.log("no emp id for socket");
+      return;
+    }
 
     socket.on("newTransactionNotification", onNotification);
 

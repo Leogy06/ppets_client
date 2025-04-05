@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 import { Paper, Tooltip } from "@mui/material";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   useGetNotificationCountQuery,
   useGetNotificationQuery,
@@ -70,21 +70,11 @@ const Notifications = () => {
     </div>
   );
 
-  useEffect(() => {
-    if (notifications) {
-      console.log("notifications ", notifications);
-    }
-  }, [notifications]);
-
   //initialized socket connection
   useSocket(Number(user?.emp_id), () => refetchNotifications());
 
   if (isNotificationLoading) {
     return <div className="flex text-center animate-pulse">Loading...</div>;
-  }
-
-  if (notifications?.length === 0) {
-    return <ZeroLength message="No Notifications" />;
   }
 
   return (
@@ -109,7 +99,10 @@ const Notifications = () => {
               />
             )}
           </div>
-          <Tooltip title="Refresh Notifications">
+          <Tooltip
+            title={<span className="text-base">Refresh Notifications</span>}
+            placement="left"
+          >
             <button onClick={refetchNotifications}>
               <Refresh />
             </button>
@@ -117,9 +110,13 @@ const Notifications = () => {
         </div>
 
         <Paper sx={{ maxHeight: "70vh", overflow: "auto" }}>
-          {notifications?.map((notification) => (
-            <NotificationRow key={notification.ID} {...notification} />
-          ))}
+          {notifications?.length === 0 ? (
+            <ZeroLength message="No Notifications" />
+          ) : (
+            notifications?.map((notification) => (
+              <NotificationRow key={notification.ID} {...notification} />
+            ))
+          )}
         </Paper>
       </div>
     </>
