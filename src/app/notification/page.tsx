@@ -22,6 +22,7 @@ import { dateFormmater } from "@/utils/date_formmater";
 import { transactionStatus, transactionType } from "@/utils/transactions";
 import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
+import ZeroLength from "@/app/(component)/zeroLength";
 
 const Notifications = () => {
   const router = useRouter();
@@ -77,6 +78,10 @@ const Notifications = () => {
 
   if (isNotificationLoading) {
     return <div className="flex text-center animate-pulse">Loading...</div>;
+  }
+
+  if (notifications?.length === 0) {
+    return <ZeroLength message="No Notifications" />;
   }
 
   return (
