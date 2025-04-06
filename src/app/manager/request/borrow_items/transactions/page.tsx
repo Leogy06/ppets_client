@@ -4,6 +4,7 @@ import BackArrow from "@/app/(component)/backArrow";
 import DataTable from "@/app/(component)/datagrid";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
+import RefreshButton from "@/app/(component)/refreshBtn";
 import { useAuth } from "@/context/AuthContext";
 import {
   useGetTransactionCountQuery,
@@ -24,6 +25,7 @@ const BorrowTransactions = () => {
   const {
     data: borrowingTransactions,
     isLoading: isBorrowingTransactionsLoading,
+    refetch: refetchBorrowingTransactions,
   } = useGetTransactionsQuery({
     EMP_ID: Number(empDetails?.ID),
     LIMIT: rowLimit,
@@ -69,6 +71,7 @@ const BorrowTransactions = () => {
           currentValue={rowLimit}
           className="bg-white"
         />
+        <RefreshButton onClick={refetchBorrowingTransactions} />
       </div>
       <DataTable
         columns={columns}

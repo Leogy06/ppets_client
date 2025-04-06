@@ -5,6 +5,7 @@ import DataTable from "@/app/(component)/datagrid";
 import DefaultModal from "@/app/(component)/modal";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
+import RefreshButton from "@/app/(component)/refreshBtn";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -56,6 +57,7 @@ const BorrowTransaction = () => {
   const {
     data: borrowingTransactions,
     isLoading: isBorrowingTransactionsLoading,
+    refetch: refetchBorrowingTransactions,
   } = useGetTransactionsQuery({
     DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
     TRANSACTION_TYPE: 1,
@@ -192,6 +194,7 @@ const BorrowTransaction = () => {
           currentValue={rowLimit}
           totalCount={transactionCount}
         />
+        <RefreshButton onClick={refetchBorrowingTransactions} />
       </div>
       <DataTable
         rows={memoizedTransaction || []}
