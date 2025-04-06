@@ -11,9 +11,12 @@ import {
   useGetTransactionCountTodayQuery,
   useGetUndistributedItemCountQuery,
 } from "@/features/api/apiSlice";
+import { useRouter } from "next/navigation";
 
 const AdminDashboard = () => {
   const { empDetails } = useAuth();
+  //router navigation
+  const router = useRouter();
 
   //get employee count
   const { data: employeeCount } = useGetEmployeeCountQuery(
@@ -60,6 +63,14 @@ const AdminDashboard = () => {
           <p className="text-3xl font-bold text-green-600">
             {transactionCount}
           </p>
+          <div className="flex justify-end text-sm">
+            <button
+              className="text-blue-600 hover:underline"
+              onClick={() => router.push("/admin/reports/requests")}
+            >
+              See Requests
+            </button>
+          </div>
         </div>
 
         {/**undistributed Item count distributed Item count */}
