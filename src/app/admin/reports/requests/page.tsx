@@ -11,7 +11,6 @@ import { dateFormmater } from "@/utils/date_formmater";
 import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
 import { transactionStatus, transactionType } from "@/utils/transactions";
-import { Paper } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
@@ -61,14 +60,21 @@ const RequestReports = () => {
 
   const handleGenerateReport = async () => {
     try {
-      const response = await axiosInstance.post(`/api/pdf`, {
-        reports: builtTransactionReport,
-      });
+      const response = await axiosInstance.post(
+        `/api/pdf`,
+        {
+          reports: builtTransactionReport,
+        },
+        { responseType: "blob" }
+      );
+      console.log("response headers: ", response.headers);
+      console.log("blob type: ", response.data.type);
+
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
-      console.error(error);
+      console.error("Error in previewing pdf", error);
     }
   };
 
