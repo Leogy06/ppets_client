@@ -361,8 +361,8 @@ export const apiSlice = createApi({
       TransactionProps[],
       {
         departmentId: Employee["CURRENT_DPT_ID"];
-        startDate?: string;
-        endDate?: string;
+        startDate?: string | null;
+        endDate?: string | null;
       }
     >({
       query: ({ departmentId, startDate, endDate }) =>

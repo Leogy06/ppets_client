@@ -1,6 +1,9 @@
 //transaction type
+
+import { TransactionProps } from "@/types/global_types";
+
 //-remarks, 1-borrowing, 2-lending, 3-distribution, 4-transfer
-export const transactionType = (type: number) => {
+export const transactionType = (type: TransactionProps["remarks"]) => {
   switch (type) {
     case 1:
       return "Borrowing Item";
@@ -19,7 +22,7 @@ export const transactionType = (type: number) => {
 };
 
 //transaction status
-export const transactionStatus = (status: number) => {
+export const transactionStatus = (status: TransactionProps["status"]) => {
   switch (status) {
     case 1:
       return "Approved";
