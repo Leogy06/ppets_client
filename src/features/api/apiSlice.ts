@@ -235,7 +235,7 @@ export const apiSlice = createApi({
       TransactionProps[],
       {
         DPT_ID: number | undefined;
-        TRANSACTION_TYPE: number;
+        TRANSACTION_TYPE?: number;
         EMP_ID?: number;
         LIMIT: number;
       }
@@ -356,6 +356,19 @@ export const apiSlice = createApi({
       query: (employeeId) => `/item/api/count?employeeId=${employeeId}`,
       providesTags: ["Items"],
     }),
+    //report builders api
+    buildTransaction: builder.query<
+      TransactionProps[],
+      {
+        departmentId: Employee["CURRENT_DPT_ID"];
+        startDate?: string;
+        endDate?: string;
+      }
+    >({
+      query: ({ departmentId, startDate, endDate }) =>
+        `/api/build-report/transaction?departmentId=${departmentId}&startDate=${startDate}&endDate=${endDate}`,
+      providesTags: ["Transactions"],
+    }),
   }),
 });
 
@@ -429,4 +442,6 @@ export const {
   useGetDistributedItemCountQuery,
   //get distributed item count by employee id
   useGetItemsCountByEmpIdQuery,
+  //report builders api
+  useBuildTransactionQuery,
 } = apiSlice;

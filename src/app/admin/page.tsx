@@ -68,7 +68,7 @@ const AdminDashboard = () => {
               className="text-blue-600 hover:underline"
               onClick={() => router.push("/admin/reports/requests")}
             >
-              See Requests
+              Build Report
             </button>
           </div>
         </div>
