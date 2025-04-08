@@ -369,6 +369,24 @@ export const apiSlice = createApi({
         `/api/build-report/transaction?departmentId=${departmentId}&startDate=${startDate}&endDate=${endDate}`,
       providesTags: ["Transactions"],
     }),
+    buildItemReport: builder.query<
+      DistributedItemProps[],
+      {
+        departmentId: Employee["CURRENT_DPT_ID"];
+        startDate?: string | null;
+        endDate?: string | null;
+        employeeId?: Employee["ID"];
+      }
+    >({
+      query: ({ departmentId, startDate, endDate, employeeId }) =>
+        `/api/build-report/items?departmentId=${departmentId}&startDate=${startDate}&endDate=${endDate}&employeeId=${employeeId}`,
+      providesTags: ["Items"],
+    }),
+    getEmployeeOption: builder.query<Employee[], Employee["CURRENT_DPT_ID"]>({
+      query: (deparmentId) =>
+        `/api/option-fetcher/employee?departmentId=${deparmentId}`,
+      providesTags: ["Employees"],
+    }),
   }),
 });
 
@@ -444,4 +462,8 @@ export const {
   useGetItemsCountByEmpIdQuery,
   //report builders api
   useBuildTransactionQuery,
+  //build item report
+  useBuildItemReportQuery,
+  //get employee option
+  useGetEmployeeOptionQuery,
 } = apiSlice;

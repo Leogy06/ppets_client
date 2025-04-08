@@ -1,9 +1,122 @@
-import React from 'react'
+"use client";
+
+import BackArrow from "@/app/(component)/backArrow";
+import PageHeader from "@/app/(component)/pageheader";
+import { useAuth } from "@/context/AuthContext";
+import {
+  useBuildItemReportQuery,
+  useGetEmployeeOptionQuery,
+} from "@/features/api/apiSlice";
+import { DistributedItemProps } from "@/types/global_types";
+import { dateFormmater } from "@/utils/date_formmater";
+import fullNamer from "@/utils/fullNamer";
+import getItemName from "@/utils/getItemName";
+import { Autocomplete, TextField } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import React, { useMemo, useState } from "react";
 
 const ItemReports = () => {
-  return (
-    <div>ItemReports</div>
-  )
-}
+  //use detils
+  const { empDetails } = useAuth();
+  //item report builder filters
+  const [employeeId, setEmployeeId] = useState<number | null>(null);
+  const [dateRange, setDateRange] = useState({
+    startDate: dayjs().startOf("day"),
+    endDate: dayjs().endOf("day"),
+  });
 
-export default ItemReports
+  const { data: employeeOption, isLoading: isEmployeeOptionLoading } =
+    useGetEmployeeOptionQuery(Number(empDetails?.CURRENT_DPT_ID));
+  //get item report
+  const { data: itemReport, isLoading: isItemReportLoading } =
+    useBuildItemReportQuery({
+      departmentId: Number(empDetails?.CURRENT_DPT_ID),
+      startDate: dateRange.startDate.toISOString(),
+      endDate: dateRange.endDate.toISOString(),
+    });
+
+  const mappedEmployeeOption = useMemo(
+    () =>
+      employeeOption?.map((employee) => ({
+        label: `${employee.ID_NUMBER} - ${fullNamer(employee)}`,
+        id: employee.ID,
+      })) || [],
+    [employeeOption]
+  );
+
+  const TableRow = ({
+    index,
+    data,
+  }: {
+    index: number;
+    data: DistributedItemProps;
+  }) => (
+    <tr>
+      <td className="px-4 py-2">
+        {getItemName(data.undistributedItemDetails)}
+      </td>
+      <td className="px-4 py-2">
+        {data.quantity}/{data.ORIGINAL_QUANTITY}
+      </td>
+      <td className="px-4 py-2">{data.unit_value}</td>
+      <td className="px-4 py-2">{fullNamer(data.accountableEmpDetails)}</td>
+      <td className="px-4 py-2">{dateFormmater(data.distributedAt)}</td>
+    </tr>
+  );
+
+  return (
+    <>
+      <div className="flex gap-1 items-center mb-4">
+        <BackArrow />
+        <PageHeader pageHead="Build Report" hasMarginBottom={false} />
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h1>Distributed Date Range</h1>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className="flex gap-1 items-center">
+              <DatePicker label="From" />
+              <span>to</span>
+              <DatePicker label="To" />
+            </div>
+          </LocalizationProvider>
+        </div>
+        <div className="flex flex-col gap-1">
+          <h1 className="self-start">Select Employee</h1>
+          <Autocomplete
+            fullWidth
+            loading={isEmployeeOptionLoading}
+            disablePortal
+            options={mappedEmployeeOption}
+            onChange={(_, value) => setEmployeeId(value?.id ?? null)}
+            renderInput={(params) => <TextField {...params} label="Employee" />}
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 w-full max-h-[70vh] overflow-auto">
+        <h1>Preview Item Report</h1>
+        <table>
+          <thead>
+            <tr>
+              <th className="px-4 py-2">Item</th>
+              <th className="px-4 py-2">Quantity</th>
+              <th className="px-4 py-2">Unit Value</th>
+              <th className="px-4 py-2">Accountable</th>
+              <th className="px-4 py-2">Distribution</th>
+            </tr>
+          </thead>
+          <tbody>
+            {itemReport?.map((item, index) => (
+              <TableRow key={index} data={item} index={index} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+export default ItemReports;

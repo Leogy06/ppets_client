@@ -81,6 +81,14 @@ const AdminDashboard = () => {
           <p className="text-3xl font-bold text-blue-600 ">
             {undistributedItemCount}
           </p>
+          <div className="flex justify-end text-sm">
+            <button
+              className="text-blue-600 hover:underline"
+              onClick={() => router.push("/admin/reports/items")}
+            >
+              Build Report
+            </button>
+          </div>
         </div>
 
         {/* Today's Requests Card */}
