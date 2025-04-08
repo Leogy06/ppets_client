@@ -375,7 +375,7 @@ export const apiSlice = createApi({
         departmentId: Employee["CURRENT_DPT_ID"];
         startDate?: string | null;
         endDate?: string | null;
-        employeeId?: Employee["ID"];
+        employeeId?: Employee["ID"] | null;
       }
     >({
       query: ({ departmentId, startDate, endDate, employeeId }) =>
