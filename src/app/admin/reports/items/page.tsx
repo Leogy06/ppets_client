@@ -1,6 +1,8 @@
 "use client";
 
+import axiosInstance from "@/api/axiosInstance";
 import BackArrow from "@/app/(component)/backArrow";
+import DefaultButton from "@/app/(component)/buttonDefault";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -23,20 +25,33 @@ const ItemReports = () => {
   //item report builder filters
   const [employeeId, setEmployeeId] = useState<number | null>(null);
   const [dateRange, setDateRange] = useState({
-    startDate: dayjs().startOf("day"),
-    endDate: dayjs().endOf("day"),
+    startDate: dayjs().startOf("month"),
+    endDate: dayjs(),
   });
 
   const { data: employeeOption, isLoading: isEmployeeOptionLoading } =
     useGetEmployeeOptionQuery(Number(empDetails?.CURRENT_DPT_ID ?? 0));
   //get item report
-  const { data: itemReport, isLoading: isItemReportLoading } =
+  const { data: itemReports, isLoading: isItemReportLoading } =
     useBuildItemReportQuery({
       departmentId: Number(empDetails?.CURRENT_DPT_ID),
       startDate: dateRange.startDate.toISOString(),
       endDate: dateRange.endDate.toISOString(),
       employeeId,
     });
+  const handleGenerateItemReport = async () => {
+    try {
+      const response = await axiosInstance.post(`/api/pdf/items`, {
+        reports: itemReports,
+      });
+
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Error in previewing item report pdf: ", error);
+    }
+  };
 
   const mappedEmployeeOption = useMemo(
     () =>
@@ -69,7 +84,7 @@ const ItemReports = () => {
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <h1>Distributed Date Range</h1>
+          <h1 className="mb-1">Distribution Date Range</h1>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className="flex gap-1 items-center">
               <DatePicker
@@ -111,13 +126,19 @@ const ItemReports = () => {
             renderInput={(params) => <TextField {...params} label="Employee" />}
           />
         </div>
+        <div className="flex justify-end">
+          <DefaultButton
+            btnText="Generate Report"
+            onClick={handleGenerateItemReport}
+          />
+        </div>
       </div>
 
       <h1 className="text-lg font-bold mt-4">Preview Item Report</h1>
       {isItemReportLoading ? (
         <p className="text-center animate-pulse">Loading...</p>
       ) : (
-        <div className="mt-4 w-full max-h-[43vh] overflow-auto">
+        <div className="mt-4 w-full max-h-[40vh] overflow-auto">
           <table>
             <thead>
               <tr>
@@ -129,7 +150,7 @@ const ItemReports = () => {
               </tr>
             </thead>
             <tbody>
-              {itemReport?.map((item, index) => (
+              {itemReports?.map((item, index) => (
                 <TableRow key={index} data={item} />
               ))}
             </tbody>
