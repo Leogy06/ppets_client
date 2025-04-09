@@ -5,6 +5,7 @@ import DataTable from "@/app/(component)/datagrid";
 import DefaultModal from "@/app/(component)/modal";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
+import TransactionDetailsButton from "@/app/(component)/transaction_details_btn";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -140,6 +141,8 @@ const LendRequests = () => {
             btnText="approve"
             onClick={() => handleOpenApproveModal(params.row)}
           />
+
+          <TransactionDetailsButton transactionId={params.row.id} />
         </div>
       ),
     },

@@ -5,6 +5,8 @@ import DataTable from "@/app/(component)/datagrid";
 import DefaultModal from "@/app/(component)/modal";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
+import RefreshButton from "@/app/(component)/refreshBtn";
+import TransactionDetailsButton from "@/app/(component)/transaction_details_btn";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -51,12 +53,15 @@ const LendTransaction = () => {
   //modal transction
   const [openModalApprove, setOpenModalApprove] = useState(false);
 
-  const { data: lendTransactions, isLoading: isLendTransactionsLoading } =
-    useGetTransactionsQuery({
-      DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
-      TRANSACTION_TYPE: 2, //lend
-      LIMIT: rowLimit,
-    });
+  const {
+    data: lendTransactions,
+    isLoading: isLendTransactionsLoading,
+    refetch: refetchLend,
+  } = useGetTransactionsQuery({
+    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
+    TRANSACTION_TYPE: 2, //lend
+    LIMIT: rowLimit,
+  });
 
   //edit transaction
   const [editTransaction, { isLoading: isEditLoading }] =
@@ -87,6 +92,8 @@ const LendTransaction = () => {
   //approve transaction
   const approveTransactionSubmit = async () => {
     try {
+      console.log("transactionForm", transactionForm);
+
       const result = await editTransaction(transactionForm).unwrap();
       openSnackbar(result?.message ?? "Transaction approved. ", "success");
       closeTransactionFormModal();
@@ -133,6 +140,7 @@ const LendTransaction = () => {
   );
 
   const columns: GridColDef[] = [
+    { field: "id", headerName: "#", width: 100 },
     { field: "index", headerName: "#", width: 100 },
     { field: "borrowedItem", headerName: "Item", width: 200 },
     { field: "quantity", headerName: "Quantity", width: 100 },
@@ -152,7 +160,7 @@ const LendTransaction = () => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 200,
+      width: 280,
       renderCell: (params) => (
         <div className="flex justify-center gap-1">
           <DefaultButton
@@ -169,6 +177,7 @@ const LendTransaction = () => {
             }}
             btnText="approve"
           />
+          <TransactionDetailsButton transactionId={params.row.id} />
         </div>
       ),
     },
@@ -184,6 +193,7 @@ const LendTransaction = () => {
           currentValue={rowLimit}
           totalCount={lendTransactionsCount}
         />
+        <RefreshButton onClick={refetchLend} />
       </div>
       <DataTable
         rows={memoizedTransaction || []}

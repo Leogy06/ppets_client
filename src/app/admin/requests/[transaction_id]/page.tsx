@@ -1,7 +1,7 @@
 "use client";
 
 import BackArrow from "@/app/(component)/backArrow";
-import DefaultButton from "@/app/(component)/buttonDefault";
+// import DefaultButton from "@/app/(component)/buttonDefault";
 import PageHeader from "@/app/(component)/pageheader";
 import { useGetTransactionByIdQuery } from "@/features/api/apiSlice";
 import { dateFormmater } from "@/utils/date_formmater";
@@ -24,7 +24,7 @@ const TransactionDetails = () => {
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center gap-1">
         <BackArrow />
         <PageHeader
           pageHead="Transaction Details"
@@ -74,7 +74,7 @@ const TransactionDetails = () => {
             </p>
           </div>
         </div>
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <DefaultButton
             disabled={transaction?.status !== 2}
             btnText="reject"
@@ -85,7 +85,7 @@ const TransactionDetails = () => {
             disabled={transaction?.status !== 2}
             btnText="Approve"
           />
-        </div>
+        </div> */}
       </div>
     </>
   );

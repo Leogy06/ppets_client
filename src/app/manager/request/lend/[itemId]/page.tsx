@@ -134,7 +134,7 @@ const LendItem = () => {
     {
       field: "actions",
       headerName: "Actions",
-      flex: 1,
+      width: 200,
       headerAlign: "center",
       align: "center",
       renderCell: (params) => (
