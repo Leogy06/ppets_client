@@ -6,6 +6,7 @@ import DefaultModal from "@/app/(component)/modal";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import RefreshButton from "@/app/(component)/refreshBtn";
+import TransactionDetailsButton from "@/app/(component)/transaction_details_btn";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -162,7 +163,7 @@ const BorrowTransaction = () => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 200,
+      width: 280,
       renderCell: (params) => (
         <div className="flex justify-center gap-1">
           <DefaultButton
@@ -179,6 +180,7 @@ const BorrowTransaction = () => {
             }}
             btnText="approve"
           />
+          <TransactionDetailsButton transactionId={params.row.id} />
         </div>
       ),
     },

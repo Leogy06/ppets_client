@@ -306,6 +306,12 @@ export const apiSlice = createApi({
         `/transaction/api/count?remarks=${remarks}&DPT_ID=${DPT_ID}`,
       providesTags: ["Transactions"],
     }),
+    getTransactionById: builder.query<TransactionProps, TransactionProps["id"]>(
+      {
+        query: (transactionId) => `/transaction/${transactionId}`,
+        providesTags: ["Transactions"],
+      }
+    ),
     getTransactionCountToday: builder.query<
       number,
       {
@@ -449,6 +455,8 @@ export const {
   useApproveReturnTransactionMutation,
   //use get transaction count today
   useGetTransactionCountTodayQuery,
+  //get trnasaction by id
+  useGetTransactionByIdQuery,
 
   //distributed item
   useGetDistributedItemsQuery,
