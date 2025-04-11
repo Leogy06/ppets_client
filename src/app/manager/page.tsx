@@ -9,9 +9,10 @@ import {
 import DataTable from "../(component)/datagrid";
 import { GridColDef } from "@mui/x-data-grid";
 import { mapDistributedItems } from "@/utils/arrayUtils";
-import DefaultButton from "../(component)/buttonDefault";
+import DefaultButton from "@/app/(component)/buttonDefault";
 import { useRouter } from "next/navigation";
-import OptionRowLimitCount from "../(component)/optionRowLimit";
+import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
+import RefreshButton from "@/app/(component)/refreshBtn";
 
 const OwnedItems = () => {
   const { empDetails } = useAuth();
@@ -27,12 +28,15 @@ const OwnedItems = () => {
   const [rowLimit, setRowLimit] = useState(10);
 
   //get owned items
-  const { data: distributeItems, isLoading: isOwnedItemsLoading } =
-    useGetDistributedItemsQuery({
-      department: Number(empDetails?.CURRENT_DPT_ID),
-      limit: rowLimit,
-      owner_emp_id: Number(empDetails?.ID),
-    });
+  const {
+    data: distributeItems,
+    isLoading: isOwnedItemsLoading,
+    refetch: refetchOwnedItems,
+  } = useGetDistributedItemsQuery({
+    department: Number(empDetails?.CURRENT_DPT_ID),
+    limit: rowLimit,
+    owner_emp_id: Number(empDetails?.ID),
+  });
 
   const mappedOwnedItems = useMemo(
     () => mapDistributedItems(distributeItems?.ownedItems || []),
@@ -110,6 +114,7 @@ const OwnedItems = () => {
           className="bg-white"
           totalCount={ownedItemsCount}
         />
+        <RefreshButton onClick={refetchOwnedItems} />
       </div>
       <DataTable
         columns={columns}
