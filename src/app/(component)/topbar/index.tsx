@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import logo_img from "@/assets/images/adts.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useGetUnreadNotificationCountQuery } from "@/features/api/apiSlice";
 
 const Topbar = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,11 @@ const Topbar = () => {
     dispatch(setIsDarkMode(!isDarkMode));
   };
 
+  //get unread notification count
+  const { data: unreadNotificationCount } = useGetUnreadNotificationCountQuery(
+    Number(user?.emp_id)
+  );
+
   return user ? (
     <div className="flex items-center justify-between bg-gray-50 text-gray-900 shadow-lg p-4">
       {/*First segment */}
@@ -43,11 +49,21 @@ const Topbar = () => {
         </div>
       </div>
       <div className="flex items-center gap-4 relative">
-        <button onClick={toggleDarkMode} className=" hover:text-gray-500">
+        <button onClick={toggleDarkMode} className="hover:text-gray-500">
           {isDarkMode ? <DarkMode /> : <LightMode />}
         </button>
-        <button onClick={() => router.push("/notification")}>
+
+        <button
+          onClick={() => router.push("/notification")}
+          className="relative"
+        >
           <Notifications />
+          {unreadNotificationCount !== undefined &&
+            unreadNotificationCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-black text-xs font-bold px-1.5 py-0.5 rounded-full shadow-md">
+                {unreadNotificationCount}
+              </span>
+            )}
         </button>
       </div>
     </div>

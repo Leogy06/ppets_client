@@ -12,6 +12,8 @@ import React, { useState } from "react";
 import {
   useGetNotificationCountQuery,
   useGetNotificationQuery,
+  useGetUnreadNotificationCountQuery,
+  useMarkReadNotificationMutation,
 } from "../../features/api/apiSlice";
 import { useAuth } from "@/context/AuthContext";
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -42,6 +44,12 @@ const Notifications = () => {
   //get notificaiton count
   const { data: notificationCount, isLoading: isNotificationCountLoading } =
     useGetNotificationCountQuery(Number(user?.emp_id));
+  //refetch notification count
+  const { refetch: refetchNotificationCount } =
+    useGetUnreadNotificationCountQuery(Number(user?.emp_id));
+
+  //mark all notification as read
+  const [markReadNotification] = useMarkReadNotificationMutation();
 
   //notification row
   const NotificationRow = (props: NotificationProps) => {
@@ -78,6 +86,20 @@ const Notifications = () => {
         </div>
       </Paper>
     );
+  };
+
+  //mark notification as read
+  const handleMarkNotificationRead = async () => {
+    try {
+      const notificationIds =
+        notifications?.map(
+          (notification: NotificationProps) => notification.ID
+        ) || [];
+      await markReadNotification(notificationIds);
+      refetchNotificationCount();
+    } catch (error) {
+      console.error("Unable to mark read notifications", error);
+    }
   };
 
   //initialized socket connection
@@ -127,6 +149,14 @@ const Notifications = () => {
               <NotificationRow key={notification.ID} {...notification} />
             ))
           )}
+        </div>
+        <div className="flex justify-end">
+          <button
+            className="hover:underline underline-offset-1"
+            onClick={handleMarkNotificationRead}
+          >
+            Mark All as Read
+          </button>
         </div>
       </div>
     </>

@@ -176,7 +176,11 @@ export const apiSlice = createApi({
       query: (empId) => `/notification/count?empId=${empId}`,
       providesTags: ["Notifications"],
     }),
-
+    //get unread notification count
+    getUnreadNotificationCount: builder.query<number, number>({
+      query: (empId) => `/notification/unread/count?empId=${empId}`,
+      providesTags: ["Notifications"],
+    }),
     //the undistributed items item
     createUndistributedItem: builder.mutation({
       query: (data) => ({
@@ -334,6 +338,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
+    markReadNotification: builder.mutation({
+      query: (notificationIds: number[]) => ({
+        url: "/notification/mark_read",
+        method: "POST",
+        body: { notificationIds },
+      }),
+      invalidatesTags: ["Notifications"],
+    }),
 
     /**
      * Distributed Items
@@ -439,6 +451,8 @@ export const {
   useGetNotificationQuery,
   useEditNotificationMutation,
   useGetNotificationCountQuery,
+  useGetUnreadNotificationCountQuery,
+  useMarkReadNotificationMutation,
 
   //item(not distrbuted)
   useCreateUndistributedItemMutation,
