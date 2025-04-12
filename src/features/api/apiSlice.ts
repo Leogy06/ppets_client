@@ -322,6 +322,18 @@ export const apiSlice = createApi({
       query: ({ DPT_ID }) => `/transaction/api/count/today?DPT_ID=${DPT_ID}`,
       providesTags: ["Transactions"],
     }),
+    //return tranasction
+    returnTransaction: builder.mutation<
+      TransactionProps,
+      Partial<TransactionProps>
+    >({
+      query: (data) => ({
+        url: "/transaction/return",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
 
     /**
      * Distributed Items
@@ -457,6 +469,8 @@ export const {
   useGetTransactionCountTodayQuery,
   //get trnasaction by id
   useGetTransactionByIdQuery,
+  //return
+  useReturnTransactionMutation,
 
   //distributed item
   useGetDistributedItemsQuery,

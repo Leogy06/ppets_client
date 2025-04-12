@@ -10,12 +10,13 @@ import RefreshButton from "@/app/(component)/refreshBtn";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
-  useEditTransactionMutation,
   useGetTransactionCountQuery,
   useGetTransactionsQuery,
+  useReturnTransactionMutation,
 } from "@/features/api/apiSlice";
 import { TransactionProps } from "@/types/global_types";
 import { mapTransactions } from "@/utils/arrayUtils";
+import { handleError } from "@/utils/errorHandler";
 import { GridColDef } from "@mui/x-data-grid";
 import React, { useMemo, useState } from "react";
 
@@ -32,9 +33,7 @@ const BorrowTransactions = () => {
     id: 0,
     remarks: 5,
   });
-
-  // edit transaction into return and pending
-  const [editTransaction] = useEditTransactionMutation();
+  const [returnTransaction] = useReturnTransactionMutation();
   //get transaction count
   const { data: borrowTransactionCount } = useGetTransactionCountQuery({
     DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
@@ -79,11 +78,10 @@ const BorrowTransactions = () => {
         <div className="flex items-center gap-2 justify-center">
           <DefaultButton
             onClick={() => handleOpenConfirmReturn(params.row)}
-            btnText="Return"
+            btnText="Returns"
             disabled={
-              params.row.status !== 1 || //disable if status is not aprrove
-              params.row.remarks !== 1 || //disable if remakrs is not borrowing
-              params.row.remarks !== 2 //disable if remakrs is not lending
+              params.row.status !== 1 &&
+              (params.row.remarks !== 1 || params.row.remarks !== 2)
             }
           />
         </div>
@@ -117,24 +115,29 @@ const BorrowTransactions = () => {
   //open confirm return
   const handleOpenConfirmReturn = (data: TransactionProps) => {
     setOpenConfirmReturn(true);
-    setReturnForm({
+    setReturnForm((prevForm) => ({
+      ...prevForm,
+      ...data,
       id: data.id,
       remarks: 5, //return
       status: 2, //pending
-    });
+    }));
   };
 
   //handle edit transaction
   const handleEditTransactionReturn = async () => {
     try {
-      const response = await editTransaction(returnForm).unwrap();
+      const response = await returnTransaction(returnForm).unwrap();
       console.log("response", response);
-      openSnackbar("Item returned successfully", "success");
+      openSnackbar(
+        "Item is now up to return, wait for the admin to approve.",
+        "success"
+      );
       setOpenConfirmReturn(false);
     } catch (error) {
       console.error(error);
-
-      openSnackbar("Failed to return item", "error");
+      const errMsg = handleError(error, "Failed to return item");
+      openSnackbar(errMsg, "error");
     }
   };
 
