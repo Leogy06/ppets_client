@@ -8,6 +8,8 @@ import {
   NotificationProps,
 } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+//api slice
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -27,6 +29,8 @@ export const apiSlice = createApi({
     "TransactionCount",
     "AccountCodes",
   ],
+
+  //api endpoints
   endpoints: (builder) => ({
     //users
     login: builder.mutation({
