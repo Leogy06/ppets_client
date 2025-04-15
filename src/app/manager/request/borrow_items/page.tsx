@@ -158,7 +158,7 @@ const BorrowItem = () => {
         <div className="flex justify-center gap-1">
           <DefaultButton
             onClick={() => handleOnClickBorrow(params.row)}
-            btnText="select"
+            btnText="borrow"
             title="Borrow this Item"
             placement="left"
             disabled={

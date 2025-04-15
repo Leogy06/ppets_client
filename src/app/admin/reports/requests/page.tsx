@@ -22,7 +22,7 @@ const RequestReports = () => {
     startDate: Dayjs;
     endDate: Dayjs;
   }>({
-    startDate: dayjs(),
+    startDate: dayjs().startOf("month"),
     endDate: dayjs(),
   });
   //request limit to display
@@ -60,15 +60,9 @@ const RequestReports = () => {
 
   const handleGenerateReport = async () => {
     try {
-      const response = await axiosInstance.post(
-        `/api/pdf`,
-        {
-          reports: builtTransactionReport,
-        },
-        { responseType: "blob" }
-      );
-      console.log("response headers: ", response.headers);
-      console.log("blob type: ", response.data.type);
+      const response = await axiosInstance.post(`/api/pdf`, {
+        reports: builtTransactionReport,
+      });
 
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);

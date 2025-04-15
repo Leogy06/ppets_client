@@ -180,7 +180,11 @@ export const apiSlice = createApi({
       query: (empId) => `/notification/count?empId=${empId}`,
       providesTags: ["Notifications"],
     }),
-
+    //get unread notification count
+    getUnreadNotificationCount: builder.query<number, number>({
+      query: (empId) => `/notification/unread/count?empId=${empId}`,
+      providesTags: ["Notifications"],
+    }),
     //the undistributed items item
     createUndistributedItem: builder.mutation({
       query: (data) => ({
@@ -310,6 +314,12 @@ export const apiSlice = createApi({
         `/transaction/api/count?remarks=${remarks}&DPT_ID=${DPT_ID}`,
       providesTags: ["Transactions"],
     }),
+    getTransactionById: builder.query<TransactionProps, TransactionProps["id"]>(
+      {
+        query: (transactionId) => `/transaction/${transactionId}`,
+        providesTags: ["Transactions"],
+      }
+    ),
     getTransactionCountToday: builder.query<
       number,
       {
@@ -319,6 +329,26 @@ export const apiSlice = createApi({
     >({
       query: ({ DPT_ID }) => `/transaction/api/count/today?DPT_ID=${DPT_ID}`,
       providesTags: ["Transactions"],
+    }),
+    //return tranasction
+    returnTransaction: builder.mutation<
+      TransactionProps,
+      Partial<TransactionProps>
+    >({
+      query: (data) => ({
+        url: "/transaction/return",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
+    markReadNotification: builder.mutation({
+      query: (notificationIds: number[]) => ({
+        url: "/notification/mark_read",
+        method: "POST",
+        body: { notificationIds },
+      }),
+      invalidatesTags: ["Notifications"],
     }),
 
     /**
@@ -379,7 +409,7 @@ export const apiSlice = createApi({
         departmentId: Employee["CURRENT_DPT_ID"];
         startDate?: string | null;
         endDate?: string | null;
-        employeeId?: Employee["ID"];
+        employeeId?: Employee["ID"] | null;
       }
     >({
       query: ({ departmentId, startDate, endDate, employeeId }) =>
@@ -425,6 +455,8 @@ export const {
   useGetNotificationQuery,
   useEditNotificationMutation,
   useGetNotificationCountQuery,
+  useGetUnreadNotificationCountQuery,
+  useMarkReadNotificationMutation,
 
   //item(not distrbuted)
   useCreateUndistributedItemMutation,
@@ -453,6 +485,10 @@ export const {
   useApproveReturnTransactionMutation,
   //use get transaction count today
   useGetTransactionCountTodayQuery,
+  //get trnasaction by id
+  useGetTransactionByIdQuery,
+  //return
+  useReturnTransactionMutation,
 
   //distributed item
   useGetDistributedItemsQuery,

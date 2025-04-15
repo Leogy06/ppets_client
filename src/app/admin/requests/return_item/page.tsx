@@ -5,6 +5,8 @@ import DataTable from "@/app/(component)/datagrid";
 import DefaultModal from "@/app/(component)/modal";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
+import RefreshButton from "@/app/(component)/refreshBtn";
+import TransactionDetailsButton from "@/app/(component)/transaction_details_btn";
 import { useAuth } from "@/context/AuthContext";
 import { useSnackbar } from "@/context/GlobalSnackbar";
 import {
@@ -37,6 +39,7 @@ const LendRequests = () => {
   const {
     data: returnRequestsTransactions,
     isLoading: isReturnRequestsTransactionsLoading,
+    refetch: refetchTransactionReturn,
   } = useGetTransactionsQuery({
     DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
     TRANSACTION_TYPE: 5, //
@@ -140,6 +143,8 @@ const LendRequests = () => {
             btnText="approve"
             onClick={() => handleOpenApproveModal(params.row)}
           />
+
+          <TransactionDetailsButton transactionId={params.row.id} />
         </div>
       ),
     },
@@ -212,6 +217,7 @@ const LendRequests = () => {
           currentValue={rowLimit}
           className="bg-white"
         />
+        <RefreshButton onClick={refetchTransactionReturn} />
       </div>
       <DataTable
         rows={mappedReturnTransaction}

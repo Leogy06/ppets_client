@@ -12,6 +12,8 @@ import React, { useState } from "react";
 import {
   useGetNotificationCountQuery,
   useGetNotificationQuery,
+  useGetUnreadNotificationCountQuery,
+  useMarkReadNotificationMutation,
 } from "../../features/api/apiSlice";
 import { useAuth } from "@/context/AuthContext";
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -42,33 +44,63 @@ const Notifications = () => {
   //get notificaiton count
   const { data: notificationCount, isLoading: isNotificationCountLoading } =
     useGetNotificationCountQuery(Number(user?.emp_id));
+  //refetch notification count
+  const { refetch: refetchNotificationCount } =
+    useGetUnreadNotificationCountQuery(Number(user?.emp_id));
+
+  //mark all notification as read
+  const [markReadNotification] = useMarkReadNotificationMutation();
 
   //notification row
-  const NotificationRow = (props: NotificationProps) => (
-    <div
-      className={`flex items-center hover:bg-gray-500 gap-4 cursor-pointer justify-between border-b border-gray-300 px-4 py-2  ${
-        props.READ === 0 && "bg-gray-200"
-      }`}
-    >
-      <div className="flex flex-col max-w-[40%] gap-2">
-        <div className="flex flex-col">
+  const NotificationRow = (props: NotificationProps) => {
+    return (
+      <Paper
+        className="flex flex-col bg-white shadow-sm hover:shadow-md border border-gray-200 rounded-lg p-4 mb-4"
+        elevation={3}
+      >
+        <div className="flex justify-between items-center">
           <h1 className="font-semibold text-lg">
             {transactionType(props.TRANSACTION)}
           </h1>
-          <span>Status: {transactionStatus(props.REQUEST_STATUS)}</span>
-        </div>{" "}
-        <span>Owner: {fullNamer(props.ownerEmpDetails)}</span>
-        <span>Borrower: {fullNamer(props.borrowerEmpDetails)}</span>
-      </div>
-      <div className="flex flex-col max-w-[33%]">
-        <span className=" text-start">
-          Item: {getItemName(props.itemDetails)}
-        </span>
-        <span>Quantity: {props.QUANTITY}</span>
-      </div>
-      <span className="w-auto">{dateFormmater(props.createdAt)}</span>
-    </div>
-  );
+          <span className="text-gray-500">
+            {dateFormmater(props.createdAt)}
+          </span>
+        </div>
+        <div className="flex items-start gap-4 my-2">
+          <div className="flex flex-col max-w-[40%] gap-2">
+            <div className="flex flex-col">
+              <span className="font-semibold">Status:</span>
+              <span>{transactionStatus(props.REQUEST_STATUS)}</span>
+            </div>
+            <span className="font-semibold">Owner:</span>
+            <span>{fullNamer(props.ownerEmpDetails)}</span>
+            <span className="font-semibold">Borrower:</span>
+            <span>{fullNamer(props.borrowerEmpDetails)}</span>
+          </div>
+          <div className="flex flex-col max-w-[33%]">
+            <span className="font-semibold">Item:</span>
+            <span>{getItemName(props.itemDetails)}</span>
+            <span className="font-semibold">Quantity:</span>
+            <span>{props.QUANTITY}</span>
+          </div>
+        </div>
+      </Paper>
+    );
+  };
+
+  //mark notification as read
+  const handleMarkNotificationRead = async () => {
+    try {
+      const notificationIds =
+        notifications?.map(
+          (notification: NotificationProps) => notification.ID
+        ) || [];
+      await markReadNotification(notificationIds);
+      refetchNotificationCount();
+    } catch (error) {
+      console.error("Unable to mark read notifications", error);
+    }
+  };
 
   //initialized socket connection
   useSocket(Number(user?.emp_id), () => refetchNotifications());
@@ -109,7 +141,7 @@ const Notifications = () => {
           </Tooltip>
         </div>
 
-        <Paper sx={{ maxHeight: "70vh", overflow: "auto" }}>
+        <div className="max-h-[70vh] overflow-auto">
           {notifications?.length === 0 ? (
             <ZeroLength message="No Notifications" />
           ) : (
@@ -117,7 +149,15 @@ const Notifications = () => {
               <NotificationRow key={notification.ID} {...notification} />
             ))
           )}
-        </Paper>
+        </div>
+        <div className="flex justify-end">
+          <button
+            className="hover:underline underline-offset-1"
+            onClick={handleMarkNotificationRead}
+          >
+            Mark All as Read
+          </button>
+        </div>
       </div>
     </>
   );
