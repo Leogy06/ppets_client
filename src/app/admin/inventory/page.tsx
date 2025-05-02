@@ -2,6 +2,7 @@
 
 import DefaultButton from "@/app/(component)/buttonDefault";
 import DataTable from "@/app/(component)/datagrid";
+import DefaultModal from "@/app/(component)/modal";
 import OptionRowLimitCount from "@/app/(component)/optionRowLimit";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
@@ -16,7 +17,9 @@ import { AccountItem, UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
 import {
   AddBoxOutlined,
+  ArrowDownward,
   ArrowDropDownCircle,
+  ArrowUpward,
   Cancel,
   Check,
   Delete,
@@ -186,6 +189,9 @@ const Inventory = () => {
   //selected item id to delete
   const [selectedItemId, setSelectedItemId] = useState<number[]>([]);
 
+  //open capital outlay
+  const [openCapitalOutlay, setOpenCapitalOutlay] = useState(false);
+
   //item to delete
 
   //handles
@@ -338,6 +344,33 @@ const Inventory = () => {
     setIsOpen(false);
   };
 
+  //components
+  const CapitalOutlay = () => {
+    return (
+      <DefaultModal
+        open={openCapitalOutlay}
+        onClose={() => setOpenCapitalOutlay(false)}
+        className="flex flex-col gap-4"
+      >
+        <h1 className="mb-4 font-bold">Select Capital Outlay</h1>
+        <div className="flex items-center justify-center gap-4">
+          <DefaultButton
+            color="secondary"
+            btnText="50k"
+            btnIcon={<ArrowDownward />}
+            onClick={() => router.push(`/admin/inventory/add/down`)}
+          />
+          <DefaultButton
+            color="success"
+            btnText="50k"
+            btnIcon={<ArrowUpward />}
+            onClick={() => router.push(`/admin/inventory/add/up`)}
+          />
+        </div>
+      </DefaultModal>
+    );
+  };
+
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -392,7 +425,7 @@ const Inventory = () => {
             btnIcon={<AddBoxOutlined />}
             title="Add item"
             placement="top"
-            onClick={() => router.push("/admin/inventory/add")}
+            onClick={() => setOpenCapitalOutlay(true)}
           />
         </div>
       </div>
@@ -413,7 +446,6 @@ const Inventory = () => {
         handleDeleteItem={handleDeleteItem}
         isLoading={isDeleteLoading}
       />
-
       {/**restore item modal */}
       <ConfirmRestoreItemModal
         isLoading={isRestoreItemLoading}
@@ -421,6 +453,7 @@ const Inventory = () => {
         onClose={handleCloseRestoreItemModal}
         handleRestoreItem={handleRestoreItem}
       />
+      <CapitalOutlay />
     </>
   );
 };

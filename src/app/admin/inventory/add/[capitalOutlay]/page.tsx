@@ -14,7 +14,7 @@ import { dateFormmater } from "@/utils/date_formmater";
 import { handleError } from "@/utils/errorHandler";
 import { AddBoxOutlined, Inventory2Outlined } from "@mui/icons-material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 //day js
@@ -106,6 +106,12 @@ const ConfirmSubmitModal = ({
 const AddItem = () => {
   //use hooks
   //create items
+
+  //use params
+  const { capitalOutlay } = useParams();
+
+  console.log("Capital outlay", capitalOutlay);
+
   const [createUndistributedItem, { isLoading }] =
     useCreateUndistributedItemMutation();
 
