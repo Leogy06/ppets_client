@@ -110,8 +110,6 @@ const AddItem = () => {
   //use params
   const { capitalOutlay } = useParams();
 
-  console.log("Capital outlay", capitalOutlay);
-
   const [createUndistributedItem, { isLoading }] =
     useCreateUndistributedItemMutation();
 
@@ -286,22 +284,27 @@ const AddItem = () => {
           label="Property Acknowledgement Receipt (PAR)"
           value={itemForm.PAR_NO}
           onChange={handleChangeItemForm}
+          disabled={capitalOutlay === "down"}
         />
         <DefaultTextField
           name="MR_NO"
           label="Material Requisition (MR)"
           value={itemForm.MR_NO}
-          onChange={handleChangeItemForm}
-        />
-        <DefaultTextField
-          name="PIS_NO"
-          label="PIS Number"
-          value={itemForm.PIS_NO}
+          required={false}
           onChange={handleChangeItemForm}
         />
 
+        {/* pis/ ics */}
+        <DefaultTextField
+          name="PIS_NO"
+          label="PIS/ICS Number"
+          value={itemForm.PIS_NO}
+          onChange={handleChangeItemForm}
+          disabled={capitalOutlay === "up"}
+        />
+
         {/**ACcount code should be select auto complete */}
-        <div className="flex gap-2 justify-center md:justify-end">
+        <div className="flex gap-2 justify-end">
           <DefaultButton
             btnText="submit"
             type="submit"
