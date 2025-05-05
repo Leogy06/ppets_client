@@ -112,7 +112,7 @@ const RequestReports = () => {
           </div>
         </LocalizationProvider>
       </div>
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end my-4">
         <DefaultButton
           onClick={handleGenerateReport}
           btnText="Generate Report"
