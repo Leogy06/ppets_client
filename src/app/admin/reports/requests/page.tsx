@@ -11,6 +11,8 @@ import { dateFormmater } from "@/utils/date_formmater";
 import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
 import { transactionStatus, transactionType } from "@/utils/transactions";
+import { Info } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
@@ -125,10 +127,23 @@ const RequestReports = () => {
         ) : (
           <div className="flex flex-col">
             {builtTransactionReport?.length === 0 ? (
-              <span className="text-center">Nothing to Preview</span>
+              <span className="text-center">Nothing to Preview </span>
             ) : (
               <div className="flex flex-col max-h-[58vh] overflow-auto">
-                <h1 className="mb-4 text-lg font-bold">Preview Report</h1>
+                <h1 className="mb-4 text-lg font-bold">
+                  Preview Report{" "}
+                  <Tooltip
+                    title={
+                      <p className="text-sm">
+                        For the TRANSFER transaction, the owner is where the
+                        item from, and the borrower is where the item goes.
+                      </p>
+                    }
+                    placement="top"
+                  >
+                    <Info />
+                  </Tooltip>
+                </h1>
                 <table>
                   <thead>
                     <tr>
