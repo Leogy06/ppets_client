@@ -32,15 +32,12 @@ const DistributedItems = () => {
   const { data: employee, isLoading: isEmployeeLoading } =
     useGetEmployeeByIdQuery(Number(emp_id));
 
-  //get items accountabale person
-  debugger;
   const { data: ownedItems, isLoading: isOwnedItemLoading } =
     useGetDistributedItemsQuery({
       owner_emp_id: Number(emp_id),
       limit: rowLimit,
       department: Number(employee?.CURRENT_DPT_ID),
     });
-  debugger;
   //get distribbuted items count
   const { data: unDistributedItemsCount } = useGetUndistributedItemCountQuery(
     Number(empDetails?.CURRENT_DPT_ID)
