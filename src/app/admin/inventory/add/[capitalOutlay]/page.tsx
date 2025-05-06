@@ -55,15 +55,16 @@ const ConfirmSubmitModal = ({
     { label: "Stock", value: itemForm?.STOCK_QUANTITY ?? "" },
     {
       label: "Acquisition Date",
-      value: dateFormmater(itemForm?.RECEIVED_AT || null, "YYYY-DD-MM"),
+      value: dateFormmater(itemForm?.RECEIVED_AT || null, "YYYY-MM-DD"),
     },
     { label: "Serial Number", value: itemForm?.SERIAL_NO ?? "" },
-    { label: "Property Number", value: itemForm?.PROP_NO ?? "" },
+    { label: "Property Number", value: itemForm?.PROP_NO ?? "n/a" },
     {
       label: "Property Acknowledgement Receipt",
-      value: itemForm?.PAR_NO ?? "",
+      value: itemForm?.PAR_NO ?? "--",
     },
-    { label: "Material Requisition", value: itemForm?.MR_NO ?? "" },
+    { label: "Material Requisition", value: itemForm?.MR_NO ?? "n/a" },
+    { label: "PIS/ICS", value: itemForm?.PIS_NO ?? "n/a" },
   ];
 
   return (
@@ -159,8 +160,37 @@ const AddItem = () => {
   //handles
   //submit item form
   const handleSubmitItemForm = async () => {
+    if (capitalOutlay === "down" && itemForm.UNIT_VALUE) {
+      if (parseFloat(itemForm.UNIT_VALUE.toString()) > 50000) {
+        openSnackbar(
+          "Capital outlay is 50k down and the unit value cannot be greater than 50k",
+          "error"
+        );
+        return;
+      }
+    }
+    if (capitalOutlay === "up" && itemForm.UNIT_VALUE) {
+      if (parseFloat(itemForm.UNIT_VALUE.toString()) < 50000) {
+        openSnackbar(
+          "Capital outlay is 50k up and the unit value cannot be less than 50k",
+          "error"
+        );
+        return;
+      }
+    }
+
     try {
-      await createUndistributedItem(itemForm).unwrap();
+      const preparedForm = {
+        ...itemForm,
+        UNIT_VALUE: itemForm.UNIT_VALUE
+          ? parseFloat(itemForm.UNIT_VALUE.toString())
+          : 0,
+        STOCK_QUANTITY: itemForm.STOCK_QUANTITY
+          ? parseInt(itemForm.STOCK_QUANTITY.toString())
+          : 1,
+      };
+
+      await createUndistributedItem(preparedForm).unwrap();
       openSnackbar("Item added successfully!", "success");
       router.push("/admin/inventory");
     } catch (error) {
@@ -176,15 +206,22 @@ const AddItem = () => {
 
     setItemForm((prevForm) => ({
       ...prevForm,
-      [name]: type === "number" ? (value ? parseFloat(value) : "") : value, // Convert number fields properly
+      [name]: type === "number" ? value : value.trim() === "" ? null : value,
     }));
   };
 
   return (
     <>
-      <div className="flex flex-col items-start mb-8">
-        <PageHeader pageHead="Add Item" icon={AddBoxOutlined} />
-        <BackArrow backTo="/admin/inventory" />
+      <div className="flex items-start mb-4 justify-between">
+        <div className="flex items-center">
+          <BackArrow backTo="/admin/inventory" />
+          <PageHeader
+            pageHead="Add Item"
+            icon={AddBoxOutlined}
+            hasMarginBottom={false}
+          />
+        </div>
+        <h2>Capital Outlay 50k {String(capitalOutlay).toUpperCase() || ""}</h2>
       </div>
       <form
         onSubmit={handleOpenModal}
