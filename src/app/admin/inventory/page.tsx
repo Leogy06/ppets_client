@@ -15,6 +15,7 @@ import {
 } from "@/features/api/apiSlice";
 import { AccountItem, UndistributedItem } from "@/types/global_types";
 import { handleError } from "@/utils/errorHandler";
+import { pesoFormatter } from "@/utils/presoFormatter";
 import {
   AddBoxOutlined,
   ArrowDownward,
@@ -287,14 +288,16 @@ const Inventory = () => {
     {
       field: "UNIT_VALUE",
       type: "number",
-      headerName: "Unit value in ₱",
+      headerName: "Unit value",
       width: 180,
+      valueFormatter: (params: number) => pesoFormatter(params),
     },
     {
       field: "TOTAL_VALUE",
       type: "number",
-      headerName: "Total value in ₱",
+      headerName: "Total value",
       width: 180,
+      valueFormatter: (params: number) => pesoFormatter(params),
     },
     {
       field: "DESCRIPTION",
