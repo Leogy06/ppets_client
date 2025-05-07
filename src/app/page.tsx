@@ -166,7 +166,11 @@ const LoginPage = () => {
           >
             {isLoading ? <CircularProgress size={24} /> : "login"}
           </Button>
-          <Button variant="text" disabled={isLoading}>
+          <Button
+            variant="text"
+            disabled={isLoading}
+            onClick={() => router.push("/forgot_password")}
+          >
             Forgot Password
           </Button>
         </div>

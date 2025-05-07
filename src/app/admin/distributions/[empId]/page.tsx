@@ -168,7 +168,7 @@ const DistributionModal = ({
     formField: string;
     itemField: string | number;
   }) => (
-    <span className="flex gap-2 justify-center items-center">
+    <span className="flex gap-2 justify-start">
       <span className="max-w-[50%] text-end">{formField}:</span>
       <p className="font-semibold underline underline-offset-1 max-w-[50%]">
         {itemField}
