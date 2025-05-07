@@ -180,6 +180,9 @@ const AddItem = () => {
     }
 
     try {
+      //prefetch the inventory page
+      router.prefetch("/admin/inventory");
+
       const preparedForm = {
         ...itemForm,
         UNIT_VALUE: itemForm.UNIT_VALUE

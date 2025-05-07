@@ -358,12 +358,14 @@ const Inventory = () => {
             color="secondary"
             btnText="50k"
             btnIcon={<ArrowDownward />}
+            onMouseEnter={() => router.prefetch(`/admin/inventory/add/down`)}
             onClick={() => router.push(`/admin/inventory/add/down`)}
           />
           <DefaultButton
             color="success"
             btnText="50k"
             btnIcon={<ArrowUpward />}
+            onMouseEnter={() => router.prefetch(`/admin/inventory/add/up`)}
             onClick={() => router.push(`/admin/inventory/add/up`)}
           />
         </div>

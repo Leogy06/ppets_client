@@ -14,6 +14,7 @@ interface DefaultButtonProps {
   btnIcon?: React.ReactNode;
   secondIcon?: React.ReactNode;
   sx?: SxProps<Theme>;
+  onMouseEnter?: () => void;
 }
 
 const DefaultButton: React.FC<DefaultButtonProps> = ({
@@ -28,6 +29,7 @@ const DefaultButton: React.FC<DefaultButtonProps> = ({
   placement = "left",
   secondIcon,
   sx = {},
+  onMouseEnter,
 }) => {
   const button = (
     <span>
@@ -39,6 +41,7 @@ const DefaultButton: React.FC<DefaultButtonProps> = ({
         disabled={disabled}
         className="flex items-center gap-1"
         sx={sx}
+        onMouseEnter={onMouseEnter}
       >
         {btnIcon}
         {secondIcon}
