@@ -169,6 +169,7 @@ const LoginPage = () => {
           <Button
             variant="text"
             disabled={isLoading}
+            onMouseEnter={() => router.prefetch("/forgot_password")}
             onClick={() => router.push("/forgot_password")}
           >
             Forgot Password

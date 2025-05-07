@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import BackArrow from "../(component)/backArrow";
+import BackArrow from "@/app/(component)/backArrow";
 
 const ForgotPassword = () => {
   return (
