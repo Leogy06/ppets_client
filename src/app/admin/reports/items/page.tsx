@@ -65,6 +65,9 @@ const ItemReports = () => {
   const TableRow = ({ data }: { data: DistributedItemProps }) => (
     <tr>
       <td className="px-4 py-2">
+        {data.undistributedItemDetails.accountCodeDetails.ACCOUNT_CODE}
+      </td>
+      <td className="px-4 py-2">
         {getItemName(data.undistributedItemDetails)}
       </td>
       <td className="px-4 py-2">
