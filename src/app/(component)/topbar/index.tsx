@@ -2,7 +2,7 @@ import { useAppSelector } from "@/app/redux";
 import { useAuth } from "@/context/AuthContext";
 import { setIsDarkMode, setIsSideBarCollapse } from "@/state";
 import { DarkMode, LightMode, Menu, Notifications } from "@mui/icons-material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import logo_img from "@/assets/images/adts.png";
 import Image from "next/image";
@@ -33,6 +33,11 @@ const Topbar = () => {
   const { data: unreadNotificationCount } = useGetUnreadNotificationCountQuery(
     Number(user?.emp_id)
   );
+
+  //prefetch notification
+  useEffect(() => {
+    router.prefetch("/notification");
+  }, [router]);
 
   return user ? (
     <div className="flex items-center justify-between bg-gray-50 text-gray-900 shadow-lg p-4">
