@@ -233,7 +233,7 @@ const AddItem = () => {
         <DefaultTextField
           name="ITEM_NAME"
           label="Item Name"
-          value={itemForm.ITEM_NAME}
+          value={itemForm.ITEM_NAME || ""}
           onChange={handleChangeItemForm}
         />
         <Autocomplete
@@ -286,6 +286,9 @@ const AddItem = () => {
           type="number"
           value={itemForm.UNIT_VALUE ? itemForm.UNIT_VALUE.toString() : ""}
           onChange={handleChangeItemForm}
+          onWheel={(e) =>
+            e.target instanceof HTMLInputElement && e.target.blur()
+          }
         />
         <DefaultTextField
           name="REMARKS"
