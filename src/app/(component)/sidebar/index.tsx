@@ -22,8 +22,8 @@ import {
   ListItemText,
 } from "@mui/material";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSideBarCollapse } from "@/state";
 import { useAuth } from "@/context/AuthContext";
@@ -131,6 +131,8 @@ const SideBarHeader = () => {
 };
 
 const Sidebar = () => {
+  // * use router
+  const router = useRouter();
   const { user, logoutUser } = useAuth();
   const pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -145,18 +147,36 @@ const Sidebar = () => {
   // Track open menus
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
-  const userNavigations =
-    user?.role === 1
-      ? navigations
-      : user?.role === 2
-      ? managerNavigations
-      : user?.role === 3
-      ? employeeNavigations
-      : [];
+  //prepare navigation
+  const userNavigations = useMemo(
+    () =>
+      user?.role === 1
+        ? navigations
+        : user?.role === 2
+        ? managerNavigations
+        : user?.role === 3
+        ? employeeNavigations
+        : [],
+    [user]
+  );
 
   const toggleSubMenu = (label: string) => {
     setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
   };
+
+  //prefetch paths
+  useEffect(() => {
+    if (user) {
+      userNavigations.forEach((nav) => {
+        if (nav.path) router.prefetch(nav.path);
+        if (nav.subMenu) {
+          nav.subMenu.forEach((sub) => {
+            router.prefetch(sub.path);
+          });
+        }
+      });
+    }
+  }, [user, userNavigations, router]);
 
   if (!user) {
     return null;
