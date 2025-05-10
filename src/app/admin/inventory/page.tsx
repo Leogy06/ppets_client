@@ -305,14 +305,22 @@ const Inventory = () => {
       width: 190,
     },
     {
+      field: "PIS_NO",
+      headerName: "PIS/ICS",
+      width: 180,
+      valueGetter: (params) => (params ? params : "--"),
+    },
+    {
       field: "PAR_NO",
       headerName: "PAR #",
       width: 180,
+      valueGetter: (params) => (params ? params : "--"),
     },
     {
       field: "MR_NO",
       headerName: "MR #",
       width: 180,
+      valueGetter: (params) => (params ? params : "--"),
     },
     {
       field: "PROP_NO",
@@ -326,7 +334,12 @@ const Inventory = () => {
       valueGetter: (params: AccountItem) =>
         `${params?.ACCOUNT_CODE ?? ""} - ${params?.ACCOUNT_TITLE ?? ""}`,
     },
-    { field: "REMARKS", headerName: "Remarks", width: 180 },
+    {
+      field: "REMARKS",
+      headerName: "Remarks",
+      width: 180,
+      valueGetter: (params) => (params ? params : "--"),
+    },
   ];
 
   //items to show
