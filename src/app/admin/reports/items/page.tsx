@@ -4,7 +4,7 @@ import axiosInstance from "@/api/axiosInstance";
 import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import PageHeader from "@/app/(component)/pageheader";
-import { Thead } from "@/app/(component)/TableParts";
+import { Tdata, Thead } from "@/app/(component)/TableParts";
 import { useAuth } from "@/context/AuthContext";
 import {
   useBuildItemReportQuery,
@@ -14,7 +14,7 @@ import { DistributedItemProps } from "@/types/global_types";
 import { dateFormmater } from "@/utils/date_formmater";
 import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
-import { accountCodeTitle } from "@/utils/presoFormatter";
+import { accountCodeTitle, pesoFormatter } from "@/utils/presoFormatter";
 import { Autocomplete, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -77,20 +77,25 @@ const ItemReports = () => {
     [itemReports]
   );
 
+  // * prepare table row
   const TableRow = ({ data }: { data: DistributedItemProps }) => (
     <tr>
-      <td className="px-4 py-2">
-        {accountCodeTitle(data.undistributedItemDetails.accountCodeDetails)}
-      </td>
-      <td className="px-4 py-2">
-        {getItemName(data.undistributedItemDetails)}
-      </td>
-      <td className="px-4 py-2">
-        {data.quantity}/{data.ORIGINAL_QUANTITY}
-      </td>
-      <td className="px-4 py-2">{data.unit_value}</td>
-      <td className="px-4 py-2">{fullNamer(data.accountableEmpDetails)}</td>
-      <td className="px-4 py-2">{dateFormmater(data.DISTRIBUTED_ON)}</td>
+      <Tdata
+        tDataText={accountCodeTitle(
+          data.undistributedItemDetails.accountCodeDetails
+        )}
+      />
+      <Tdata tDataText={getItemName(data.undistributedItemDetails)} />
+      <Tdata
+        tDataText={`${data.quantity}/${data.ORIGINAL_QUANTITY}`}
+        minWidth="large"
+      />
+      <Tdata tDataText={pesoFormatter(data.unit_value)} minWidth="large" />
+      <Tdata
+        tDataText={fullNamer(data.accountableEmpDetails)}
+        minWidth="large"
+      />{" "}
+      <Tdata tDataText={dateFormmater(data.DISTRIBUTED_ON)} minWidth="large" />
     </tr>
   );
 

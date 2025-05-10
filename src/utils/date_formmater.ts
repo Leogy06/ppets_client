@@ -7,5 +7,5 @@ export const dateFormmater = (
   if (!date) {
     return "--";
   }
-  return dayjs(date).format(format);
+  return dayjs(date).format(format).toString();
 };
