@@ -4,6 +4,7 @@ import axiosInstance from "@/api/axiosInstance";
 import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import PageHeader from "@/app/(component)/pageheader";
+import { Thead } from "@/app/(component)/TableParts";
 import { useAuth } from "@/context/AuthContext";
 import {
   useBuildItemReportQuery,
@@ -13,6 +14,7 @@ import { DistributedItemProps } from "@/types/global_types";
 import { dateFormmater } from "@/utils/date_formmater";
 import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
+import { accountCodeTitle } from "@/utils/presoFormatter";
 import { Autocomplete, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -42,7 +44,7 @@ const ItemReports = () => {
   const handleGenerateItemReport = async () => {
     try {
       const response = await axiosInstance.post(`/api/pdf/items`, {
-        reports: itemReports,
+        reports: prepareItemReport,
       });
 
       const blob = new Blob([response.data], { type: "application/pdf" });
@@ -53,6 +55,7 @@ const ItemReports = () => {
     }
   };
 
+  // * prepare employee filter
   const mappedEmployeeOption = useMemo(
     () =>
       employeeOption?.map((employee) => ({
@@ -62,10 +65,22 @@ const ItemReports = () => {
     [employeeOption]
   );
 
+  // * prepare item to report
+  const prepareItemReport = useMemo(
+    () =>
+      itemReports?.map((item) => ({
+        ...item,
+        accCodeDetails: accountCodeTitle(
+          item.undistributedItemDetails.accountCodeDetails
+        ),
+      })),
+    [itemReports]
+  );
+
   const TableRow = ({ data }: { data: DistributedItemProps }) => (
     <tr>
       <td className="px-4 py-2">
-        {data.undistributedItemDetails.accountCodeDetails.ACCOUNT_CODE}
+        {accountCodeTitle(data.undistributedItemDetails.accountCodeDetails)}
       </td>
       <td className="px-4 py-2">
         {getItemName(data.undistributedItemDetails)}
@@ -142,18 +157,19 @@ const ItemReports = () => {
         <p className="text-center animate-pulse">Loading...</p>
       ) : (
         <div className="mt-4 w-full max-h-[40vh] overflow-auto">
-          <table>
-            <thead>
+          <table className=" min-w-[1000px] table-auto">
+            <thead className="border-b border-gray-900">
               <tr>
-                <th className="px-4 py-2">Item</th>
-                <th className="px-4 py-2">Quantity</th>
-                <th className="px-4 py-2">Unit Value</th>
-                <th className="px-4 py-2">Accountable</th>
-                <th className="px-4 py-2">Distribution</th>
+                <Thead theadText="Account Code" />
+                <Thead theadText="Item" />
+                <Thead theadText="Quantity" />
+                <Thead theadText="Unit Value" />
+                <Thead theadText="Accountable Person" />
+                <Thead theadText="Distribution Date" />
               </tr>
             </thead>
             <tbody>
-              {itemReports?.map((item, index) => (
+              {prepareItemReport?.map((item, index) => (
                 <TableRow key={index} data={item} />
               ))}
             </tbody>
