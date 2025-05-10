@@ -166,6 +166,8 @@ const ItemReports = () => {
               )}
             />
           </div>
+
+          {/* ! account code filter */}
           <div className="flex flex-col gap-1">
             <h1>Select Account Code</h1>
             <Autocomplete
@@ -176,11 +178,9 @@ const ItemReports = () => {
                 `${accountCode.ACCOUNT_CODE} - ${accountCode.ACCOUNT_TITLE}`
               }
               options={accountCodesData || []}
-              onChange={(_, value) => {
-                if (value) {
-                  setAccountCodeFilter(value.ID);
-                }
-              }}
+              onChange={(_, value) =>
+                setAccountCodeFilter(value ? value.ID : null)
+              }
               renderInput={(params) => (
                 <TextField {...params} label="Select Account Code" />
               )}
