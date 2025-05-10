@@ -10,6 +10,8 @@ import Topbar from "@/app/(component)/topbar";
 import SocketProvider from "../provider/SocketProvider";
 import { usePathname } from "next/navigation";
 import Loader from "@/app/(component)/loader";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 //for darkmode
 //snackbar
@@ -46,21 +48,23 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 
   return (
     <ThemeProvider theme={muiTheme}>
-      <GlobalSnackbarProvider>
-        <AuthProvider>
-          <div
-            className={`flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden ${
-              isDarkMode ? "dark" : "light"
-            }`}
-          >
-            <SocketProvider />
-            <Sidebar />
-            <Topbar />
-            {loading && <Loader />}
-            <div className="p-4">{children}</div>
-          </div>
-        </AuthProvider>
-      </GlobalSnackbarProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <GlobalSnackbarProvider>
+          <AuthProvider>
+            <div
+              className={`flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden ${
+                isDarkMode ? "dark" : "light"
+              }`}
+            >
+              <SocketProvider />
+              <Sidebar />
+              <Topbar />
+              {loading && <Loader />}
+              <div className="p-4">{children}</div>
+            </div>
+          </AuthProvider>
+        </GlobalSnackbarProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };
