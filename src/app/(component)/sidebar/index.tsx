@@ -6,6 +6,7 @@ import {
   Dashboard,
   ExpandLess,
   ExpandMore,
+  FeaturedPlayListOutlined,
   Inventory,
   Logout,
   MoveToInboxOutlined,
@@ -71,6 +72,11 @@ const navigations: NavigationItemProps[] = [
     label: "Distributions",
     icon: <AccountTreeOutlined />,
     path: "/admin/distributions",
+  },
+  {
+    label: "Account Codes",
+    icon: <FeaturedPlayListOutlined />,
+    path: "admin/account_code",
   },
 ];
 
