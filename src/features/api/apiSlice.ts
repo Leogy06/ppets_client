@@ -234,6 +234,15 @@ export const apiSlice = createApi({
       query: () => "/account_code",
       providesTags: ["AccountCodes"],
     }),
+    //create account code
+    createAccountItem: builder.mutation({
+      query: (entry) => ({
+        url: "/account_code",
+        method: "POST",
+        body: entry,
+      }),
+      invalidatesTags: ["AccountCodes"],
+    }),
 
     /**
      *
@@ -469,6 +478,7 @@ export const {
 
   //account items
   useGetAccountItemQuery,
+  useCreateAccountItemMutation,
 
   //transactions
   //get
