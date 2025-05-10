@@ -243,6 +243,15 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["AccountCodes"],
     }),
+    //edit account code
+    editAccountCode: builder.mutation({
+      query: (entry) => ({
+        url: "/account_code",
+        method: "PUT",
+        body: entry,
+      }),
+      invalidatesTags: ["AccountCodes"],
+    }),
 
     /**
      *
@@ -479,6 +488,7 @@ export const {
   //account items
   useGetAccountItemQuery,
   useCreateAccountItemMutation,
+  useEditAccountCodeMutation,
 
   //transactions
   //get
