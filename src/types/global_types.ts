@@ -177,4 +177,5 @@ export interface AccountItem {
   ID: number;
   ACCOUNT_CODE: string;
   ACCOUNT_TITLE: string;
+  DELETED: number;
 }
