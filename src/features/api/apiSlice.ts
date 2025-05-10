@@ -6,6 +6,7 @@ import {
   UndistributedItem,
   TransactionStatusProps,
   NotificationProps,
+  AccountItem,
 } from "@/types/global_types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -229,7 +230,7 @@ export const apiSlice = createApi({
     }),
 
     //get account item
-    getAccountItem: builder.query({
+    getAccountItem: builder.query<AccountItem[], void>({
       query: () => "/account_code",
       providesTags: ["AccountCodes"],
     }),

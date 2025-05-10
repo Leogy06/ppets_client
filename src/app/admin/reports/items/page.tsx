@@ -8,6 +8,7 @@ import { Tdata, Thead } from "@/app/(component)/TableParts";
 import { useAuth } from "@/context/AuthContext";
 import {
   useBuildItemReportQuery,
+  useGetAccountItemQuery,
   useGetEmployeeOptionQuery,
 } from "@/features/api/apiSlice";
 import { DistributedItemProps } from "@/types/global_types";
@@ -16,8 +17,7 @@ import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
 import { accountCodeTitle, pesoFormatter } from "@/utils/presoFormatter";
 import { Autocomplete, TextField } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import React, { useMemo, useState } from "react";
 
@@ -31,6 +31,12 @@ const ItemReports = () => {
     endDate: dayjs(),
   });
 
+  //account code filter
+  const [accountCodeFilter, setAccountCodeFilter] = useState<number | null>(
+    null
+  );
+
+  //use api rtk
   const { data: employeeOption, isLoading: isEmployeeOptionLoading } =
     useGetEmployeeOptionQuery(Number(empDetails?.CURRENT_DPT_ID ?? 0));
   //get item report
@@ -55,6 +61,10 @@ const ItemReports = () => {
     }
   };
 
+  //get item account code
+  const { data: accountCodesData, isLoading: isAccountCodeLoading } =
+    useGetAccountItemQuery();
+
   // * prepare employee filter
   const mappedEmployeeOption = useMemo(
     () =>
@@ -66,16 +76,25 @@ const ItemReports = () => {
   );
 
   // * prepare item to report
-  const prepareItemReport = useMemo(
-    () =>
+  const prepareItemReport = useMemo(() => {
+    const mapped =
       itemReports?.map((item) => ({
         ...item,
         accCodeDetails: accountCodeTitle(
           item.undistributedItemDetails.accountCodeDetails
         ),
-      })),
-    [itemReports]
-  );
+      })) || [];
+
+    // * filter account code
+    if (accountCodeFilter !== null) {
+      return mapped.filter(
+        (item) =>
+          item.undistributedItemDetails.ACCOUNT_CODE === accountCodeFilter
+      );
+    }
+
+    return mapped;
+  }, [itemReports, accountCodeFilter]);
 
   // * prepare table row
   const TableRow = ({ data }: { data: DistributedItemProps }) => (
@@ -94,7 +113,7 @@ const ItemReports = () => {
       <Tdata
         tDataText={fullNamer(data.accountableEmpDetails)}
         minWidth="large"
-      />{" "}
+      />
       <Tdata tDataText={dateFormmater(data.DISTRIBUTED_ON)} minWidth="large" />
     </tr>
   );
@@ -106,48 +125,67 @@ const ItemReports = () => {
         <PageHeader pageHead="Build Report" hasMarginBottom={false} />
       </div>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="mb-1">Distribution Date Range</h1>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <div className="flex gap-1 items-center">
-              <DatePicker
-                label="From"
-                value={dateRange.startDate}
-                onChange={(newValue) => {
-                  if (newValue) {
-                    setDateRange((prev) => ({
-                      ...prev,
-                      startDate: newValue,
-                    }));
-                  }
-                }}
-              />
-              <span>to</span>
-              <DatePicker
-                label="To"
-                value={dateRange.endDate}
-                onChange={(newValue) => {
-                  if (newValue) {
-                    setDateRange((prev) => ({
-                      ...prev,
-                      endDate: newValue,
-                    }));
-                  }
-                }}
-              />
-            </div>
-          </LocalizationProvider>
-        </div>
-        <div className="flex flex-col gap-1">
-          <h1 className="self-start">Select Employee</h1>
-          <Autocomplete
-            fullWidth
-            loading={isEmployeeOptionLoading}
-            disablePortal
-            options={mappedEmployeeOption}
-            onChange={(_, value) => setEmployeeId(value?.id ?? null)}
-            renderInput={(params) => <TextField {...params} label="Employee" />}
+        <div className="flex flex-col md:flex-row md:items-center gap-4 justify-center  w-full items-stretch ">
+          <h1 className="mb-1">Distribution Date Range: </h1>
+          <DatePicker
+            label="From"
+            value={dateRange.startDate}
+            onChange={(newValue) => {
+              if (newValue) {
+                setDateRange((prev) => ({
+                  ...prev,
+                  startDate: newValue,
+                }));
+              }
+            }}
           />
+          <DatePicker
+            label="To"
+            value={dateRange.endDate}
+            onChange={(newValue) => {
+              if (newValue) {
+                setDateRange((prev) => ({
+                  ...prev,
+                  endDate: newValue,
+                }));
+              }
+            }}
+          />
+        </div>
+        <div className=" grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <h1 className="self-start">Select Employee</h1>
+            <Autocomplete
+              fullWidth
+              loading={isEmployeeOptionLoading}
+              disablePortal
+              options={mappedEmployeeOption}
+              onChange={(_, value) => setEmployeeId(value?.id ?? null)}
+              renderInput={(params) => (
+                <TextField {...params} label="Employee" />
+              )}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <h1>Select Account Code</h1>
+            <Autocomplete
+              fullWidth
+              loading={isAccountCodeLoading}
+              disablePortal
+              getOptionLabel={(accountCode) =>
+                `${accountCode.ACCOUNT_CODE} - ${accountCode.ACCOUNT_TITLE}`
+              }
+              options={accountCodesData || []}
+              onChange={(_, value) => {
+                if (value) {
+                  setAccountCodeFilter(value.ID);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Account Code" />
+              )}
+            />
+          </div>
         </div>
         <div className="flex justify-end">
           <DefaultButton
