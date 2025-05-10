@@ -25,7 +25,7 @@ const DefaultModal = ({
           maxHeight: "80vh",
         }}
       >
-        {children}
+        <div className="flex flex-col gap-4">{children}</div>
       </Paper>
     </Modal>
   );
