@@ -76,7 +76,7 @@ const navigations: NavigationItemProps[] = [
   {
     label: "Account Codes",
     icon: <FeaturedPlayListOutlined />,
-    path: "admin/account_code",
+    path: "/admin/account_code",
   },
 ];
 
