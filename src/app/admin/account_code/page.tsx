@@ -73,7 +73,7 @@ const AccountCode = () => {
 
   //table columns
   const columns: GridColDef[] = [
-    { field: "ID", headerName: "#", width: 100 },
+    { field: "index", headerName: "#", width: 100 },
     {
       field: "ACCOUNT_CODE",
       headerName: "Account Code",
@@ -82,7 +82,7 @@ const AccountCode = () => {
     {
       field: "ACCOUNT_TITLE",
       headerName: "Account Title",
-      flex: 180,
+      flex: 200,
     },
     {
       field: "actions",
@@ -150,9 +150,12 @@ const AccountCode = () => {
       </div>
       <DataTable
         rows={
-          accountCodesData?.filter(
-            (code) => code.DELETED === accountCodeStatus
-          ) || []
+          accountCodesData
+            ?.filter((code) => code.DELETED === accountCodeStatus)
+            .map((code, index) => ({
+              ...code,
+              index,
+            })) || []
         } // * account code rows
         loading={isAccountCodeLoading}
         columns={columns}
