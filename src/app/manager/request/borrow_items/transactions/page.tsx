@@ -127,8 +127,7 @@ const BorrowTransactions = () => {
   //handle edit transaction
   const handleEditTransactionReturn = async () => {
     try {
-      const response = await returnTransaction(returnForm).unwrap();
-      console.log("response", response);
+      await returnTransaction(returnForm).unwrap();
       openSnackbar(
         "Item is now up to return, wait for the admin to approve.",
         "success"

@@ -92,8 +92,6 @@ const LendTransaction = () => {
   //approve transaction
   const approveTransactionSubmit = async () => {
     try {
-      console.log("transactionForm", transactionForm);
-
       const result = await editTransaction(transactionForm).unwrap();
       openSnackbar(result?.message ?? "Transaction approved. ", "success");
       closeTransactionFormModal();
