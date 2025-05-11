@@ -12,11 +12,10 @@ import fullNamer from "@/utils/fullNamer";
 import getItemName from "@/utils/getItemName";
 import { transactionStatus, transactionType } from "@/utils/transactions";
 import { Info } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Autocomplete, TextField, Tooltip } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const RequestReports = () => {
   const { empDetails } = useAuth();
@@ -34,6 +33,11 @@ const RequestReports = () => {
       startDate: dateRange.startDate.toISOString(),
       endDate: dateRange.endDate.toISOString(),
     });
+
+  //transaction type filter
+  const [transactionTypeFilter, setTransactionTypeFilter] = useState<
+    number | null
+  >(null);
 
   const TransactionRowPreview = ({
     index,
@@ -63,7 +67,7 @@ const RequestReports = () => {
   const handleGenerateReport = async () => {
     try {
       const response = await axiosInstance.post(`/api/pdf`, {
-        reports: builtTransactionReport,
+        reports: preparedTransactions,
       });
 
       const blob = new Blob([response.data], { type: "application/pdf" });
@@ -74,6 +78,70 @@ const RequestReports = () => {
     }
   };
 
+  //option
+
+  //transaction type option
+  const transactionTypeOptions = [
+    { id: 1, label: "BORROWING" },
+    { id: 2, label: "LENDING" },
+    { id: 3, label: "DISTRIBUTION" },
+    { id: 4, label: "TRANSFER" },
+    { id: 5, label: "RETURN" },
+  ];
+
+  //prepare transactions
+  const preparedTransactions = useMemo(() => {
+    const mapped = builtTransactionReport?.map((transaction) => ({
+      ...transaction,
+    }));
+
+    if (transactionTypeFilter !== null) {
+      return mapped?.filter(
+        (transaction) => transaction.remarks === transactionTypeFilter
+      );
+    }
+
+    return mapped;
+  }, [builtTransactionReport, transactionTypeFilter]);
+
+  //prepare  transaction for csv
+  const exportToCsv = () => {
+    const headers = [
+      "Transaction Type",
+      "Date Requested",
+      "Item",
+      "Status",
+      "Quantity",
+      "Borrower",
+      "Owner",
+    ];
+
+    const rows = (preparedTransactions ?? []).map((transaction) => [
+      transactionType(transaction.remarks),
+      dateFormmater(transaction.createdAt),
+      getItemName(
+        transaction?.distributedItemDetails?.undistributedItemDetails
+      ),
+      transactionStatus(transaction.status),
+      transaction.quantity,
+      fullNamer(transaction.borrowerEmpDetails),
+      fullNamer(transaction.ownerEmpDetails),
+    ]);
+
+    //create csv content
+    const csvContent =
+      "data:text/csv;charset=utf8," +
+      [headers, ...rows].map((e) => e.join(", ")).join("\n");
+
+    const encodeUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodeUri);
+    link.setAttribute("download", "transaction_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <div className="flex gap-1 items-center mb-4">
@@ -82,42 +150,51 @@ const RequestReports = () => {
       </div>
 
       {/**Builder tools */}
-      <div className=" flex flex-col gap-4 justify-center items-center">
-        <h1>Date Range</h1>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div className="flex items-center gap-1">
-            <DatePicker
-              label={"Start Date"}
-              value={dateRange.startDate}
-              onChange={(newValue) => {
-                if (newValue) {
-                  seDateRange({
-                    ...dateRange,
-                    startDate: newValue,
-                  });
-                }
-              }}
-            />
-            <span>to</span>
-            <DatePicker
-              label={"End Date"}
-              value={dateRange.endDate}
-              onChange={(newValue) => {
-                if (newValue) {
-                  seDateRange({
-                    ...dateRange,
-                    endDate: newValue,
-                  });
-                }
-              }}
-            />
-          </div>
-        </LocalizationProvider>
+      <div className="flex flex-col gap-4">
+        <div className=" flex flex-col md:flex-row gap-4 justify-center items-center">
+          <h1>Date Range</h1>
+          <DatePicker
+            label="From"
+            value={dateRange.startDate}
+            onChange={(newValue) => {
+              if (newValue) {
+                seDateRange({
+                  ...dateRange,
+                  startDate: newValue,
+                });
+              }
+            }}
+          />
+          <DatePicker
+            label="To"
+            value={dateRange.endDate}
+            onChange={(newValue) => {
+              if (newValue) {
+                seDateRange({
+                  ...dateRange,
+                  endDate: newValue,
+                });
+              }
+            }}
+          />
+        </div>
+        <Autocomplete
+          options={transactionTypeOptions}
+          getOptionLabel={(option) => option.label}
+          onChange={(_, value) =>
+            setTransactionTypeFilter(value ? value.id : null)
+          }
+          renderInput={(params) => (
+            <TextField {...params} label="Select Transaction Type" />
+          )}
+        />
       </div>
       <div className="flex justify-end my-4">
+        <DefaultButton onClick={handleGenerateReport} btnText="Export to pdf" />{" "}
         <DefaultButton
-          onClick={handleGenerateReport}
-          btnText="Generate Report"
+          onClick={exportToCsv}
+          btnText="Export to CSV"
+          variant="text"
         />
       </div>
 
@@ -129,7 +206,7 @@ const RequestReports = () => {
             {builtTransactionReport?.length === 0 ? (
               <span className="text-center">Nothing to Preview </span>
             ) : (
-              <div className="flex flex-col max-h-[58vh] overflow-auto">
+              <div className="flex flex-col max-h-[40vh] overflow-auto">
                 <h1 className="mb-4 text-lg font-bold">
                   Preview Report{" "}
                   <Tooltip
@@ -157,7 +234,7 @@ const RequestReports = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {builtTransactionReport?.map((transaction, index) => (
+                    {preparedTransactions?.map((transaction, index) => (
                       <TransactionRowPreview
                         key={index}
                         index={index}
