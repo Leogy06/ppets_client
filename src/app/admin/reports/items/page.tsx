@@ -96,6 +96,54 @@ const ItemReports = () => {
     return mapped;
   }, [itemReports, accountCodeFilter]);
 
+  //prepare csv report
+  //prepare  transaction for csv
+  const exportToCsv = () => {
+    const headers = [
+      "Account Code",
+      "Item",
+      "Serial no.",
+      "Prop no.",
+      "PIS/ICS no.",
+      "PAR no.",
+      "Quantity",
+      "Unit Value in PHP",
+      "Accountable Person",
+      "Distribution Date",
+    ];
+
+    const rows = (prepareItemReport ?? []).map((item) => [
+      //acc code
+      accountCodeTitle(item.undistributedItemDetails.accountCodeDetails),
+      //item
+      getItemName(item.undistributedItemDetails),
+      //serial no.
+      item.undistributedItemDetails.SERIAL_NO,
+      item.undistributedItemDetails?.PROP_NO ?? "--",
+      item.undistributedItemDetails?.PIS_NO ?? "--",
+      item.undistributedItemDetails?.PAR_NO ?? "--",
+      `${item.quantity}/${item.ORIGINAL_QUANTITY}`,
+      item.unit_value,
+      fullNamer(item.accountableEmpDetails),
+      dateFormmater(item.DISTRIBUTED_ON),
+    ]);
+
+    //create csv content
+    const csvContent =
+      "data:text/csv;charset=utf8," +
+      [headers, ...rows]
+        .map((e) => e.map((cell) => `"${cell}"`).join(","))
+        .join("\n");
+
+    const encodeUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodeUri);
+    link.setAttribute("download", "accountable_items.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // * prepare table row
   const TableRow = ({ data }: { data: DistributedItemProps }) => (
     <tr>
@@ -191,8 +239,13 @@ const ItemReports = () => {
         </div>
         <div className="flex justify-end">
           <DefaultButton
-            btnText="Generate Report"
+            btnText="Export to PDF"
             onClick={handleGenerateItemReport}
+          />
+          <DefaultButton
+            btnText="Export to CSV"
+            onClick={exportToCsv}
+            variant="text"
           />
         </div>
       </div>
