@@ -94,6 +94,13 @@ const TransactionRequests = () => {
       width: 200,
     },
     {
+      field: "createdAt",
+      headerName: "Requested on",
+      width: 180,
+      type: "dateTime",
+      valueGetter: (params) => new Date(params),
+    },
+    {
       field: "transactionDescription",
       headerName: "Status",
       width: 200,
@@ -232,6 +239,7 @@ const TransactionRequests = () => {
   const handleOnclickRejectTransfer = async () => {
     try {
       await rejectTransaction(transactionToApprove?.id).unwrap();
+
       openSnackbar("Transfer Rejected.", "success");
       setOpenRejectTransferModal(false);
     } catch (error) {
