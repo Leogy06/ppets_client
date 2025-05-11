@@ -89,7 +89,7 @@ const ItemReports = () => {
     if (accountCodeFilter !== null) {
       return mapped.filter(
         (item) =>
-          item.undistributedItemDetails.ACCOUNT_CODE === accountCodeFilter
+          item.undistributedItemDetails?.ACCOUNT_CODE === accountCodeFilter
       );
     }
 
@@ -175,7 +175,9 @@ const ItemReports = () => {
               loading={isAccountCodeLoading}
               disablePortal
               getOptionLabel={(accountCode) =>
-                `${accountCode.ACCOUNT_CODE} - ${accountCode.ACCOUNT_TITLE}`
+                `${accountCode?.ACCOUNT_CODE ?? "--"} - ${
+                  accountCode.ACCOUNT_TITLE
+                }`
               }
               options={accountCodesData || []}
               onChange={(_, value) =>

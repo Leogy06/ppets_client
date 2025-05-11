@@ -120,7 +120,7 @@ const AddItem = () => {
 
   //get account item for the account code in item form
   const { data: accountItems, isLoading: isAccountItemLoading } =
-    useGetAccountItemQuery({});
+    useGetAccountItemQuery();
 
   //use states
   //item form state

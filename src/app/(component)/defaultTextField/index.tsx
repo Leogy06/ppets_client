@@ -31,6 +31,7 @@ const DefaultTextField = ({
       required={required}
       type={type}
       disabled={disabled}
+      autoComplete="off" // still useful
     />
   );
 };
