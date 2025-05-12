@@ -14,7 +14,6 @@ import {
   useGetDistributedItemByIdQuery,
   useGetEmployeeCountQuery,
   useGetEmployeesQuery,
-  useGetTransactionCountQuery,
 } from "@/features/api/apiSlice";
 import {
   DistributedItemProps,
@@ -49,11 +48,7 @@ const TransferItem = () => {
   //get item id in parameter
   const { item_id } = useParams();
   const { empDetails } = useAuth();
-  //get transactio count
-  const { data: transactionCount } = useGetTransactionCountQuery({
-    DPT_ID: Number(empDetails?.CURRENT_DPT_ID),
-    remarks: 4, //transfer
-  });
+
   const [rowLimit, setRowLimit] = useState(10);
   const { data: employees, isLoading: isEmployeesLoading } =
     useGetEmployeesQuery({
