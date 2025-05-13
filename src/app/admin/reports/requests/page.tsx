@@ -5,7 +5,10 @@ import BackArrow from "@/app/(component)/backArrow";
 import DefaultButton from "@/app/(component)/buttonDefault";
 import PageHeader from "@/app/(component)/pageheader";
 import { useAuth } from "@/context/AuthContext";
-import { useBuildTransactionQuery } from "@/features/api/apiSlice";
+import {
+  useBuildTransactionQuery,
+  useGetEmployeeOptionQuery,
+} from "@/features/api/apiSlice";
 import { TransactionProps } from "@/types/global_types";
 import { dateFormmater } from "@/utils/date_formmater";
 import fullNamer from "@/utils/fullNamer";
@@ -19,6 +22,9 @@ import React, { useMemo, useState } from "react";
 
 const RequestReports = () => {
   const { empDetails } = useAuth();
+
+  // * use states
+  // date filter
   const [dateRange, seDateRange] = useState<{
     startDate: Dayjs;
     endDate: Dayjs;
@@ -26,12 +32,21 @@ const RequestReports = () => {
     startDate: dayjs().startOf("month"),
     endDate: dayjs(),
   });
+
+  // borrower filter
+  const [borrowerFilter, setBorrowerFilter] = useState<number | null>(null);
   //request limit to display
   const { data: builtTransactionReport, isLoading: isReportLoading } =
     useBuildTransactionQuery({
       departmentId: Number(empDetails?.CURRENT_DPT_ID),
       startDate: dateRange.startDate.toISOString(),
       endDate: dateRange.endDate.toISOString(),
+    });
+
+  //get employee option for the filter
+  const { data: employeeOptions, isLoading: isEmployeeOptionLoading } =
+    useGetEmployeeOptionQuery(Number(empDetails?.CURRENT_DPT_ID), {
+      skip: !empDetails?.CURRENT_DPT_ID,
     });
 
   //transaction type filter
@@ -91,18 +106,21 @@ const RequestReports = () => {
 
   //prepare transactions
   const preparedTransactions = useMemo(() => {
-    const mapped = builtTransactionReport?.map((transaction) => ({
-      ...transaction,
-    }));
+    return builtTransactionReport?.filter((transaction) => {
+      // * filters
+      //transaction type
+      const matchesType =
+        transactionTypeFilter === null ||
+        transaction.remarks === transactionTypeFilter;
 
-    if (transactionTypeFilter !== null) {
-      return mapped?.filter(
-        (transaction) => transaction.remarks === transactionTypeFilter
-      );
-    }
+      //borrower
+      const matchesBorrower =
+        borrowerFilter === null ||
+        transaction.borrower_emp_id === borrowerFilter;
 
-    return mapped;
-  }, [builtTransactionReport, transactionTypeFilter]);
+      return matchesType && matchesBorrower;
+    });
+  }, [builtTransactionReport, transactionTypeFilter, borrowerFilter]);
 
   //prepare  transaction for csv
   const exportToCsv = () => {
@@ -178,6 +196,8 @@ const RequestReports = () => {
             }}
           />
         </div>
+
+        {/*  transaction type filter  */}
         <Autocomplete
           options={transactionTypeOptions}
           getOptionLabel={(option) => option.label}
@@ -188,6 +208,9 @@ const RequestReports = () => {
             <TextField {...params} label="Select Transaction Type" />
           )}
         />
+
+        {/* borrower filter */}
+        <Autocomplete options={} />
       </div>
       <div className="flex justify-end my-4">
         <DefaultButton onClick={handleGenerateReport} btnText="Export to pdf" />{" "}
