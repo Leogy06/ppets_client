@@ -35,6 +35,10 @@ const RequestReports = () => {
 
   // borrower filter
   const [borrowerFilter, setBorrowerFilter] = useState<number | null>(null);
+
+  //owner filter
+  const [ownerFilter, setOwnerFilter] = useState<number | null>(null);
+
   //request limit to display
   const { data: builtTransactionReport, isLoading: isReportLoading } =
     useBuildTransactionQuery({
@@ -44,10 +48,12 @@ const RequestReports = () => {
     });
 
   //get employee option for the filter
-  const { data: employeeOptions, isLoading: isEmployeeOptionLoading } =
-    useGetEmployeeOptionQuery(Number(empDetails?.CURRENT_DPT_ID), {
+  const { data: employeeOptions } = useGetEmployeeOptionQuery(
+    Number(empDetails?.CURRENT_DPT_ID),
+    {
       skip: !empDetails?.CURRENT_DPT_ID,
-    });
+    }
+  );
 
   //transaction type filter
   const [transactionTypeFilter, setTransactionTypeFilter] = useState<
@@ -118,10 +124,33 @@ const RequestReports = () => {
         borrowerFilter === null ||
         transaction.borrower_emp_id === borrowerFilter;
 
-      return matchesType && matchesBorrower;
+      //owner
+      const matchesOwner =
+        ownerFilter === null || transaction.owner_emp_id === ownerFilter;
+
+      return matchesType && matchesBorrower && matchesOwner;
     });
   }, [builtTransactionReport, transactionTypeFilter, borrowerFilter]);
 
+  //prepaer borrower employee options
+  const prepareBorrowerEmployeeOptions = useMemo(
+    () =>
+      employeeOptions?.map((employee) => ({
+        label: fullNamer(employee),
+        id: employee.ID,
+      })),
+    [employeeOptions]
+  );
+
+  //prepare
+  const prepareOwnerEmployeeOptions = useMemo(
+    () =>
+      employeeOptions?.map((employee) => ({
+        label: fullNamer(employee),
+        id: employee.ID,
+      })),
+    [employeeOptions]
+  );
   //prepare  transaction for csv
   const exportToCsv = () => {
     const headers = [
@@ -167,34 +196,35 @@ const RequestReports = () => {
         <PageHeader pageHead="Build Report" hasMarginBottom={false} />
       </div>
 
-      {/**Builder tools */}
-      <div className="flex flex-col gap-4">
-        <div className=" flex flex-col md:flex-row gap-4 justify-center items-center">
-          <h1>Date Range</h1>
-          <DatePicker
-            label="From"
-            value={dateRange.startDate}
-            onChange={(newValue) => {
-              if (newValue) {
-                seDateRange({
-                  ...dateRange,
-                  startDate: newValue,
-                });
-              }
-            }}
-          />
-          <DatePicker
-            label="To"
-            value={dateRange.endDate}
-            onChange={(newValue) => {
-              if (newValue) {
-                seDateRange({
-                  ...dateRange,
-                  endDate: newValue,
-                });
-              }
-            }}
-          />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="col-span-1 md:col-span-2 gap-4 justify-center">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+            <h1>Date Range</h1>
+            <DatePicker
+              label="From"
+              value={dateRange.startDate}
+              onChange={(newValue) => {
+                if (newValue) {
+                  seDateRange({
+                    ...dateRange,
+                    startDate: newValue,
+                  });
+                }
+              }}
+            />
+            <DatePicker
+              label="To"
+              value={dateRange.endDate}
+              onChange={(newValue) => {
+                if (newValue) {
+                  seDateRange({
+                    ...dateRange,
+                    endDate: newValue,
+                  });
+                }
+              }}
+            />
+          </div>
         </div>
 
         {/*  transaction type filter  */}
@@ -210,7 +240,22 @@ const RequestReports = () => {
         />
 
         {/* borrower filter */}
-        <Autocomplete options={} />
+        <Autocomplete
+          options={prepareBorrowerEmployeeOptions || []}
+          onChange={(_, value) => setBorrowerFilter(value ? value.id : null)}
+          renderInput={(params) => (
+            <TextField {...params} label="Select Borrower" />
+          )}
+        />
+
+        {/* owner filter */}
+        <Autocomplete
+          options={prepareOwnerEmployeeOptions || []}
+          onChange={(_, value) => setOwnerFilter(value ? value.id : null)}
+          renderInput={(params) => (
+            <TextField {...params} label="Select Owner" />
+          )}
+        />
       </div>
       <div className="flex justify-end my-4">
         <DefaultButton onClick={handleGenerateReport} btnText="Export to pdf" />{" "}
@@ -229,7 +274,7 @@ const RequestReports = () => {
             {builtTransactionReport?.length === 0 ? (
               <span className="text-center">Nothing to Preview </span>
             ) : (
-              <div className="flex flex-col max-h-[40vh] overflow-auto">
+              <div className="flex flex-col max-h-[3] md:max-h-[40vh] overflow-auto">
                 <h1 className="mb-4 text-lg font-bold">
                   Preview Report{" "}
                   <Tooltip
