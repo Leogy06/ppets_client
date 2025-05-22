@@ -130,7 +130,12 @@ const RequestReports = () => {
 
       return matchesType && matchesBorrower && matchesOwner;
     });
-  }, [builtTransactionReport, transactionTypeFilter, borrowerFilter]);
+  }, [
+    builtTransactionReport,
+    transactionTypeFilter,
+    borrowerFilter,
+    ownerFilter,
+  ]);
 
   //prepaer borrower employee options
   const prepareBorrowerEmployeeOptions = useMemo(
