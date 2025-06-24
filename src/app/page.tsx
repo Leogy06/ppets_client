@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import Image from "next/image";
 import lgu_logo from "@/assets/lgu_logo.png";
-import adts_logo from "@/assets/images/adts.png";
+import adts_logo from "@/assets/images/ppets.png";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { socket } from "@/hooks/useSocket";
@@ -113,31 +113,12 @@ const LoginPage = () => {
             className="h-32 w-auto"
             priority
           />
-          <div className="flex flex-col items-center">
-            <Image
-              src={adts_logo}
-              alt="ibs-logo"
-              className="h-32 w-auto"
-              priority
-            />
-            <span className="flex text-base items-baseline gap-1">
-              <div className="flex items-baseline">
-                <h1 className="text-green-600 font-bold text-2xl">A</h1> ssets
-              </div>
-              <div className="flex items-baseline">
-                <h1 className="text-blue-600 font-bold text-2xl">D</h1>
-                istribution
-              </div>
-              &
-              <div className="flex items-baseline">
-                <h1 className="text-yellow-600 font-bold text-2xl">T</h1>
-                tracking
-              </div>
-              <div className="flex items-baseline">
-                <h1 className="text-amber-600 font-bold text-2xl">S</h1>ystem
-              </div>
-            </span>
-          </div>
+          <Image
+            src={adts_logo}
+            alt="ibs-logo"
+            className="h-32 w-auto"
+            priority
+          />
         </div>
         <div className="flex flex-col gap-4 items-center justify-center">
           <TextField

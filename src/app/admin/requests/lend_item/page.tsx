@@ -138,7 +138,6 @@ const LendTransaction = () => {
   );
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "#", width: 100 },
     { field: "index", headerName: "#", width: 100 },
     { field: "borrowedItem", headerName: "Item", width: 200 },
     { field: "quantity", headerName: "Quantity", width: 100 },

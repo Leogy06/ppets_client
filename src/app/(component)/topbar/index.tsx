@@ -4,7 +4,7 @@ import { setIsDarkMode, setIsSideBarCollapse } from "@/state";
 import { DarkMode, LightMode, Menu, Notifications } from "@mui/icons-material";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import logo_img from "@/assets/images/adts.png";
+import logo_img from "@/assets/images/ppets.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useGetUnreadNotificationCountQuery } from "@/features/api/apiSlice";
@@ -46,11 +46,8 @@ const Topbar = () => {
         <button onClick={openSidebar}>
           <Menu />
         </button>
-        <div className="flex items-center gap-4">
-          <Image src={logo_img} alt="adts-logo" className="h-10 w-auto" />
-          <span className="hidden md:block text-base font-semibold">
-            Asset Distribution and Tracking System
-          </span>
+        <div className="flex bg-slate-300 p-2 rounded-md">
+          <Image src={logo_img} alt="adts-logo" className="h-14 w-auto" />
         </div>
       </div>
       <div className="flex items-center gap-4 relative">
