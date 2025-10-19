@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/lib/api/authApi";
 import { setCredentials } from "@/lib/features/auth/authSlice";
+import { extractedError } from "@/utils/errorExtractor";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -31,17 +32,11 @@ const Login = () => {
   const handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await login(formData).unwrap();
-      console.log("resseponse ", response);
+      await login(formData).unwrap();
       // * todo redirect to dashboard
       // router.push/admin
-    } catch (error: any) {
-      console.error("Unable to login ", error);
-      if (error?.data?.message) {
-        setErrors(error.data.message);
-      } else {
-        setErrors("An unexpected error occurred. Please try again.");
-      }
+    } catch (error) {
+      setErrors(extractedError(error));
     }
   };
   return (
