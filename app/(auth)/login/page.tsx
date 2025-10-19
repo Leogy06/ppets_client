@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLoginMutation } from "@/lib/api/authApi";
 import React, { useState } from "react";
 
 const Login = () => {
@@ -19,9 +20,14 @@ const Login = () => {
     }));
   };
 
+  const [login, { isLoading }] = useLoginMutation();
+
   const handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      const response = await login(formData).unwrap();
+
+      console.log(response);
     } catch (error) {
       console.error("Unable to login ", error);
     }

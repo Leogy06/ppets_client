@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Lexend, Work_Sans } from "next/font/google";
+import { Lexend, Work_Sans } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Provider } from "react-redux";
-import { store } from "@/lib/store";
+import AllProviders from "./(providers)";
 
 const lexend = Lexend({
   variable: "--font-lexend",
@@ -32,16 +30,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
-        <Provider store={store}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </Provider>
+        <AllProviders>{children}</AllProviders>
       </body>
     </html>
   );
