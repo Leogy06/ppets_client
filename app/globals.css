@@ -44,6 +44,8 @@
 }
 
 :root {
+  --font-header: var(--font-lexend);
+  --font-body: var(--font-work-sans);
   --radius: 0.65rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -120,4 +122,33 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+}
+
+h1{
+  font-size: clamp(2.5rem, 3.5rem, 4.5rem);
+  line-height: 120%;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+h2{
+  font-size: clamp(2.25rem, 2.5rem, 3.5rem);
+  line-height: 120%;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+h3{
+  font-size: clamp(2rem, 2.5rem, 3rem);
+  line-height: 120%;
+  font-weight: 700;
+  color: var(--foreground);
 }
