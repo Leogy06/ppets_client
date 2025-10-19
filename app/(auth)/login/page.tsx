@@ -4,15 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/lib/api/authApi";
+import { setCredentials } from "@/lib/features/auth/authSlice";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
+  const [login, { isLoading }] = useLoginMutation();
+
+  const [errors, setErrors] = useState("");
+
   const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrors("");
     const { value, name } = e.target;
     setFormData((prevForm) => ({
       ...prevForm,
@@ -20,16 +28,20 @@ const Login = () => {
     }));
   };
 
-  const [login, { isLoading }] = useLoginMutation();
-
   const handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await login(formData).unwrap();
-
-      console.log(response);
-    } catch (error) {
+      console.log("resseponse ", response);
+      // * todo redirect to dashboard
+      // router.push/admin
+    } catch (error: any) {
       console.error("Unable to login ", error);
+      if (error?.data?.message) {
+        setErrors(error.data.message);
+      } else {
+        setErrors("An unexpected error occurred. Please try again.");
+      }
     }
   };
   return (
@@ -67,14 +79,13 @@ const Login = () => {
         </div>
       </div>
 
-      <Button
-        type="submit"
-        className="mt-4"
-        // disabled={loading} later
-      >
-        {/* {loading ? "Logging in..." : "Login"} */}
-        Login
+      <Button type="submit" className="mt-4" disabled={isLoading}>
+        {isLoading ? "Logging in..." : "Login"}
       </Button>
+
+      {errors && (
+        <p className="text-center text-red-400 my-4 text-sm">{errors}</p>
+      )}
 
       <p className="text-sm text-center text-muted-foreground mt-2">
         Powered by City Accountant's Office
