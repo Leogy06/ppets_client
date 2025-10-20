@@ -8,7 +8,9 @@ import { Provider } from "react-redux";
 const AllProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
-      <ThemeProvider>{children}</ThemeProvider>
+      <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem>
+        {children}
+      </ThemeProvider>
     </Provider>
   );
 };

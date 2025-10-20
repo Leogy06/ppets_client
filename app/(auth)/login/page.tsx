@@ -43,12 +43,9 @@ const Login = () => {
       //chec user role
       checkUserRole(response.user, router);
 
-      console.log("response ", response);
       localStorage.setItem("role", String(response.user.role));
     } catch (error) {
       setErrors(extractedError(error));
-
-      console.error("Unable to lkogin ", error);
     }
   };
   return (
@@ -66,7 +63,7 @@ const Login = () => {
             className="object-contain rounded-full"
           />
         </div>
-        <h3 className="text-lg sm:text-xl font-semibold text-gray-800 leading-tight">
+        <h3 className="text-lg sm:text-xl font-semibold text-accent-foreground/50 leading-tight">
           Property, Plant & Equipment
           <br />
           <span className="text-blue-600">Tracking System</span>

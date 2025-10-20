@@ -1,11 +1,15 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const HomePage = () => {
+  const router = useRouter();
   return (
-    <div>
-      <Button>Click</Button>
+    <div className="flex flex-col items-center justify-center">
+      <Button onClick={() => router.push("/login")}>Click</Button>
       <Image src="/logo.png" width={62} height={32} alt="logo" />
     </div>
   );
