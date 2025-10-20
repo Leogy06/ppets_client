@@ -145,10 +145,3 @@ h2{
   font-weight: 700;
   color: var(--foreground);
 }
-
-h3{
-  font-size: clamp(2rem, 2.5rem, 3rem);
-  line-height: 120%;
-  font-weight: 700;
-  color: var(--foreground);
-}

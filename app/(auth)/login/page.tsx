@@ -5,11 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/lib/api/authApi";
 import { setCredentials } from "@/lib/features/auth/authSlice";
+import { checkUserRole } from "@/utils/checkUserRole";
 import { extractedError } from "@/utils/errorExtractor";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
@@ -32,11 +36,19 @@ const Login = () => {
   const handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await login(formData).unwrap();
+      const response = await login(formData).unwrap();
       // * todo redirect to dashboard
       // router.push/admin
+
+      //chec user role
+      checkUserRole(response.user, router);
+
+      console.log("response ", response);
+      localStorage.setItem("role", String(response.user.role));
     } catch (error) {
       setErrors(extractedError(error));
+
+      console.error("Unable to lkogin ", error);
     }
   };
   return (
@@ -44,7 +56,22 @@ const Login = () => {
       onSubmit={handleSubmitLogin}
       className="flex flex-col w-full max-w-sm bg-card border border-border rounded-xl p-8 shadow-lg"
     >
-      <h2 className="text-center">Property Plant & Equipment Tracking</h2>
+      {/* Header (Logo + Text) */}
+      <div className="flex flex-col items-center text-center gap-3 sm:flex-row sm:text-left sm:justify-center">
+        <div className="relative w-20 h-20 sm:w-16 sm:h-16 flex-shrink-0">
+          <Image
+            src="/logo.png"
+            alt="PPETS Logo"
+            fill
+            className="object-contain rounded-full"
+          />
+        </div>
+        <h3 className="text-lg sm:text-xl font-semibold text-gray-800 leading-tight">
+          Property, Plant & Equipment
+          <br />
+          <span className="text-blue-600">Tracking System</span>
+        </h3>
+      </div>
 
       <div className="flex flex-col gap-3 mt-4">
         <div>

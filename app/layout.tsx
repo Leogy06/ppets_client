@@ -16,6 +16,9 @@ const workSans = Work_Sans({
 export const metadata: Metadata = {
   title: "Property Plant & Equipment Tracking System",
   description: "Track and monitor assets with accountability.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
