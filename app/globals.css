@@ -145,3 +145,7 @@ h2{
   font-weight: 700;
   color: var(--foreground);
 }
+
+button:hover{
+  cursor: pointer;
+}

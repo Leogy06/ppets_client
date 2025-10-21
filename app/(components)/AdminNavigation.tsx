@@ -23,8 +23,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogoutMutation } from "@/lib/api/authApi";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-const pathPages = [
+interface PathPage {
+  path: string;
+  name: string;
+}
+
+const pathPages: PathPage[] = [
   { path: "/admin", name: "Overview" },
   { path: "/admin/asset_management", name: "Asset Management" },
   { path: "/admin/request", name: "Requests" },
@@ -49,27 +65,21 @@ const AdminHeader = () => {
     <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">
       <div className="flex items-center justify-between px-4 py-2 md:px-6">
         {/* 📱 Menu button (visible only on mobile) */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden text-muted-foreground hover:text-foreground"
-        >
-          <Menu size={24} />
-        </Button>
+        <MenuBar router={router} />
 
         {/* 🏛️ Logo + System name */}
-        <div className="flex items-center gap-3">
-          <div className="relative w-12 h-12 sm:w-14 sm:h-14">
+        <div className=" items-center gap-3 hidden md:flex">
+          <div className="relative w-12 h-12 border">
             <Image
               src="/logo.png"
               alt="PPETS logo"
               fill
               className="object-contain rounded-full"
-              priority
+              unoptimized
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
-          <h3 className="hidden md:block text-lg sm:text-xl font-semibold tracking-tight text-foreground">
+          <h3 className=" md:block text-lg sm:text-xl font-semibold tracking-tight text-foreground">
             Property, Plant & Equipment
             <br />
             <span className="text-sm font-normal text-muted-foreground">
@@ -90,6 +100,41 @@ const AdminHeader = () => {
   );
 };
 
+//menu
+function MenuBar({ router }: { router: AppRouterInstance }) {
+  const handleNavigate = (pagePath: string) => {
+    router.push(pagePath);
+  };
+
+  return (
+    <div className="block md:hidden">
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant={"ghost"} size={"icon"}>
+            <Menu />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Navigate</DrawerTitle>
+          </DrawerHeader>
+          <div className="flex flex-col">
+            {pathPages.map((page) => (
+              <Button
+                key={page.name}
+                onClick={() => handleNavigate(page.path)}
+                variant={"ghost"}
+              >
+                {page.name}
+              </Button>
+            ))}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </div>
+  );
+}
+
 function NavigationComponent() {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -101,34 +146,38 @@ function NavigationComponent() {
       .find((page) => pathname.startsWith(page.path))?.name || "Menu";
 
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="capitalize">
-            {isPending ? (
-              <Button variant={"ghost"} disabled size={"sm"}>
-                <Spinner />
-                Please wait
-              </Button>
-            ) : (
-              currentPage
-            )}
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            {pathPages.map((page) => (
-              <NavigationMenuLink asChild key={page.name}>
-                <Button
-                  onClick={() => startTransition(() => router.push(page.path))}
-                  variant={"ghost"}
-                >
-                  {page.name}
-                </Button>
-              </NavigationMenuLink>
-            ))}
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <div className="hidden md:flex">
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="capitalize">
+              {isPending ? (
+                <div className="flex items-center text-muted-foreground gap-2">
+                  <Spinner />
+                  Please wait
+                </div>
+              ) : (
+                currentPage
+              )}
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              {pathPages.map((page) => (
+                <NavigationMenuLink asChild key={page.name}>
+                  <Button
+                    onClick={() =>
+                      startTransition(() => router.push(page.path))
+                    }
+                    variant={"ghost"}
+                  >
+                    {page.name}
+                  </Button>
+                </NavigationMenuLink>
+              ))}
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </div>
   );
 }
 
@@ -143,12 +192,12 @@ function AvatarDropdown({
     <div className="flex flex-row flex-wrap items-center gap-12">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="cursor-pointer">
+          <button>
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-          </div>
+          </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={logout}>
@@ -157,7 +206,7 @@ function AvatarDropdown({
             ) : (
               <>
                 <LogOut className="w-4 h-4" />
-                Logout
+                <span>Logout</span>
               </>
             )}
           </DropdownMenuItem>
