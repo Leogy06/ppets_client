@@ -43,7 +43,7 @@ const Login = () => {
       //chec user role
       checkUserRole(response.user, router);
 
-      localStorage.setItem("role", String(response.user.role));
+      //store the role
     } catch (error) {
       setErrors(extractedError(error));
     }
@@ -60,6 +60,7 @@ const Login = () => {
             src="/logo.png"
             alt="PPETS Logo"
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-contain rounded-full"
           />
         </div>

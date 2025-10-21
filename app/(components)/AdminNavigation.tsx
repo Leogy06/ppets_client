@@ -11,11 +11,18 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Spinner } from "@/components/ui/spinner";
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useTransition } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useLogoutMutation } from "@/lib/api/authApi";
 
 const pathPages = [
   { path: "/admin", name: "Overview" },
@@ -26,6 +33,18 @@ const pathPages = [
 ];
 
 const AdminHeader = () => {
+  const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      router.push("/login");
+    } catch (error) {
+      console.error("Unable to logout.");
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">
       <div className="flex items-center justify-between px-4 py-2 md:px-6">
@@ -47,6 +66,7 @@ const AdminHeader = () => {
               fill
               className="object-contain rounded-full"
               priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
           <h3 className="hidden md:block text-lg sm:text-xl font-semibold tracking-tight text-foreground">
@@ -63,13 +83,14 @@ const AdminHeader = () => {
           {/* You can later add: <UserDropdown /> here */}
           <NavigationComponent />
           <ModeToggle />
+          <AvatarDropdown logout={handleLogout} isLoading={isLogoutLoading} />
         </div>
       </div>
     </header>
   );
 };
 
-export function NavigationComponent() {
+function NavigationComponent() {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -108,6 +129,41 @@ export function NavigationComponent() {
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
+  );
+}
+
+function AvatarDropdown({
+  logout,
+  isLoading,
+}: {
+  logout: () => void;
+  isLoading: boolean;
+}) {
+  return (
+    <div className="flex flex-row flex-wrap items-center gap-12">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="cursor-pointer">
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={logout}>
+            {isLoading ? (
+              "Loading..."
+            ) : (
+              <>
+                <LogOut className="w-4 h-4" />
+                Logout
+              </>
+            )}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }
 

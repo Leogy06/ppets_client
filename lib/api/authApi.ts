@@ -9,14 +9,14 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponseDto, InputLoginDto>({
       query: (body) => ({
-        url: "/auth/login",
+        url: "/api/auth/login",
         method: "POST",
         body,
       }),
     }),
-    logout: builder.mutation({
+    logout: builder.mutation<void, void>({
       query: () => ({
-        url: "/auth/logout",
+        url: "/api/auth/logout",
         method: "POST",
       }),
     }),

@@ -10,7 +10,6 @@ const HomePage = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <Button onClick={() => router.push("/login")}>Click</Button>
-      <Image src="/logo.png" width={62} height={32} alt="logo" />
     </div>
   );
 };
