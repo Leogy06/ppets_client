@@ -1,12 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { DataTable } from "./data-table";
 import { useGetItemsQuery } from "@/lib/api/itemsApi";
 import { itemsColumn } from "./columns";
 
 const AssetManagement = () => {
-  const { data: items, isLoading: isItemsLoading } = useGetItemsQuery();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const { data: items, isLoading: isItemsLoading } = useGetItemsQuery({
+    page,
+    pageSize,
+  });
 
   return (
     <div className=" container mx-auto py-10">

@@ -11,7 +11,18 @@ import { ArrowUpDown } from "lucide-react";
 export const itemsColumn: ColumnDef<Items>[] = [
   {
     accessorKey: "ITEM_NAME",
-    header: "Item",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          className="text-right"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Item
+          <ArrowUpDown className="ml-4 h-4 w-4" />
+        </Button>
+      );
+    },
     enableColumnFilter: true,
     filterFn: (row, columnId, value) => {
       const cellValue = String(row.getValue(columnId) ?? "").toLowerCase();

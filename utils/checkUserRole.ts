@@ -1,15 +1,20 @@
 import { User } from "@/types";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { TransitionStartFunction } from "react";
 
-export const checkUserRole = (user: User, router: AppRouterInstance) => {
+export const checkUserRole = (
+  user: User,
+  router: AppRouterInstance,
+  startTransition: TransitionStartFunction
+) => {
   switch (user.role) {
     case 1:
-      router.push("/admin");
+      startTransition(() => router.push("/admin"));
       break;
     case 2:
-      router.push("/employee");
+      startTransition(() => router.push("/employee"));
     default:
-      router.push("/unauthorized");
+      startTransition(() => router.push("/unauthorized"));
       break;
   }
 };

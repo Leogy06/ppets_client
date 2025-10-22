@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/lib/api/authApi";
-import { setCredentials } from "@/lib/features/auth/authSlice";
 import { checkUserRole } from "@/utils/checkUserRole";
 import { extractedError } from "@/utils/errorExtractor";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const Login = () => {
       // router.push/admin
 
       //chec user role
-      checkUserRole(response.user, router);
+      checkUserRole(response.user, router, startTransition);
 
       //store the role
     } catch (error) {
@@ -99,8 +99,8 @@ const Login = () => {
         </div>
       </div>
 
-      <Button type="submit" className="mt-4" disabled={isLoading}>
-        {isLoading ? "Logging in..." : "Login"}
+      <Button type="submit" className="mt-4" disabled={isLoading || isPending}>
+        {isPending ? "Logging in..." : "Login"}
       </Button>
 
       {errors && (
