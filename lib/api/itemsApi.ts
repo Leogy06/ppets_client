@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "./baseQuery";
 import { Items } from "@/types";
-import { GetitemDto } from "@/types/dto";
+import { CreateItemDto, GetitemDto } from "@/types/dto";
 
 export const itemsApi = createApi({
   reducerPath: "itemsApi",
@@ -12,7 +12,18 @@ export const itemsApi = createApi({
       query: ({ page, pageSize }) => `/api/items/${page}/${pageSize}`,
       providesTags: ["Items"],
     }),
+    createItem: builder.mutation<void, CreateItemDto>({
+      query: (body) => ({
+        url: "api/items",
+        method: "POST",
+        body: {
+          ...body,
+          UNIT_VALUE: Number(body.UNIT_VALUE),
+        },
+      }),
+      invalidatesTags: ["Items"],
+    }),
   }),
 });
 
-export const { useGetItemsQuery } = itemsApi;
+export const { useGetItemsQuery, useCreateItemMutation } = itemsApi;
