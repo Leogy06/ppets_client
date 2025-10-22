@@ -57,7 +57,7 @@ const AdminHeader = () => {
       await logout().unwrap();
       router.push("/login");
     } catch (error) {
-      console.error("Unable to logout.");
+      console.error("Unable to logout.", error);
     }
   };
 
