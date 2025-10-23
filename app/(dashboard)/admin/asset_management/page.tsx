@@ -34,12 +34,32 @@ import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
 
 const AssetManagement = () => {
-  const [page, setPage] = useState(1);
+  const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { data: items, isLoading: isItemsLoading } = useGetItemsQuery({
-    page,
+  const [itemName, setItemName] = useState("");
+  const { data, isLoading: isItemsLoading } = useGetItemsQuery({
+    pageIndex,
     pageSize,
+    itemName,
   });
+
+  console.log("data ", data);
+
+  const handlePageSize = (value: number) => {
+    setPageSize(value);
+  };
+
+  const handleIncreasePageIndex = () => {
+    setPageIndex((prev) => prev + 1);
+  };
+
+  const handleDecreasePageIndex = () => {
+    setPageIndex((prev) => prev - 1);
+  };
+
+  const handleItemNameOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setItemName(e.target.value);
+  };
 
   return (
     <div className=" container mx-auto py-10">
@@ -49,7 +69,19 @@ const AssetManagement = () => {
         </h3>
         <AddItemDialog />
       </div>
-      <DataTable data={items || []} columns={itemsColumn} />
+      <DataTable
+        data={data?.items || []}
+        columns={itemsColumn}
+        pageSize={pageSize}
+        pageIndex={pageIndex}
+        handlePageSize={handlePageSize}
+        handleIncreasePageIndex={handleIncreasePageIndex}
+        handleDecreasePageIndex={handleDecreasePageIndex}
+        isLoading={isItemsLoading}
+        itemName={itemName}
+        handleItemNameOnchange={handleItemNameOnchange}
+        totalPages={data?.count || 0}
+      />
     </div>
   );
 };

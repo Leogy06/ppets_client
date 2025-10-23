@@ -7,8 +7,9 @@ export type LoginResponseDto = {
 };
 
 export type GetitemDto = {
-  page?: number;
+  pageIndex?: number;
   pageSize?: number;
+  itemName?: string;
 };
 
 export type InputLoginDto = {

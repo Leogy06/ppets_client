@@ -10,9 +10,9 @@ const ErrorExtractor = ({
   return (
     <div className="flex flex-col">
       <h3>{mainMsg}</h3>
-      {arrayMsg.map((err) => (
-        <div key={err.message}>{err.message}</div>
-      ))}
+      {arrayMsg
+        ? arrayMsg.map((err) => <div key={err.message}>{err.message}</div>)
+        : ""}
     </div>
   );
 };

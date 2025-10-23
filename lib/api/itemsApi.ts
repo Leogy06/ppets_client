@@ -8,8 +8,14 @@ export const itemsApi = createApi({
   baseQuery,
   tagTypes: ["Items"],
   endpoints: (builder) => ({
-    getItems: builder.query<Items[], GetitemDto>({
-      query: ({ page, pageSize }) => `/api/items/${page}/${pageSize}`,
+    getItems: builder.query<{ items: Items[]; count: number }, GetitemDto>({
+      query: ({ pageIndex, pageSize, itemName }) => {
+        const endpoint = itemName
+          ? `?itemName=${encodeURIComponent(itemName)}`
+          : "";
+        return `/api/items/${pageIndex}/${pageSize}${endpoint}`;
+      },
+
       providesTags: ["Items"],
     }),
     createItem: builder.mutation<void, CreateItemDto>({
