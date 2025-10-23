@@ -43,8 +43,6 @@ const AssetManagement = () => {
     itemName,
   });
 
-  console.log("data ", data);
-
   const handlePageSize = (value: number) => {
     setPageSize(value);
   };

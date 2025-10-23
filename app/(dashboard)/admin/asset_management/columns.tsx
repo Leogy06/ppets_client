@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Items } from "@/types";
+import { Condition, Items } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
@@ -67,4 +67,32 @@ export const itemsColumn: ColumnDef<Items>[] = [
     accessorKey: "QUANTITY",
     header: "Quantity",
   },
+  {
+    accessorKey: "condition",
+    header: "Condition",
+    cell: ({ row }) => {
+      return (
+        <span
+          className={`
+        ${itemConditionTextColor(row.getValue("condition"))}
+         tracking-tighter font-semibold`}
+        >
+          {row.getValue("condition")}
+        </span>
+      );
+    },
+  },
 ];
+
+function itemConditionTextColor(condition: Condition) {
+  switch (condition) {
+    case "EXCELLENT":
+      return "text-green-500";
+    case "GOOD":
+      return "text-blue-500";
+    case "POOR":
+      return "text-purple-500";
+    case "REPAIR":
+      return "text-red-500";
+  }
+}

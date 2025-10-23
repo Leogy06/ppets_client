@@ -20,3 +20,11 @@ export interface Items {
   ADDED_BY: number; // EMPLOYEE ID FOREIGN KEY
   ICS_NO: number;
 }
+
+export enum Condition {
+  EXCELLENT = "EXCELLENT",
+  GOOD = "GOOD",
+  FAIR = "FAIR",
+  POOR = "POOR",
+  REPAIR = "REPAIR",
+}
