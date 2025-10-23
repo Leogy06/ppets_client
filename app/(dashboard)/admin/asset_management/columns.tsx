@@ -64,7 +64,7 @@ export const itemsColumn: ColumnDef<Items>[] = [
     },
   },
   {
-    accessorKey: "STOCK_QUANTITY",
+    accessorKey: "QUANTITY",
     header: "Quantity",
   },
 ];

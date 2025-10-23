@@ -29,6 +29,9 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { parseNumberSafe } from "@/lib/utils";
+import { extractedError } from "@/utils/errorExtractor";
+import { toast } from "sonner";
+import ErrorExtractor from "@/app/(components)/ErrorExtractor";
 
 const AssetManagement = () => {
   const [page, setPage] = useState(1);
@@ -85,26 +88,31 @@ function AddItemDialog() {
     name: string;
     label: string;
     type: string;
+    required?: boolean;
   }[] = [
     {
       name: "ITEM_NAME",
       type: "text",
       label: "Item name",
+      required: true,
     },
     {
       name: "DESCRIPTION",
       type: "text",
       label: "Description",
+      required: true,
     },
     {
       name: "UNIT_VALUE",
       type: "number",
       label: "Unit value",
+      required: true,
     },
     {
       name: "QUANTITY",
       type: "number",
       label: "Quantity",
+      required: true,
     },
     {
       name: "PIS_NO",
@@ -153,11 +161,24 @@ function AddItemDialog() {
         createdAt: new Date(),
       };
 
-      const response = await creatItem({ ...validateData }).unwrap();
+      await creatItem({ ...validateData }).unwrap();
 
-      console.log("REsponse ", response);
+      toast.success("Item created successfully!", {
+        duration: 10000,
+      });
     } catch (error) {
       console.error("Unable to create new item ", error);
+
+      const errorMsg = extractedError(error);
+      toast.error(
+        <ErrorExtractor
+          mainMsg={errorMsg}
+          arrayMsg={(error as any)?.data?.errors}
+        />,
+        {
+          duration: 10000,
+        }
+      );
     }
   };
 
@@ -178,7 +199,7 @@ function AddItemDialog() {
             <DialogDescription>Add new Items here</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 my-4">
-            {inputs.map(({ name, label }) => (
+            {inputs.map(({ name, label, required, type }) => (
               <div key={name} className="grid gap-3">
                 <Label htmlFor={name}>{label}</Label>
                 <Input
@@ -188,8 +209,9 @@ function AddItemDialog() {
                   onChange={(e) =>
                     setFormData({ ...formData, [name]: e.target.value })
                   }
-                  type="text"
+                  type={type}
                   onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  required={required}
                 />
               </div>
             ))}
@@ -245,13 +267,17 @@ function DatePicker({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className="w-full justify-start text-left font-normal"
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Received date</span>}
-        </Button>
+        <div className="flex flex-col">
+          <Label className="mb-3">Received at</Label>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full justify-start text-left font-normal"
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date ? format(date, "PPP") : <span>Received date</span>}
+          </Button>
+        </div>
       </PopoverTrigger>
 
       <PopoverContent className="w-auto p-0">
@@ -265,6 +291,7 @@ function DatePicker({
               RECEIVED_AT: selectedDate ? selectedDate.toISOString() : "",
             });
           }}
+          required
         />
       </PopoverContent>
     </Popover>

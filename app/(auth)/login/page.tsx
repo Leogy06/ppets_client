@@ -14,7 +14,6 @@ import { useDispatch } from "react-redux";
 const Login = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -56,10 +55,9 @@ const Login = () => {
       {/* Header (Logo + Text) */}
       <div className="flex flex-col items-center text-center gap-3 sm:flex-row sm:text-left sm:justify-center">
         <div className="relative w-20 h-20 sm:w-16 sm:h-16 flex-shrink-0">
-          <Image
-            src="/logo.png"
+          <img
+            src={"/logo.png"}
             alt="PPETS Logo"
-            fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-contain rounded-full"
           />
