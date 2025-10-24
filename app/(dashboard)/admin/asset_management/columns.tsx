@@ -23,6 +23,14 @@ import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
 import { extractedError } from "@/utils/errorExtractor";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
@@ -119,6 +127,10 @@ function itemConditionTextColor(condition: Condition) {
       return "text-purple-500";
     case "REPAIR":
       return "text-red-500";
+    case "MAINTENANCE":
+      return "text-yellow-500";
+    default:
+      return "text-foreground";
   }
 }
 
@@ -199,7 +211,7 @@ function EditDialog({ row }: { row: Row<Items> }) {
   };
 
   return (
-    <Dialog open={openUpdateItemDialog}>
+    <Dialog open={openUpdateItemDialog} onOpenChange={setOpenUpdateItemDialog}>
       <Button
         variant={"ghost"}
         onClick={() => {
@@ -273,15 +285,27 @@ function EditDialog({ row }: { row: Row<Items> }) {
                 />
               </div>
               <div className="grid gap-2">
-                <Label className="capitalize">Condition</Label>
-                <Input
-                  value={formData.condition.toString()}
-                  onChange={handleChange}
-                  name="CONDITION"
-                  required
-                />
+                <Label>Condition</Label>
+                <Select
+                  onValueChange={(val) =>
+                    setFormData((prevForm) => ({
+                      ...prevForm,
+                      condition: val,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={formData.condition} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="EXCELLENT">EXCELLENT</SelectItem>
+                    <SelectItem value="GOOD">GOOD</SelectItem>
+                    <SelectItem value="POOR">POOR</SelectItem>
+                    <SelectItem value="MAINTENANCE">MAINTENANCE</SelectItem>
+                    <SelectItem value="REPAIR">REPAIR</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
               {/* 
               this is a date
               <div className="grid gap-2">
@@ -316,7 +340,6 @@ function EditDialog({ row }: { row: Row<Items> }) {
                   name="SERIAL_NO"
                 />
               </div>
-
               <div className="grid gap-2">
                 <Label className=" capitalize">PAR no.</Label>
                 <Input
@@ -333,7 +356,6 @@ function EditDialog({ row }: { row: Row<Items> }) {
                   name="MR_NO"
                 />
               </div>
-              {/* 
               this should be a dropdown
               <div className="grid gap-2">
                 <Label className=" capitalize">ACCOUNT CODE</Label>
@@ -342,7 +364,7 @@ function EditDialog({ row }: { row: Row<Items> }) {
                   onChange={handleChange}
                   name="ACCOUNT_CODE"
                 />
-              </div> */}
+              </div>
               <div className="grid gap-2">
                 <Label className=" capitalize">REMARKS</Label>
                 <Input
@@ -381,10 +403,13 @@ function EditDialog({ row }: { row: Row<Items> }) {
             <Button
               onClick={() => setOpenConfirmEditItem(false)}
               variant={"ghost"}
+              disabled={isLoading}
             >
               Cancel
             </Button>
-            <Button onClick={handleUpdateItem}>Update</Button>
+            <Button onClick={handleUpdateItem}>
+              {isLoading ? "Loading..." : "Update"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
