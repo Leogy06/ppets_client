@@ -30,6 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFindAllAccountCodesQuery } from "@/lib/api/accountCodeApi";
+import { AccountCodeSelect } from "@/app/(components)/AccountCodeComboBox";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -356,13 +358,16 @@ function EditDialog({ row }: { row: Row<Items> }) {
                   name="MR_NO"
                 />
               </div>
-              this should be a dropdown
-              <div className="grid gap-2">
-                <Label className=" capitalize">ACCOUNT CODE</Label>
-                <Input
+              <div className="grid gap-2 overflow-hidden">
+                <Label>Account Code</Label>
+                <AccountCodeSelect
                   value={formData.ACCOUNT_CODE.toString()}
-                  onChange={handleChange}
-                  name="ACCOUNT_CODE"
+                  onChange={(val) =>
+                    setFormData({
+                      ...formData,
+                      ACCOUNT_CODE: val,
+                    })
+                  }
                 />
               </div>
               <div className="grid gap-2">

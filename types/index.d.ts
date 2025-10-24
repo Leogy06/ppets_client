@@ -32,3 +32,9 @@ export enum Condition {
   REPAIR = "REPAIR",
   MAINTENANCE = "MAINTENANCE",
 }
+
+export interface AccountCode {
+  ID: number;
+  ACCOUNT_CODE: string;
+  ACCOUNT_TITLE: string;
+}
