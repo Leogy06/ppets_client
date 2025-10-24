@@ -1,6 +1,6 @@
 "use client";
 
-import React, { SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { DataTable } from "./data-table";
 import { useCreateItemMutation, useGetItemsQuery } from "@/lib/api/itemsApi";
 import { itemsColumn } from "./columns";
@@ -196,6 +196,8 @@ function AddItemDialog() {
       toast.success("Item created successfully!", {
         duration: 10000,
       });
+      //close dialog
+      setIsConfirmOpen(false);
     } catch (error) {
       console.error("Unable to create new item ", error);
 

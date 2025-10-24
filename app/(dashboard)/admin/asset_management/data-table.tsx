@@ -55,7 +55,6 @@ export function DataTable<TData, TValue>({
   handlePageSize,
   handleIncreasePageIndex,
   handleDecreasePageIndex,
-  isLoading,
 
   //for queries params
   pageIndex,
@@ -210,7 +209,7 @@ export function DataTable<TData, TValue>({
             size={"icon"}
             variant={"ghost"}
             onClick={handleIncreasePageIndex}
-            disabled={pageIndex === data.length}
+            disabled={pageIndex === Math.ceil(totalPages / pageSize)}
           >
             <ArrowRight />
           </Button>

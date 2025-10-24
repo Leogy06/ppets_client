@@ -2,8 +2,26 @@
 
 import { Button } from "@/components/ui/button";
 import { Condition, Items } from "@/types";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ColumnDef, Row } from "@tanstack/react-table";
+import { ArrowUpDown, Edit, X } from "lucide-react";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-label";
+import { useUpdateItemMutation } from "@/lib/api/itemsApi";
+import { toast } from "sonner";
+import ErrorExtractor from "@/app/(components)/ErrorExtractor";
+import { extractedError } from "@/utils/errorExtractor";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -82,6 +100,13 @@ export const itemsColumn: ColumnDef<Items>[] = [
       );
     },
   },
+  {
+    accessorKey: "ID",
+    header: "Actions",
+    cell: ({ row }) => {
+      return <EditDialog row={row} />;
+    },
+  },
 ];
 
 function itemConditionTextColor(condition: Condition) {
@@ -95,4 +120,274 @@ function itemConditionTextColor(condition: Condition) {
     case "REPAIR":
       return "text-red-500";
   }
+}
+
+function EditDialog({ row }: { row: Row<Items> }) {
+  const [openConfirmEditItem, setOpenConfirmEditItem] = useState(false);
+  const [openUpdateItemDialog, setOpenUpdateItemDialog] = useState(false);
+
+  const [formData, setFormData] = useState({
+    ITEM_NAME: "",
+    DESCRIPTION: "",
+    UNIT_VALUE: "",
+    QUANTITY: "",
+    RECEIVED_AT: "",
+    PIS_NO: "",
+    PROP_NO: "",
+    SERIAL_NO: "",
+    REMARKS: "",
+    PAR_NO: "",
+    MR_NO: "",
+    ACCOUNT_CODE: "",
+    ICS_NO: "",
+    condition: "",
+  });
+
+  const [updateItem, { isLoading }] = useUpdateItemMutation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setOpenConfirmEditItem(true);
+  };
+
+  const handleUpdateItem = async () => {
+    try {
+      const validFormDataType: Partial<Items> = {
+        ID: row.original.ID,
+        ITEM_NAME: formData.ITEM_NAME,
+        DESCRIPTION: formData.DESCRIPTION,
+        UNIT_VALUE: Number(formData.UNIT_VALUE),
+        QUANTITY: Number(formData.QUANTITY),
+        RECEIVED_AT: formData.RECEIVED_AT,
+        PIS_NO: formData.PIS_NO,
+        PROP_NO: formData.PROP_NO,
+        MR_NO: formData.MR_NO,
+        ACCOUNT_CODE: Number(formData.ACCOUNT_CODE), // this is an Id
+        ICS_NO: formData.ICS_NO,
+        SERIAL_NO: formData.SERIAL_NO,
+        REMARKS: formData.REMARKS,
+        PAR_NO: formData.PAR_NO,
+        condition: formData.condition,
+      };
+
+      await updateItem(validFormDataType).unwrap();
+
+      toast.success("Item updated!", {
+        duration: 6000,
+      });
+
+      setOpenConfirmEditItem(false);
+    } catch (error) {
+      const errorMsg = extractedError(error);
+
+      toast.error(
+        <ErrorExtractor
+          mainMsg={errorMsg}
+          arrayMsg={(error as any)?.data?.errors}
+        />
+      );
+    }
+  };
+
+  return (
+    <Dialog open={openUpdateItemDialog}>
+      <Button
+        variant={"ghost"}
+        onClick={() => {
+          setFormData({
+            ITEM_NAME: row.original.ITEM_NAME,
+            DESCRIPTION: row.original.DESCRIPTION,
+            UNIT_VALUE: row.original.UNIT_VALUE.toString(),
+            QUANTITY: row.original.QUANTITY.toString(),
+            RECEIVED_AT: row.original.RECEIVED_AT,
+            PIS_NO: row.original.PIS_NO ?? "",
+            PROP_NO: row.original.PROP_NO ?? "",
+            SERIAL_NO: row.original.SERIAL_NO ?? "",
+            REMARKS: row.original.REMARKS ?? "",
+            PAR_NO: row.original.PAR_NO ?? "",
+            MR_NO: row.original.MR_NO ?? "",
+            ACCOUNT_CODE: row.original.ACCOUNT_CODE.toString(),
+            ICS_NO: row.original.ICS_NO ?? "",
+            condition: row.original.condition,
+          });
+
+          setOpenUpdateItemDialog(true);
+        }}
+      >
+        <Edit />
+      </Button>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle asChild>
+            <h3>Edit item</h3>
+          </DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </DialogDescription>
+          <form onSubmit={handleSubmit}>
+            <div className="grid md:grid-cols-2 gap-2 text-sm">
+              <div className="grid gap-2">
+                <Label>Item</Label>
+                <Input
+                  value={formData.ITEM_NAME.toString()}
+                  onChange={handleChange}
+                  name="ITEM_NAME"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Description</Label>
+                <Input
+                  value={formData.DESCRIPTION.toString()}
+                  onChange={handleChange}
+                  name="DESCRIPTION"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Unit value</Label>
+                <Input
+                  value={formData.UNIT_VALUE.toString()}
+                  onChange={handleChange}
+                  name="UNIT_VALUE"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className=" capitalize">Quantity</Label>
+                <Input
+                  value={formData.QUANTITY.toString()}
+                  onChange={handleChange}
+                  name="QUANTITY"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className="capitalize">Condition</Label>
+                <Input
+                  value={formData.condition.toString()}
+                  onChange={handleChange}
+                  name="CONDITION"
+                  required
+                />
+              </div>
+
+              {/* 
+              this is a date
+              <div className="grid gap-2">
+                <Label className=" capitalize">RECEIVED AT</Label>
+                <Input
+                  value={formData.RECEIVED_AT.toString()}
+                  onChange={handleChange}
+                  name="RECEIVED_AT"
+                />
+              </div> */}
+              <div className="grid gap-2">
+                <Label className=" capitalize">PIS no.</Label>
+                <Input
+                  value={formData.PIS_NO.toString()}
+                  onChange={handleChange}
+                  name="PIS_NO"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className=" capitalize">PROP no.</Label>
+                <Input
+                  value={formData.PROP_NO.toString()}
+                  onChange={handleChange}
+                  name="PROP_NO"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className=" capitalize">SERIAL no</Label>
+                <Input
+                  value={formData.SERIAL_NO.toString()}
+                  onChange={handleChange}
+                  name="SERIAL_NO"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label className=" capitalize">PAR no.</Label>
+                <Input
+                  value={formData.PAR_NO.toString()}
+                  onChange={handleChange}
+                  name="PAR_NO"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className=" capitalize">MR no.</Label>
+                <Input
+                  value={formData.MR_NO.toString()}
+                  onChange={handleChange}
+                  name="MR_NO"
+                />
+              </div>
+              {/* 
+              this should be a dropdown
+              <div className="grid gap-2">
+                <Label className=" capitalize">ACCOUNT CODE</Label>
+                <Input
+                  value={formData.ACCOUNT_CODE.toString()}
+                  onChange={handleChange}
+                  name="ACCOUNT_CODE"
+                />
+              </div> */}
+              <div className="grid gap-2">
+                <Label className=" capitalize">REMARKS</Label>
+                <Input
+                  value={formData.REMARKS.toString()}
+                  onChange={handleChange}
+                  name="REMARKS"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-center md:justify-end">
+              <Button
+                type="button"
+                variant={"ghost"}
+                onClick={() => setOpenUpdateItemDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Update</Button>
+            </div>
+          </form>
+        </DialogHeader>
+      </DialogContent>
+      <Dialog open={openConfirmEditItem}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle asChild>
+              <h3>Are you absolutely sure?</h3>
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will edit the details of the
+              item.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => setOpenConfirmEditItem(false)}
+              variant={"ghost"}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateItem}>Update</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Dialog>
+  );
 }

@@ -18,7 +18,7 @@ export type InputLoginDto = {
 };
 
 export type CreateItemDto = {
-  // ID: number;
+  ID?: number;
   ITEM_NAME: string;
   DESCRIPTION: string;
   UNIT_VALUE: number;

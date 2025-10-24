@@ -24,12 +24,24 @@ export const itemsApi = createApi({
         method: "POST",
         body: {
           ...body,
-          UNIT_VALUE: Number(body.UNIT_VALUE),
+          UNIT_VALUE: Number(body.UNIT_VALUE), // avoid type data conflict
         },
+      }),
+      invalidatesTags: ["Items"],
+    }),
+    updateItem: builder.mutation<void, Partial<CreateItemDto>>({
+      query: (updateItemDto) => ({
+        url: `/api/items/${updateItemDto.ID}`,
+        method: "PUT",
+        body: updateItemDto,
       }),
       invalidatesTags: ["Items"],
     }),
   }),
 });
 
-export const { useGetItemsQuery, useCreateItemMutation } = itemsApi;
+export const {
+  useGetItemsQuery,
+  useCreateItemMutation,
+  useUpdateItemMutation,
+} = itemsApi;
