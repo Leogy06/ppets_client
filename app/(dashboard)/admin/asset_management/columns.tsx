@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Condition, Items } from "@/types";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { ArrowUpDown, Edit, X } from "lucide-react";
+import { ArrowUpDown, Edit, Trash } from "lucide-react";
 
 import {
   Dialog,
@@ -13,7 +13,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -130,7 +129,14 @@ export const itemsColumn: ColumnDef<Items>[] = [
     accessorKey: "ID",
     header: "Actions",
     cell: ({ row }) => {
-      return <EditDialog row={row} />;
+      return (
+        <div className="flex gap-2">
+          <EditDialog row={row} />
+          <Button variant={"ghost"} color="error">
+            <Trash />
+          </Button>
+        </div>
+      );
     },
   },
 ];
