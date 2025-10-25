@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { DataTable } from "./data-table";
 import {
   useAddEmployeeMutation,
+  useDeleteEmployeeMutation,
   useGetAllEmployeeQuery,
 } from "@/lib/api/employeeApi";
 import { employeeColumns } from "./columns";
@@ -17,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Employee } from "@/types";
 import {
@@ -330,6 +331,51 @@ function AddEmployee() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </Dialog>
+  );
+}
+
+function DeleteEmployee({ employeeId }: { employeeId: number }) {
+  const [openDeleteEmployee, setOpenDeleteEmployee] = useState(false);
+  const [deleteEmployee, { isLoading: isEmployeeDeleteLoading }] =
+    useDeleteEmployeeMutation();
+
+  const handleDeleteEmployee = async () => {
+    try {
+      const response = await deleteEmployee(employeeId).unwrap();
+      console.log("Response ", response);
+    } catch (error) {
+      console.error("Unable to delete employee.", error);
+    }
+  };
+
+  return (
+    <Dialog open={openDeleteEmployee} onOpenChange={setOpenDeleteEmployee}>
+      <Button onClick={() => setOpenDeleteEmployee(true)}>
+        <Trash />
+      </Button>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle asChild>
+            <h3 className="text-lg leading-tight font-bold">
+              Confirm delete employee?
+            </h3>
+          </DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete employee? This action is
+            irreversable. Click Proceed to continue.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant={"ghost"}
+            onClick={() => setOpenDeleteEmployee(false)}
+          >
+            Cancel
+          </Button>
+          <Button>Proceed</Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

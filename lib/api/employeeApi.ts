@@ -31,15 +31,25 @@ export const employeeApi = createApi({
       },
       providesTags: ["Employee"],
     }),
-    addEmployee:builder.mutation({
-      query:(body) => ({
-        url:"/api/employee",
-        method:"POST",
-        body
+    addEmployee: builder.mutation<void, Partial<Employee>>({
+      query: (body) => ({
+        url: "/api/employee",
+        method: "POST",
+        body,
       }),
-      invalidatesTags:["Employee"]
-    })
+      invalidatesTags: ["Employee"],
+    }),
+    deleteEmployee: builder.mutation<void, number>({
+      query: (employeeId) => ({
+        url: `/api/employee/${employeeId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllEmployeeQuery, useAddEmployeeMutation } = employeeApi;
+export const {
+  useGetAllEmployeeQuery,
+  useAddEmployeeMutation,
+  useDeleteEmployeeMutation,
+} = employeeApi;
