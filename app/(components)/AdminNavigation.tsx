@@ -121,6 +121,7 @@ function MenuBar({ router }: { router: AppRouterInstance }) {
                 key={page.name}
                 onClick={() => handleNavigate(page.path)}
                 variant={"ghost"}
+                className="w-full"
               >
                 {page.name}
               </Button>

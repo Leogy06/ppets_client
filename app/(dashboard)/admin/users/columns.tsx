@@ -9,7 +9,7 @@ import { Edit, Trash } from "lucide-react";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const columns: ColumnDef<Employee>[] = [
+export const employeeColumns: ColumnDef<Employee>[] = [
   {
     accessorKey: "LASTNAME",
     header: "Name",

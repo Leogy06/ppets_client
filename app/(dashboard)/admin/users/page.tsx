@@ -6,7 +6,7 @@ import {
   useAddEmployeeMutation,
   useGetAllEmployeeQuery,
 } from "@/lib/api/employeeApi";
-import { columns } from "./columns";
+import { employeeColumns } from "./columns";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,6 +29,15 @@ import { parseNumberSafe } from "@/lib/utils";
 import { extractedError } from "@/utils/errorExtractor";
 import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Users = () => {
   const [pageIndex, setPageIndex] = useState(1);
@@ -41,6 +50,10 @@ const Users = () => {
       pageSize,
       employeeName: employeeNameFilter,
     });
+
+  const handlChangePageSize = (val: number) => {
+    setPageSize(val);
+  };
   return (
     <div className=" container mx-auto py-10">
       <div className="flex flex-col gap-3 mb-4">
@@ -57,8 +70,63 @@ const Users = () => {
           <AddEmployee />
         </div>
       </div>
-      <DataTable data={employeeData?.employees || []} columns={columns} />
-      <div className="flex items-center justify-end">
+      <DataTable
+        data={employeeData?.employees || []}
+        columns={employeeColumns}
+      />
+      <div className="flex items-center justify-end gap-2 mt-4">
+        <span>
+          Rows Per Page{" "}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={"outline"}>{pageSize}</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Rows Per Page</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Button
+                  variant={"ghost"}
+                  size={"icon-sm"}
+                  className="w-full"
+                  onClick={() => handlChangePageSize(5)}
+                >
+                  5
+                </Button>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Button
+                  variant={"ghost"}
+                  size={"icon-sm"}
+                  className="w-full"
+                  onClick={() => handlChangePageSize(10)}
+                >
+                  10
+                </Button>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Button
+                  variant={"ghost"}
+                  size={"icon-sm"}
+                  className="w-full"
+                  onClick={() => handlChangePageSize(20)}
+                >
+                  20
+                </Button>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Button
+                  variant={"ghost"}
+                  size={"icon-sm"}
+                  className="w-full"
+                  onClick={() => handlChangePageSize(30)}
+                >
+                  30
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </span>
         <span>
           Page {pageIndex}-{pageSize} of{" "}
           {Math.ceil((employeeData?.count || 0) / pageSize)}
@@ -222,17 +290,15 @@ function AddEmployee() {
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="reset"
-              onClick={() => setOpenAddEmployee(false)}
-              variant={"ghost"}
-            >
+            <Button type="reset" onClick={handleResetForm} variant={"ghost"}>
               Cancel
             </Button>
             <Button type="submit">Submit</Button>
           </DialogFooter>
         </form>
       </DialogContent>
+
+      {/* confirm add employee dialog */}
       <Dialog
         open={openConfirmAddEmployee}
         onOpenChange={setOpenConfirmAddEmployee}
