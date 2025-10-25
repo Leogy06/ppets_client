@@ -31,6 +31,7 @@ import { parseNumberSafe } from "@/lib/utils";
 import { extractedError } from "@/utils/errorExtractor";
 import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
+import { ErrorResponse, ZodErrorResponse } from "@/types/dto";
 
 const AssetManagement = () => {
   const [pageIndex, setPageIndex] = useState(1);
@@ -227,12 +228,10 @@ function AddItemDialog() {
     } catch (error) {
       console.error("Unable to create new item ", error);
 
-      const errorMsg = extractedError(error);
       toast.error(
         <ErrorExtractor
-          mainMsg={errorMsg}
-          //eslint-disable-next-line @typescript-eslint/no-explicit-any
-          arrayMsg={(error as any)?.data?.errors}
+          mainMsg={error as ErrorResponse}
+          arrayMsg={(error as ZodErrorResponse).data.errors}
         />,
         {
           duration: 10000,

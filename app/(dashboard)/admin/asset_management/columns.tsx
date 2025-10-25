@@ -47,6 +47,7 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import { useFindAllAccountCodesQuery } from "@/lib/api/accountCodeApi";
 import { Spinner } from "@/components/ui/spinner";
+import { ErrorResponse, ZodErrorResponse } from "@/types/dto";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -221,13 +222,10 @@ function EditDialog({ row }: { row: Row<Items> }) {
 
       setOpenConfirmEditItem(false);
     } catch (error) {
-      const errorMsg = extractedError(error);
-
       toast.error(
         <ErrorExtractor
-          mainMsg={errorMsg}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          arrayMsg={(error as any)?.data?.errors}
+          mainMsg={error as ErrorResponse}
+          arrayMsg={(error as ZodErrorResponse)?.data?.errors}
         />
       );
     }

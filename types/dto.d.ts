@@ -46,3 +46,15 @@ export type CreateItemDto = {
 export interface CreateEmployeeDto extends Partial<Employee> {
   ID_NUMBER: string;
 }
+
+export interface ZodErrorResponse {
+  data: {
+    errors: { message: string }[];
+  };
+}
+
+export interface ErrorResponse {
+  data: {
+    message: string;
+  };
+}

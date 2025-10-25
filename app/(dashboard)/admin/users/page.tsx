@@ -20,10 +20,15 @@ import {
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Employee } from "@/types";
-import { CreateEmployeeDto } from "@/types/dto";
+import {
+  CreateEmployeeDto,
+  ErrorResponse,
+  ZodErrorResponse,
+} from "@/types/dto";
 import { parseNumberSafe } from "@/lib/utils";
 import { extractedError } from "@/utils/errorExtractor";
 import { toast } from "sonner";
+import ErrorExtractor from "@/app/(components)/ErrorExtractor";
 
 const Users = () => {
   const [pageIndex, setPageIndex] = useState(1);
@@ -113,7 +118,6 @@ function AddEmployee() {
 
   const handleConfirmSubmit = async () => {
     const validTypesData: Partial<Employee> = {
-      ...formData,
       ID_NUMBER: parseNumberSafe(formData.ID_NUMBER),
       FIRSTNAME: formData.FIRSTNAME?.toUpperCase(),
       LASTNAME: formData.LASTNAME?.toUpperCase(),
@@ -125,15 +129,31 @@ function AddEmployee() {
       await addEmployee(validTypesData).unwrap();
 
       toast.success("Employee has been added.");
-      setOpenAddEmployee(false);
-      setOpenConfirmAddEmployee(false);
+      handleResetForm();
     } catch (error) {
       console.error("Unable to add employee. ", error);
-      const errMsg = extractedError(error);
-      toast.error(errMsg, {
-        duration: 6000,
-      });
+      toast.error(
+        <ErrorExtractor
+          mainMsg={error as ErrorResponse}
+          arrayMsg={(error as ZodErrorResponse).data.errors}
+        />,
+        {
+          duration: 6000,
+        }
+      );
     }
+  };
+
+  const handleResetForm = () => {
+    setOpenAddEmployee(false);
+    setOpenConfirmAddEmployee(false);
+    setFormData({
+      FIRSTNAME: "",
+      LASTNAME: "",
+      MIDDLENAME: "",
+      SUFFIX: "",
+      ID_NUMBER: "",
+    });
   };
 
   return (

@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Employee } from "@/types";
+import { formatDate } from "@/utils/dateFormatter";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, Trash } from "lucide-react";
 
@@ -29,7 +30,7 @@ export const columns: ColumnDef<Employee>[] = [
     accessorKey: "UPDATED_WHEN",
     header: "Last update",
     cell: ({ row }) => {
-      return row.getValue("UPDATED_WHEN") ?? "--";
+      return formatDate(row.getValue("UPDATED_WHEN")) ?? "--";
     },
   },
   {
