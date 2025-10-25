@@ -47,6 +47,7 @@ import {
 import { cn } from "@/lib/utils";
 import React from "react";
 import { useFindAllAccountCodesQuery } from "@/lib/api/accountCodeApi";
+import { Spinner } from "@/components/ui/spinner";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -132,9 +133,7 @@ export const itemsColumn: ColumnDef<Items>[] = [
       return (
         <div className="flex gap-2">
           <EditDialog row={row} />
-          <Button variant={"ghost"} color="error">
-            <Trash />
-          </Button>
+          <DeleteDialog itemId={row.original.ID} />
         </div>
       );
     },
@@ -440,6 +439,73 @@ function EditDialog({ row }: { row: Row<Items> }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </Dialog>
+  );
+}
+
+function DeleteDialog({ itemId }: { itemId: number }) {
+  const [deleteItem, { isLoading: isDeleteItemLoading }] =
+    useUpdateItemMutation();
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [itemDeleteId, setItemDeleteId] = useState<number | null>(null);
+
+  const handleOpen = () => {
+    setOpenDeleteDialog(true);
+    setItemDeleteId(itemId);
+  };
+
+  const handleDeleteItem = async () => {
+    if (!itemDeleteId) {
+      alert("No id found.");
+      return;
+    }
+
+    try {
+      await deleteItem({
+        ID: itemDeleteId,
+        DELETE: 1,
+      }).unwrap();
+
+      toast.info("Item has been deleted.");
+
+      //clear and close the deletedialog
+      setOpenDeleteDialog(false);
+      setItemDeleteId(null);
+    } catch (error) {
+      console.error("Unable to delete item. ", error);
+
+      toast.error("Unable to delete item.");
+    }
+  };
+
+  return (
+    <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+      <Button onClick={handleOpen} variant={"ghost"}>
+        <Trash />
+      </Button>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle asChild>
+            <h3>Delete item?</h3>
+          </DialogTitle>
+          <DialogDescription>
+            This action is cannot undone, click Proceed to continue.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            disabled={isDeleteItemLoading}
+            variant={"ghost"}
+            onClick={() => setOpenDeleteDialog(false)}
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteItem} disabled={isDeleteItemLoading}>
+            {isDeleteItemLoading ? <Spinner /> : "Proceed"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

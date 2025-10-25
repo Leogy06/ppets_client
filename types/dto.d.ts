@@ -36,6 +36,8 @@ export type CreateItemDto = {
   PAR_NO: string | null;
   MR_NO: string;
   ACCOUNT_CODE: number;
+
+  DELETE: number;
   // ADDED_BY: number;
   // createdAt: string; // or Date
   // updatedAt: string; // or Date
