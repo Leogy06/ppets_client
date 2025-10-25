@@ -38,3 +38,18 @@ export interface AccountCode {
   ACCOUNT_CODE: string;
   ACCOUNT_TITLE: string;
 }
+
+export interface Employee {
+  ID: number;
+  ID_NUMBER: number;
+  FIRSTNAME: string;
+  MIDDLENAME: string;
+  LASTNAME: string;
+  SUFFIX: string;
+  DEPARTMENT_ID: number;
+  CREATED_BY: string;
+  CREATED_WHEN: string;
+  UPDATED_BY: string;
+  UPDATED_WHEN: string;
+  DELETED: number;
+}

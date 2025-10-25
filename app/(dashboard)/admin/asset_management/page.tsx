@@ -110,6 +110,8 @@ interface CreateItemState {
 function AddItemDialog() {
   //for input
 
+  const [openCreateItemDialog, setOpenCreateItemDialog] = useState(false);
+
   const [formData, setFormData] = useState<CreateItemState>({
     ITEM_NAME: "",
     DESCRIPTION: "",
@@ -221,6 +223,7 @@ function AddItemDialog() {
       });
       //close dialog
       setIsConfirmOpen(false);
+      setOpenCreateItemDialog(false);
     } catch (error) {
       console.error("Unable to create new item ", error);
 
@@ -239,13 +242,11 @@ function AddItemDialog() {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus />
-          Add item
-        </Button>
-      </DialogTrigger>
+    <Dialog open={openCreateItemDialog} onOpenChange={setOpenCreateItemDialog}>
+      <Button onClick={() => setOpenCreateItemDialog(true)}>
+        <Plus />
+        Add item
+      </Button>
       <DialogContent className="sm:max-w-[623px]  max-h-[425px] overflow-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

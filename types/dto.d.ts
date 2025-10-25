@@ -1,5 +1,5 @@
 import { miniSerializeError } from "@reduxjs/toolkit";
-import { User } from ".";
+import { Employee, User } from ".";
 
 export type LoginResponseDto = {
   message: string;
@@ -43,4 +43,6 @@ export type CreateItemDto = {
   // updatedAt: string; // or Date
 };
 
-miniSerializeError;
+export interface CreateEmployeeDto extends Partial<Employee> {
+  ID_NUMBER: string;
+}
