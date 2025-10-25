@@ -9,7 +9,6 @@ import { extractedError } from "@/utils/errorExtractor";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
-import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [isPending, startTransition] = useTransition();
@@ -108,7 +107,7 @@ const Login = () => {
       )}
 
       <p className="text-sm text-center text-muted-foreground mt-2">
-        Powered by City Accountant's Office
+        Powered by City Accountant&apos;s Office
       </p>
     </form>
   );

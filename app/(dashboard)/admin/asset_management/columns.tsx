@@ -7,7 +7,6 @@ import { ArrowUpDown, Edit, Trash } from "lucide-react";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -227,6 +226,7 @@ function EditDialog({ row }: { row: Row<Items> }) {
       toast.error(
         <ErrorExtractor
           mainMsg={errorMsg}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           arrayMsg={(error as any)?.data?.errors}
         />
       );
@@ -518,7 +518,7 @@ function AccountCodeSelect({
   onChange: (val: string) => void;
 }) {
   const [open, setOpen] = React.useState(false);
-  const { data, isLoading } = useFindAllAccountCodesQuery();
+  const { data } = useFindAllAccountCodesQuery();
 
   const selectedAccount = data?.find((acc) => acc.ID.toString() === value);
 

@@ -19,7 +19,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { CreateItemDto } from "@/types/dto";
 
 import {
   Popover,
@@ -84,15 +83,38 @@ const AssetManagement = () => {
   );
 };
 
+interface CreateItemState {
+  ID?: number;
+  ITEM_NAME: string;
+  DESCRIPTION: string;
+  UNIT_VALUE: string;
+  QUANTITY: string;
+  // TOTAL_VALUE: number | null;
+  // STOCK_QUANTITY: number;
+  RECEIVED_AT: string; // or Date, depending on how you handle it
+  PIS_NO: string;
+  PROP_NO: string;
+  SERIAL_NO: string;
+  ICS_NO: string;
+  // DEPARTMENT_ID: number;
+  REMARKS: string | null;
+  // DELETE: number;
+  PAR_NO: string | null;
+  MR_NO: string;
+  ACCOUNT_CODE: string;
+
+  DELETE?: number;
+}
+
 //add item dialog
 function AddItemDialog() {
   //for input
 
-  const [formData, setFormData] = useState<CreateItemDto>({
+  const [formData, setFormData] = useState<CreateItemState>({
     ITEM_NAME: "",
     DESCRIPTION: "",
-    UNIT_VALUE: Number(""),
-    QUANTITY: Number(""),
+    UNIT_VALUE: "",
+    QUANTITY: "",
     RECEIVED_AT: "",
     PIS_NO: "",
     PROP_NO: "",
@@ -100,7 +122,7 @@ function AddItemDialog() {
     REMARKS: "",
     PAR_NO: "",
     MR_NO: "",
-    ACCOUNT_CODE: Number(""),
+    ACCOUNT_CODE: "",
     ICS_NO: "",
   });
 
@@ -187,11 +209,12 @@ function AddItemDialog() {
         ...formData,
         UNIT_VALUE: parseNumberSafe(formData.UNIT_VALUE),
         QUANTITY: parseNumberSafe(formData.QUANTITY),
-        updatedAt: new Date(),
-        createdAt: new Date(),
+        ACCOUNT_CODE: parseNumberSafe(formData.ACCOUNT_CODE),
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       };
 
-      await creatItem({ ...validateData }).unwrap();
+      await creatItem(validateData).unwrap();
 
       toast.success("Item created successfully!", {
         duration: 10000,
@@ -205,6 +228,7 @@ function AddItemDialog() {
       toast.error(
         <ErrorExtractor
           mainMsg={errorMsg}
+          //eslint-disable-next-line @typescript-eslint/no-explicit-any
           arrayMsg={(error as any)?.data?.errors}
         />,
         {
@@ -237,6 +261,7 @@ function AddItemDialog() {
                 <Input
                   id={name}
                   name={name}
+                  //eslint-disable-next-line @typescript-eslint/no-explicit-any
                   value={(formData as any)[name]}
                   onChange={(e) =>
                     setFormData({ ...formData, [name]: e.target.value })
@@ -292,8 +317,8 @@ function DatePicker({
   formData,
   setFormData,
 }: {
-  formData: CreateItemDto;
-  setFormData: React.Dispatch<React.SetStateAction<CreateItemDto>>;
+  formData: CreateItemState;
+  setFormData: React.Dispatch<React.SetStateAction<CreateItemState>>;
 }) {
   const [date, setDate] = useState<Date | undefined>(undefined);
   return (
@@ -323,7 +348,6 @@ function DatePicker({
               RECEIVED_AT: selectedDate ? selectedDate.toISOString() : "",
             });
           }}
-          required
         />
       </PopoverContent>
     </Popover>
