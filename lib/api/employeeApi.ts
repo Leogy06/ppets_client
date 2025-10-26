@@ -44,6 +44,7 @@ export const employeeApi = createApi({
         url: `/api/employee/${employeeId}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Employee"],
     }),
   }),
 });
