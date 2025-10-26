@@ -8,6 +8,7 @@ import { PageHeader } from "@/app/(components)/page-header";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const ArchivedEmployees = () => {
   const [pageIndex, setPageIndex] = useState(1);
@@ -43,8 +44,8 @@ const ArchivedEmployees = () => {
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="mb-4 flex items-center gap-2">
+    <div className="container mx-auto py-10 space-y-4">
+      <div className="flex items-center gap-2">
         <Button
           title={isPending ? "Loading..." : "Go back"}
           variant={"ghost"}
@@ -54,6 +55,12 @@ const ArchivedEmployees = () => {
         </Button>
         <PageHeader text="Archived Employee" />
       </div>
+      <Input
+        value={searchedEmployee || ""}
+        className="w-[260px]"
+        placeholder="Search employee"
+        onChange={(e) => setSearchedEmployee(e.target.value)}
+      />
       <DataTable
         isLoading={isEmployeeDataLoading}
         data={employeeData?.employees || []}
