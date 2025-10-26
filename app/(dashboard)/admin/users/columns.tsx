@@ -90,6 +90,7 @@ function DeleteEmployee({ employeeId }: { employeeId: number }) {
         variant={"ghost"}
         size={"icon-sm"}
         onClick={() => setOpenDeleteEmployee(true)}
+        title="Delete employee?"
       >
         <Trash />
       </Button>

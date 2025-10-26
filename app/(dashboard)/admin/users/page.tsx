@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import {
   useAddEmployeeMutation,
   useGetAllEmployeeQuery,
@@ -36,6 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTable } from "@/app/(components)/data-table";
+import { useRouter } from "next/navigation";
 
 const Users = () => {
   const [pageIndex, setPageIndex] = useState(1);
@@ -48,24 +49,47 @@ const Users = () => {
       pageSize,
       employeeName: employeeNameFilter,
     });
+  const [isPending, startTransition] = useTransition();
 
+  const router = useRouter();
+
+  //pagination
   const handlChangePageSize = (val: number) => {
     setPageSize(val);
   };
+
+  const handlePageIndex = (add: boolean) => {
+    if (add) {
+      setPageIndex((prev) => prev + 1);
+    }
+    if (!add) {
+      setPageIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleNavigateArchive = () => {
+    startTransition(() => router.push("/admin/users/archive"));
+  };
+
   return (
     <div className=" container mx-auto py-10">
       <div className="flex flex-col gap-3 mb-4">
         <h3 className=" text-lg font-bold leading-tight tracking-tight">
           Users
         </h3>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row gap-y-3 justify-center md:justify-between items-center">
           <Input
             onChange={(e) => setEmployeeNameFilter(e.target.value)}
             value={employeeNameFilter}
             placeholder="Search employee..."
             className="w-[260px]"
           />
-          <AddEmployee />
+          <div className="flex items-center gap-3">
+            <Button variant={"ghost"} onClick={handleNavigateArchive}>
+              {isPending ? "Loading..." : "See archived list"}
+            </Button>
+            <AddEmployee />
+          </div>
         </div>
       </div>
 
@@ -73,83 +97,12 @@ const Users = () => {
         data={employeeData?.employees || []}
         columns={employeeColumns}
         isLoading={isEmployeeLoading}
+        handleChangePageSize={handlChangePageSize}
+        pageSize={pageSize}
+        pageIndex={pageIndex}
+        count={employeeData?.count || 0}
+        handlePageIndex={handlePageIndex}
       />
-      <div className="flex items-center justify-end gap-2 mt-4">
-        <span>
-          Rows Per Page{" "}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant={"outline"}>{pageSize}</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Rows Per Page</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Button
-                  variant={"ghost"}
-                  size={"icon-sm"}
-                  className="w-full"
-                  onClick={() => handlChangePageSize(5)}
-                >
-                  5
-                </Button>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Button
-                  variant={"ghost"}
-                  size={"icon-sm"}
-                  className="w-full"
-                  onClick={() => handlChangePageSize(10)}
-                >
-                  10
-                </Button>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Button
-                  variant={"ghost"}
-                  size={"icon-sm"}
-                  className="w-full"
-                  onClick={() => handlChangePageSize(20)}
-                >
-                  20
-                </Button>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Button
-                  variant={"ghost"}
-                  size={"icon-sm"}
-                  className="w-full"
-                  onClick={() => handlChangePageSize(30)}
-                >
-                  30
-                </Button>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </span>
-        <span>
-          Page {pageIndex}-{pageSize} of{" "}
-          {Math.ceil((employeeData?.count || 0) / pageSize)}
-        </span>
-        <Button
-          variant={"ghost"}
-          size={"icon-sm"}
-          disabled={pageIndex <= 1}
-          onClick={() => setPageIndex((prev) => prev - 1)}
-        >
-          <ArrowLeft />
-        </Button>
-        <Button
-          variant={"ghost"}
-          size={"icon-sm"}
-          disabled={
-            pageIndex >= Math.ceil((employeeData?.count || 0) / pageSize)
-          }
-          onClick={() => setPageIndex((prev) => prev + 1)}
-        >
-          <ArrowRight />
-        </Button>
-      </div>
     </div>
   );
 };

@@ -11,6 +11,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -18,18 +19,43 @@ import {
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-import React from "react";
+import React, { useTransition } from "react";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
+
+  //pagination
+  handleChangePageSize: (val: number) => void;
+  pageSize: number;
+  pageIndex: number;
+  count: number;
+  handlePageIndex: (param: boolean) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading,
+
+  //pagination
+  handleChangePageSize,
+  pageSize,
+  pageIndex,
+  count,
+  handlePageIndex,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -37,7 +63,9 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  return isLoading ? (
+  const [isPending] = useTransition();
+
+  return isLoading || isPending ? (
     <DatabatableLoading columns={columns.length} />
   ) : (
     <div className="overflow-hidden rounded-md border">
@@ -82,6 +110,87 @@ export function DataTable<TData, TValue>({
             </TableRow>
           )}
         </TableBody>
+
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={columns.length}>
+              <div className="flex justify-end items-center gap-3">
+                <span>
+                  Rows Per Page{" "}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant={"outline"}>{pageSize}</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Rows Per Page</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        <Button
+                          variant={"ghost"}
+                          size={"icon-sm"}
+                          className="w-full"
+                          onClick={() => handleChangePageSize(5)}
+                        >
+                          5
+                        </Button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Button
+                          variant={"ghost"}
+                          size={"icon-sm"}
+                          className="w-full"
+                          onClick={() => handleChangePageSize(10)}
+                        >
+                          10
+                        </Button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Button
+                          variant={"ghost"}
+                          size={"icon-sm"}
+                          className="w-full"
+                          onClick={() => handleChangePageSize(20)}
+                        >
+                          20
+                        </Button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Button
+                          variant={"ghost"}
+                          size={"icon-sm"}
+                          className="w-full"
+                          onClick={() => handleChangePageSize(30)}
+                        >
+                          30
+                        </Button>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </span>
+                <span>
+                  Page {pageIndex}-{pageSize} of{" "}
+                  {Math.ceil((count || 0) / pageSize)}
+                </span>
+                <Button
+                  variant={"ghost"}
+                  size={"icon-sm"}
+                  disabled={pageIndex <= 1}
+                  onClick={() => handlePageIndex(false)}
+                >
+                  <ArrowLeft />
+                </Button>
+                <Button
+                  variant={"ghost"}
+                  size={"icon-sm"}
+                  disabled={pageIndex >= Math.ceil((count || 0) / pageSize)}
+                  onClick={() => handlePageIndex(true)}
+                >
+                  <ArrowRight />
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
     </div>
   );
