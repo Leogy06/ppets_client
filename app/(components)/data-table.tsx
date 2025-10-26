@@ -164,6 +164,16 @@ export function DataTable<TData, TValue>({
                           30
                         </Button>
                       </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Button
+                          variant={"ghost"}
+                          size={"icon-sm"}
+                          className="w-full"
+                          onClick={() => handleChangePageSize(count)}
+                        >
+                          All
+                        </Button>
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </span>
