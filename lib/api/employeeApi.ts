@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "./baseQuery";
-import { Employee } from "@/types";
+import { Employee, User } from "@/types";
 
 interface GetEmployeeDto {
   pageIndex: number;
@@ -65,6 +65,14 @@ export const employeeApi = createApi({
       }),
       invalidatesTags: ["ArchivedEmployee", "Employee"],
     }),
+    editEmployee: builder.mutation<void, Employee>({
+      query: (employee) => ({
+        url: `/api/employee/${employee.ID}`,
+        method: "PUT",
+        body: employee,
+      }),
+      invalidatesTags: ["Employee"],
+    }),
   }),
 });
 
@@ -74,4 +82,5 @@ export const {
   useAddEmployeeMutation,
   useDeleteEmployeeMutation,
   useRestoreEmployeeMutation,
+  useEditEmployeeMutation,
 } = employeeApi;

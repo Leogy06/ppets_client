@@ -3,6 +3,7 @@ export interface User {
   role: number;
   username: string;
   password: string;
+  is_active: number;
 }
 
 export interface Items {
@@ -43,9 +44,9 @@ export interface Employee {
   ID: number;
   ID_NUMBER: number;
   FIRSTNAME: string;
-  MIDDLENAME: string;
+  MIDDLENAME?: string;
   LASTNAME: string;
-  SUFFIX: string;
+  SUFFIX?: string;
   DEPARTMENT_ID: number;
   CREATED_BY: string;
   CREATED_WHEN: string;

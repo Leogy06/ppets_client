@@ -7,11 +7,11 @@ const AdminFooter = () => {
         <h3 className="text-lg font-bold leading-tight">
           City Accountant&apos;s Office
         </h3>
-        <h4 className="font-semibold text-muted-foreground leading-tight">
-          Propert Plant & Equipment Tracking System
+        <h4 className="font-semibold text-shadow-muted-foregroundleading-tight">
+          Property Plant & Equipment Tracking System
         </h4>
-        <p className="text-sm text-muted-foreground tracking-tighter">
-          Driven with honesty, working with accountability <br /> &copy; 2025
+        <p className="text-sm text-shadow-muted-foreground tracking-tighter">
+          Developed by HTC-GSC Interns <br /> &copy; 2025
         </p>
       </div>
     </footer>

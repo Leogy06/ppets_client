@@ -47,6 +47,8 @@ export interface CreateEmployeeDto extends Partial<Employee> {
   ID_NUMBER: string;
 }
 
+export interface UpdateEmployeeDto extends Partial<Employee> {}
+
 export interface ZodErrorResponse {
   data: {
     errors: { message: string }[];

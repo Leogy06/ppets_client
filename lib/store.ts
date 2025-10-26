@@ -4,12 +4,13 @@ import authReducer from "./features/auth/authSlice";
 import { itemsApi } from "./api/itemsApi";
 import { accountCodeApi } from "./api/accountCodeApi";
 import { employeeApi } from "./api/employeeApi";
+import { userApi } from "./api/userApi";
 
 export const store = configureStore({
   reducer: {
     [authApi.reducerPath]: authApi.reducer,
     auth: authReducer,
-    // [usersApi.reducerPath]: usersApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
     [itemsApi.reducerPath]: itemsApi.reducer,
     [accountCodeApi.reducerPath]: accountCodeApi.reducer,
     [employeeApi.reducerPath]: employeeApi.reducer,
@@ -19,7 +20,8 @@ export const store = configureStore({
       .concat(authApi.middleware)
       .concat(itemsApi.middleware)
       .concat(accountCodeApi.middleware)
-      .concat(employeeApi.middleware),
+      .concat(employeeApi.middleware)
+      .concat(userApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
