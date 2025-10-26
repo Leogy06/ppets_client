@@ -125,7 +125,8 @@ function DeleteEmployee({ employeeId }: { employeeId: number }) {
   );
 }
 
-function departmentReader(dptId: number) {
+//use also by archive user
+export function departmentReader(dptId: number) {
   switch (dptId) {
     case 1:
       return "City Accountant's Office";

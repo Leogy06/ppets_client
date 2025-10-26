@@ -166,6 +166,7 @@ function NavigationComponent() {
                       startTransition(() => router.push(page.path))
                     }
                     variant={"ghost"}
+                    className="w-full"
                   >
                     {page.name}
                   </Button>

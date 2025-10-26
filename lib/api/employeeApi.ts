@@ -46,11 +46,24 @@ export const employeeApi = createApi({
       }),
       invalidatesTags: ["Employee"],
     }),
+    getAllArchivedEmployee: builder.query<ReceivedEmployeeDto, GetEmployeeDto>({
+      query: ({ pageIndex, pageSize, employeeName }) => {
+        let url = `/api/employee/archived/${pageIndex}/${pageSize}`;
+
+        if (employeeName) {
+          url += `?employeeName=${encodeURIComponent(employeeName)}`;
+        }
+
+        return url;
+      },
+      providesTags: ["Employee"],
+    }),
   }),
 });
 
 export const {
   useGetAllEmployeeQuery,
+  useGetAllArchivedEmployeeQuery,
   useAddEmployeeMutation,
   useDeleteEmployeeMutation,
 } = employeeApi;
