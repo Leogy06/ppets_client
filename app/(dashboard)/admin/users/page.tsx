@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { DataTable } from "./data-table";
 import {
   useAddEmployeeMutation,
   useGetAllEmployeeQuery,
@@ -36,6 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DataTable } from "@/app/(components)/data-table";
 
 const Users = () => {
   const [pageIndex, setPageIndex] = useState(1);
@@ -68,9 +68,11 @@ const Users = () => {
           <AddEmployee />
         </div>
       </div>
+
       <DataTable
         data={employeeData?.employees || []}
         columns={employeeColumns}
+        isLoading={isEmployeeLoading}
       />
       <div className="flex items-center justify-end gap-2 mt-4">
         <span>
