@@ -66,6 +66,9 @@ export interface Transaction {
   status: Status;
   employeeId: number;
   itemId: number;
+  reason: string;
   createdAt: string;
   updatedAt: string;
+  item: Items;
+  employee: Employee;
 }
