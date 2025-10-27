@@ -54,3 +54,18 @@ export interface Employee {
   UPDATED_WHEN: string;
   DELETED: number;
 }
+
+export enum Status {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  CANCEL = "CANCEL",
+}
+
+export interface Transaction {
+  id: number;
+  status: Status;
+  employeeId: number;
+  itemId: number;
+  createdAt: string;
+  updatedAt: string;
+}

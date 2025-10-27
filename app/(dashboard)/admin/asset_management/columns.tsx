@@ -19,7 +19,6 @@ import { Label } from "@radix-ui/react-label";
 import { useUpdateItemMutation } from "@/lib/api/itemsApi";
 import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
-import { extractedError } from "@/utils/errorExtractor";
 
 import {
   Select,

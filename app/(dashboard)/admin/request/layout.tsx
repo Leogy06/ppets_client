@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserEmployeeLayout = ({ children }: { children: React.ReactNode }) => {
+const RequestLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="container mx-auto py-10 px-8 md:px-0 space-y-4">
       {children}
@@ -8,4 +8,4 @@ const UserEmployeeLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default UserEmployeeLayout;
+export default RequestLayout;

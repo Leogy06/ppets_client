@@ -29,7 +29,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { parseNumberSafe } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -66,7 +65,6 @@ export const employeeColumns: ColumnDef<Employee>[] = [
         <div>
           <EditEmployee employee={row.original} />
           <DeleteEmployee employeeId={row.original.ID} />
-          <SeeEmployeeUser empId={row.original.ID} />
         </div>
       );
     },
@@ -292,24 +290,6 @@ function EditEmployee({ employee }: { employee: Employee }) {
         </DialogContent>
       </Dialog>
     </Dialog>
-  );
-}
-
-function SeeEmployeeUser({ empId }: { empId: number }) {
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-  const handleTransition = () => {
-    startTransition(() => router.push(`/admin/users/${empId}`));
-  };
-  return (
-    <Button
-      title="See employee's User profile"
-      onClick={handleTransition}
-      variant="ghost"
-      disabled={isPending}
-    >
-      <IdCard />
-    </Button>
   );
 }
 
