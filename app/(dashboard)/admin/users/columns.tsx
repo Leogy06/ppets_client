@@ -9,7 +9,7 @@ import { Employee } from "@/types";
 import { formatDate } from "@/utils/dateFormatter";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, IdCard, Trash } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import {
   Dialog,
@@ -148,6 +148,19 @@ function EditEmployee({ employee }: { employee: Employee }) {
 
   const [editEmployee, { isLoading: isEditEmployeeLoading }] =
     useEditEmployeeMutation();
+
+  // update empoloyee form when employee changes
+  useEffect(() => {
+    if (employee) {
+      setFormData({
+        FIRSTNAME: employee.FIRSTNAME,
+        LASTNAME: employee.LASTNAME,
+        MIDDLENAME: employee.MIDDLENAME,
+        SUFFIX: employee.SUFFIX,
+        ID_NUMBER: employee.ID_NUMBER,
+      });
+    }
+  }, [employee]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

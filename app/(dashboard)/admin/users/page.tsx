@@ -44,11 +44,16 @@ const Users = () => {
   const [employeeNameFilter, setEmployeeNameFilter] = useState("");
 
   const { data: employeeData, isLoading: isEmployeeLoading } =
-    useGetAllEmployeeQuery({
-      pageIndex,
-      pageSize,
-      employeeName: employeeNameFilter,
-    });
+    useGetAllEmployeeQuery(
+      {
+        pageIndex,
+        pageSize,
+        employeeName: employeeNameFilter,
+      },
+      {
+        refetchOnMountOrArgChange: true,
+      }
+    );
   const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
@@ -59,12 +64,7 @@ const Users = () => {
   };
 
   const handlePageIndex = (add: boolean) => {
-    if (add) {
-      setPageIndex((prev) => prev + 1);
-    }
-    if (!add) {
-      setPageIndex((prev) => prev - 1);
-    }
+    setPageIndex((prevIndex) => prevIndex + (add ? 1 : -1));
   };
 
   const handleNavigateArchive = () => {
