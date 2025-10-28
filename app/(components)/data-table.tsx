@@ -65,144 +65,151 @@ export function DataTable<TData, TValue>({
 
   const [isPending] = useTransition();
 
-  return isLoading || isPending ? (
-    <DatabatableLoading columns={columns.length} />
-  ) : (
-    <div className="overflow-hidden rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+  return (
+    <section className="overflow-hidden rounded-md border">
+      {isLoading || isPending ? (
+        <DatabatableLoading columns={columns.length} />
+      ) : (
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+          <TableFooter>
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+              <TableCell colSpan={columns.length}>
+                <div className="flex justify-end items-center gap-3">
+                  <span>
+                    Rows Per Page{" "}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant={"outline"}>{pageSize}</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>Rows Per Page</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Button
+                            variant={"ghost"}
+                            size={"icon-sm"}
+                            className="w-full"
+                            onClick={() => handleChangePageSize(5)}
+                          >
+                            5
+                          </Button>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Button
+                            variant={"ghost"}
+                            size={"icon-sm"}
+                            className="w-full"
+                            onClick={() => handleChangePageSize(10)}
+                          >
+                            10
+                          </Button>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Button
+                            variant={"ghost"}
+                            size={"icon-sm"}
+                            className="w-full"
+                            onClick={() => handleChangePageSize(20)}
+                          >
+                            20
+                          </Button>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Button
+                            variant={"ghost"}
+                            size={"icon-sm"}
+                            className="w-full"
+                            onClick={() => handleChangePageSize(30)}
+                          >
+                            30
+                          </Button>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Button
+                            variant={"ghost"}
+                            size={"icon-sm"}
+                            className="w-full"
+                            onClick={() => handleChangePageSize(count)}
+                          >
+                            All
+                          </Button>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </span>
+                  <span>
+                    Page {pageIndex}-{pageSize} of{" "}
+                    {Math.ceil((count || 0) / pageSize)}
+                  </span>
+                  <Button
+                    variant={"ghost"}
+                    size={"icon-sm"}
+                    disabled={pageIndex <= 1}
+                    onClick={() => handlePageIndex(false)}
+                  >
+                    <ArrowLeft />
+                  </Button>
+                  <Button
+                    variant={"ghost"}
+                    size={"icon-sm"}
+                    disabled={pageIndex >= Math.ceil((count || 0) / pageSize)}
+                    onClick={() => handlePageIndex(true)}
+                  >
+                    <ArrowRight />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
-          )}
-        </TableBody>
-
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={columns.length}>
-              <div className="flex justify-end items-center gap-3">
-                <span>
-                  Rows Per Page{" "}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant={"outline"}>{pageSize}</Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuLabel>Rows Per Page</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <Button
-                          variant={"ghost"}
-                          size={"icon-sm"}
-                          className="w-full"
-                          onClick={() => handleChangePageSize(5)}
-                        >
-                          5
-                        </Button>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Button
-                          variant={"ghost"}
-                          size={"icon-sm"}
-                          className="w-full"
-                          onClick={() => handleChangePageSize(10)}
-                        >
-                          10
-                        </Button>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Button
-                          variant={"ghost"}
-                          size={"icon-sm"}
-                          className="w-full"
-                          onClick={() => handleChangePageSize(20)}
-                        >
-                          20
-                        </Button>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Button
-                          variant={"ghost"}
-                          size={"icon-sm"}
-                          className="w-full"
-                          onClick={() => handleChangePageSize(30)}
-                        >
-                          30
-                        </Button>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Button
-                          variant={"ghost"}
-                          size={"icon-sm"}
-                          className="w-full"
-                          onClick={() => handleChangePageSize(count)}
-                        >
-                          All
-                        </Button>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </span>
-                <span>
-                  Page {pageIndex}-{pageSize} of{" "}
-                  {Math.ceil((count || 0) / pageSize)}
-                </span>
-                <Button
-                  variant={"ghost"}
-                  size={"icon-sm"}
-                  disabled={pageIndex <= 1}
-                  onClick={() => handlePageIndex(false)}
-                >
-                  <ArrowLeft />
-                </Button>
-                <Button
-                  variant={"ghost"}
-                  size={"icon-sm"}
-                  disabled={pageIndex >= Math.ceil((count || 0) / pageSize)}
-                  onClick={() => handlePageIndex(true)}
-                >
-                  <ArrowRight />
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </div>
+          </TableFooter>
+        </Table>
+      )}
+    </section>
   );
 }
 

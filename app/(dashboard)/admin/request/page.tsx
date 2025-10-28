@@ -32,18 +32,16 @@ const Request = () => {
       <section>
         <PageHeader text="Requests" />
       </section>
-      <section>
-        <DataTable
-          data={data?.transactions || []}
-          columns={requestColumns}
-          isLoading={isTransactionLoading}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          count={data?.count ?? 0}
-          handlePageIndex={handlePageIndex}
-          handleChangePageSize={handleChangePage}
-        />
-      </section>
+      <DataTable
+        data={data?.transactions || []}
+        columns={requestColumns}
+        isLoading={isTransactionLoading}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        count={data?.count ?? 0}
+        handlePageIndex={handlePageIndex}
+        handleChangePageSize={handleChangePage}
+      />
     </>
   );
 };

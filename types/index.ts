@@ -59,10 +59,11 @@ export enum Status {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
   CANCEL = "CANCEL",
+  REJECTED = "REJECTED",
 }
 
 export interface Transaction {
-  id: number;
+  id: string;
   status: Status;
   employeeId: number;
   itemId: number;
