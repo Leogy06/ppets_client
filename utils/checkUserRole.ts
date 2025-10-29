@@ -13,6 +13,7 @@ export const checkUserRole = (
       break;
     case 2:
       startTransition(() => router.push("/employee"));
+      break;
     default:
       startTransition(() => router.push("/unauthorized"));
       break;

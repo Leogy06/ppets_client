@@ -11,7 +11,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Spinner } from "@/components/ui/spinner";
-import { LogOut, Menu } from "lucide-react";
+import { Bell, LogOut, Menu } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useTransition } from "react";
@@ -20,6 +20,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogoutMutation } from "@/lib/api/authApi";
@@ -31,6 +33,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useSocket } from "../(hooks)/webSocketHook";
 
 interface PathPage {
   path: string;
@@ -89,6 +92,7 @@ const AdminHeader = () => {
         <div className="flex items-center gap-2">
           {/* You can later add: <UserDropdown /> here */}
           <NavigationComponent />
+          <NotificationBar />
           <ModeToggle />
           <AvatarDropdown logout={handleLogout} isLoading={isLogoutLoading} />
         </div>
@@ -191,14 +195,14 @@ function AvatarDropdown({
     <div className="flex flex-row flex-wrap items-center gap-12">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button>
+          <Button variant={"ghost"}>
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-          </button>
+          </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={logout}>
             {isLoading ? (
               "Loading..."
@@ -212,6 +216,28 @@ function AvatarDropdown({
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+}
+
+function NotificationBar() {
+  const socket = useSocket();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant={"outline"}>
+          <Bell size={18} />
+          <span>10</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Billing</DropdownMenuItem>
+        <DropdownMenuItem>Team</DropdownMenuItem>
+        <DropdownMenuItem>Subscription</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

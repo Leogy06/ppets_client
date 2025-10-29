@@ -20,6 +20,7 @@ export function middleware(req: NextRequest) {
   // 🚫 Logged-in users should not see /login
   if (token && isAuthPage) {
     const decoded = decodeJWT(token);
+
     if (decoded.role === "1")
       return NextResponse.redirect(new URL("/admin", req.url));
     if (decoded.role === "2")
