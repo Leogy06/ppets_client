@@ -3,12 +3,16 @@
 import { ModeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { useLogoutMutation } from "@/lib/api/authApi";
+import { useSocket } from "../(hooks)/webSocketHook";
 
 const EmployeeHeader = () => {
+  const socket = useSocket()
   const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
   const router = useRouter();
+
+  const [notifications, setNotifications] = useState([])
 
   const handleLogout = async () => {
     try {
@@ -18,6 +22,16 @@ const EmployeeHeader = () => {
       console.error("Unable to logout.", error);
     }
   };
+
+  const handleSendAdminNotif = () => { 
+
+    if(!socket) return
+
+    socket.emit("send_admin_notif", {
+      notification:"Hello admin!"
+    })
+   }
+  
 
   return (
     <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">

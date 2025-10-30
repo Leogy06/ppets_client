@@ -5,19 +5,29 @@ export function useSocket() {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const socketIo = io(process.env.NEXT_PUBLIC_API_URL, {
-      transports: ["websocket"],
-      withCredentials: true,
-    });
+    const connectSocket = async () => {
+      const res = await fetch("/api/socket/token");
+
+      const { token } = await res.json();
+      if (!token) return;
+
+      const socketIo = io(process.env.NEXT_PUBLIC_API_URL, {
+        transports: ["websocket"],
+        withCredentials: true,
+        auth: { token },
+      });
+
+      setSocket(socketIo);
+    };
 
     socket?.on("connect", () => {
-      console.log("Connected to WebSocket");
+      console.log("✅ Connected to WebSocket");
     });
 
-    setSocket(socketIo);
+    connectSocket();
 
     return () => {
-      socketIo.disconnect();
+      socket?.disconnect();
     };
   }, []);
 
