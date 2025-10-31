@@ -43,5 +43,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|static|favicon.ico).*)"], // runs everywhere except internals
+  //the dollar sign at last is the root page to skip by the middleware
+  matcher: ["/((?!_next|api|static|favicon.ico\\.ico$|$).*)"], // runs everywhere except internals
 };

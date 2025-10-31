@@ -1,6 +1,6 @@
 import React from "react";
 
-const AdminFooter = () => {
+const Footer = () => {
   return (
     <footer className="bg-primary to-purple-900 bg-linear-to-br">
       <div className="container mx-auto py-10">
@@ -18,4 +18,4 @@ const AdminFooter = () => {
   );
 };
 
-export default AdminFooter;
+export default Footer;
