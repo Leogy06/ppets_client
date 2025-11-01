@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/lib/api/authApi";
 import { checkUserRole } from "@/utils/checkUserRole";
 import { extractedError } from "@/utils/errorExtractor";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
@@ -99,19 +100,52 @@ const Login = () => {
         </div>
       </div>
 
-      <Button type="submit" className="mt-4" disabled={isLoading || isPending}>
-        {isPending ? "Logging in..." : "Login"}
-      </Button>
-
       {errors && (
         <p className="text-center text-red-400 my-4 text-sm">{errors}</p>
       )}
 
-      <p className="text-sm text-center text-muted-foreground mt-2">
+      <Button type="submit" className="mt-4" disabled={isLoading || isPending}>
+        {isPending ? "Logging in..." : "Login"}
+      </Button>
+      <div className="flex items-center justify-center gap-2 my-4">
+        <hr className="border w-full" />
+        <span>or</span>
+        <hr className="border w-full" />
+      </div>
+
+      <SignupButton
+        router={router}
+        startTransition={startTransition}
+        isPending={isPending}
+      />
+
+      <p className="text-sm text-center text-muted-foreground mt-8">
         Powered by City Accountant&apos;s Office
       </p>
     </form>
   );
 };
+
+function SignupButton({
+  router,
+  isPending,
+  startTransition,
+}: {
+  router: AppRouterInstance;
+  isPending: boolean;
+  startTransition: React.TransitionStartFunction;
+}) {
+  const handleClick = () => {
+    startTransition(() => {
+      router.push("/signup");
+    });
+  };
+
+  return (
+    <Button type="button" variant={"ghost"} onClick={handleClick}>
+      {isPending ? "Redirecting..." : "Register"}
+    </Button>
+  );
+}
 
 export default Login;

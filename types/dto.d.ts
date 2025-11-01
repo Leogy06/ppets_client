@@ -44,7 +44,7 @@ export type CreateItemDto = {
 };
 
 export interface CreateEmployeeDto extends Partial<Employee> {
-  ID_NUMBER: string;
+  ID_NUMBER: number | null;
 }
 
 export interface UpdateEmployeeDto extends Partial<Employee> {}
