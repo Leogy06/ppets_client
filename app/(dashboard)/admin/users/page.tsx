@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowLeft, ArrowRight, Plus, Trash } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Employee } from "@/types";
 import {
@@ -27,14 +27,6 @@ import {
 import { parseNumberSafe } from "@/lib/utils";
 import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { DataTable } from "@/app/(components)/data-table";
 import { useRouter } from "next/navigation";
 
@@ -113,7 +105,7 @@ function AddEmployee() {
   const [openConfirmAddEmployee, setOpenConfirmAddEmployee] = useState(false);
 
   const [formData, setFormData] = useState<CreateEmployeeDto>({
-    ID_NUMBER: "",
+    ID_NUMBER: null,
     FIRSTNAME: "",
     LASTNAME: "",
     MIDDLENAME: "",
@@ -173,7 +165,7 @@ function AddEmployee() {
       LASTNAME: "",
       MIDDLENAME: "",
       SUFFIX: "",
-      ID_NUMBER: "",
+      ID_NUMBER: null,
     });
   };
 
@@ -199,7 +191,7 @@ function AddEmployee() {
                 placeholder="Enter ID number"
                 required
                 onChange={handleChangeForm}
-                value={formData.ID_NUMBER}
+                value={formData.ID_NUMBER?.toString() ?? ""}
                 type="number"
                 onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />

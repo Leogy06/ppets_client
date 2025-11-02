@@ -6,7 +6,7 @@ export function useSocket() {
 
   useEffect(() => {
     const connectSocket = async () => {
-      const res = await fetch("/api/socket/token");
+      const res = await fetch("/api/socket/token"); // fetch token
 
       const { token } = await res.json();
       if (!token) return;

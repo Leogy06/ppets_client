@@ -76,6 +76,7 @@ const Login = () => {
         <div>
           <Label htmlFor="username">Username</Label>
           <Input
+            disabled={isLoading}
             id="username"
             type="text"
             name="username"
@@ -96,6 +97,7 @@ const Login = () => {
             placeholder="Enter your password"
             required
             onChange={handleOnchange}
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -107,17 +109,13 @@ const Login = () => {
       <Button type="submit" className="mt-4" disabled={isLoading || isPending}>
         {isPending ? "Logging in..." : "Login"}
       </Button>
-      <div className="flex items-center justify-center gap-2 my-4">
-        <hr className="border w-full" />
-        <span>or</span>
+      <div className="flex items-center justify-center my-4">
         <hr className="border w-full" />
       </div>
 
-      <SignupButton
-        router={router}
-        startTransition={startTransition}
-        isPending={isPending}
-      />
+      <p className="text-center text-muted-foreground">
+        No account? Ask your department admin to have one.
+      </p>
 
       <p className="text-sm text-center text-muted-foreground mt-8">
         Powered by City Accountant&apos;s Office
@@ -125,27 +123,5 @@ const Login = () => {
     </form>
   );
 };
-
-function SignupButton({
-  router,
-  isPending,
-  startTransition,
-}: {
-  router: AppRouterInstance;
-  isPending: boolean;
-  startTransition: React.TransitionStartFunction;
-}) {
-  const handleClick = () => {
-    startTransition(() => {
-      router.push("/signup");
-    });
-  };
-
-  return (
-    <Button type="button" variant={"ghost"} onClick={handleClick}>
-      {isPending ? "Redirecting..." : "Register"}
-    </Button>
-  );
-}
 
 export default Login;

@@ -9,7 +9,7 @@ import { Employee } from "@/types";
 import { formatDate } from "@/utils/dateFormatter";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, IdCard, Trash } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -18,6 +18,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
@@ -29,6 +30,15 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { parseNumberSafe } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useGetUserEmployeeQuery } from "@/lib/api/userApi";
+import { DataTable } from "@/app/(components)/data-table";
+import { checkUserRole, readStatus, readUserRole } from "@/utils/checkUserRole";
+import ReadStatus from "@/app/(components)/read-status";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -65,6 +75,7 @@ export const employeeColumns: ColumnDef<Employee>[] = [
         <div>
           <EditEmployee employee={row.original} />
           <DeleteEmployee employeeId={row.original.ID} />
+          <EmployeeUser employeeId={row.original.ID} />
         </div>
       );
     },
@@ -306,7 +317,74 @@ function EditEmployee({ employee }: { employee: Employee }) {
   );
 }
 
+function EmployeeUser({ employeeId }: { employeeId: number }) {
+  const { data, isLoading } = useGetUserEmployeeQuery(employeeId);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button onClick={() => setOpen(true)} variant={"ghost"}>
+            <IdCard />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>See Employee Account(s)</p>
+        </TooltipContent>
+      </Tooltip>
+      <DialogContent>
+        {isLoading ? (
+          "Loading..."
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>Employee's accounts</DialogTitle>
+              <DialogDescription>
+                These are employee's account(s) listed.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="my-4">
+              <table className="w-full">
+                {data?.userProfiles?.length >= 1 && (
+                  <thead>
+                    <tr>
+                      <td className="px-4 py-2">Role</td>
+                      <td className="px-4 py-2">Status</td>
+                    </tr>
+                  </thead>
+                )}
+                <tbody>
+                  {data?.userProfiles.length === 0 ? (
+                    <tr>
+                      <td className="text-center px-4 py-2 w-full">
+                        "No account found"
+                      </td>
+                    </tr>
+                  ) : (
+                    data?.userProfiles.map((profile) => (
+                      <tr key={profile.id}>
+                        <td className="px-4 py-2">
+                          {readUserRole(profile.role)}
+                        </td>
+                        <td className="px-4 py-2">
+                          <ReadStatus status={profile.is_active} />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 //use also by archive user
+// @Param is a number department ID
 export function departmentReader(dptId: number) {
   switch (dptId) {
     case 1:
