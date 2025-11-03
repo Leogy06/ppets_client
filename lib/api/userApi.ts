@@ -18,7 +18,21 @@ export const userApi = createApi({
       }),
       providesTags: ["UserEmployee"],
     }),
+    updateUserActiveStatus: builder.mutation<
+      void,
+      { userId: number; activeStatus: number }
+    >({
+      query: ({ userId, activeStatus }) => ({
+        url: `/api/user/update/active-status/${userId}`,
+        method: "PUT",
+        body: {
+          activeStatus,
+        },
+      }),
+      invalidatesTags: ["UserEmployee"],
+    }),
   }),
 });
 
-export const { useGetUserEmployeeQuery } = userApi;
+export const { useGetUserEmployeeQuery, useUpdateUserActiveStatusMutation } =
+  userApi;

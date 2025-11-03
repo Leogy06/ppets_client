@@ -1,3 +1,4 @@
+import { Employee } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -12,4 +13,12 @@ export function parseNumberSafe(value: unknown, fallback = 0): number {
 
   // Return parsed number if it's valid, otherwise fallback
   return !isNaN(num) ? num : fallback;
+}
+
+export function nameJoiner(employee: Employee) {
+  if (!employee) return "";
+
+  return `${employee.LASTNAME}, ${employee.FIRSTNAME} ${
+    employee.MIDDLENAME ?? ""
+  } ${employee.SUFFIX ?? ""}`.trim();
 }

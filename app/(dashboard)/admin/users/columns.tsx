@@ -28,15 +28,19 @@ import {
 } from "@/types/dto";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { parseNumberSafe } from "@/lib/utils";
+import { nameJoiner, parseNumberSafe } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useGetUserEmployeeQuery } from "@/lib/api/userApi";
+import {
+  useGetUserEmployeeQuery,
+  useUpdateUserActiveStatusMutation,
+} from "@/lib/api/userApi";
 import { readUserRole } from "@/utils/checkUserRole";
 import ReadStatus from "@/app/(components)/read-status";
+import { Switch } from "@/components/ui/switch";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -46,9 +50,7 @@ export const employeeColumns: ColumnDef<Employee>[] = [
     accessorKey: "LASTNAME",
     header: "Name",
     cell: ({ row }) => {
-      return `${row.getValue("LASTNAME")}, ${row.original.FIRSTNAME} ${
-        row.original.MIDDLENAME ?? ""
-      } ${row.original.SUFFIX ?? ""}`.trim();
+      return nameJoiner(row.original);
     },
   },
   {
@@ -320,6 +322,24 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
   const { data, isLoading } = useGetUserEmployeeQuery(employeeId);
   const [open, setOpen] = useState(false);
 
+  const [updateActiveStatus, { isLoading: isUpdateActiveStatusLoading }] =
+    useUpdateUserActiveStatusMutation();
+
+  const handleUpdateUserActiveStatus = async (
+    activeStatus: number,
+    userId: number
+  ) => {
+    const status = activeStatus === 1 ? 0 : 1;
+    try {
+      await updateActiveStatus({
+        userId,
+        activeStatus: status,
+      }).unwrap();
+    } catch (error) {
+      console.error("Unable to update user active status. ", error);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
@@ -340,6 +360,7 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
             <DialogHeader>
               <DialogTitle>Employee's accounts</DialogTitle>
               <DialogDescription>
+                {data?.employee && nameJoiner(data.employee)} <br />
                 These are employee's account(s) listed.
               </DialogDescription>
             </DialogHeader>
@@ -351,6 +372,7 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
                       <tr>
                         <td className="px-4 py-2">Role</td>
                         <td className="px-4 py-2">Status</td>
+                        <td className="px-4 py-2">Actions</td>
                       </tr>
                     </thead>
                   )}
@@ -369,6 +391,27 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
                           </td>
                           <td className="px-4 py-2">
                             <ReadStatus status={profile.is_active} />
+                          </td>
+                          <td className="px-4 py-2">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span>
+                                  <Switch
+                                    disabled={isUpdateActiveStatusLoading}
+                                    checked={profile.is_active === 1}
+                                    onCheckedChange={() =>
+                                      handleUpdateUserActiveStatus(
+                                        profile.is_active,
+                                        profile.id
+                                      )
+                                    }
+                                  />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Disable/Enable user active status</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </td>
                         </tr>
                       ))
