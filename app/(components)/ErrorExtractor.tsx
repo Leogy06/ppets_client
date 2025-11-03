@@ -28,10 +28,10 @@ const ErrorExtractor = ({
 
   return (
     <div className="flex flex-col">
-      <h3>{mainMsg.data.message ?? "Unknown Error"}</h3>
+      <h3>{mainMsg.data.message ?? "Unknown Errors"}</h3>
       {arrayMsg
         ? arrayMsg.map((err) => <div key={err.message}>{err.message}</div>)
-        : "Unknown error(s)"}
+        : "--Nothing follows--"}
     </div>
   );
 };

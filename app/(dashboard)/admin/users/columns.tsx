@@ -18,6 +18,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
@@ -35,6 +36,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  useCreateUserEmployeeMutation,
   useGetUserEmployeeQuery,
   useUpdateUserActiveStatusMutation,
 } from "@/lib/api/userApi";
@@ -322,8 +324,16 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
   const { data, isLoading } = useGetUserEmployeeQuery(employeeId);
   const [open, setOpen] = useState(false);
 
+  //for user employee create
+  const [openCreateAdmin, setOpenCreateAdmin] = useState(false);
+
+  const [openCreateEmployee, setOpenCreateEmployee] = useState(false);
+
   const [updateActiveStatus, { isLoading: isUpdateActiveStatusLoading }] =
     useUpdateUserActiveStatusMutation();
+
+  const [createUserEmployee, { isLoading: isCreateUserEmployeeLoading }] =
+    useCreateUserEmployeeMutation();
 
   const handleUpdateUserActiveStatus = async (
     activeStatus: number,
@@ -337,6 +347,42 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
       }).unwrap();
     } catch (error) {
       console.error("Unable to update user active status. ", error);
+    }
+  };
+
+  const handleCreateUserEmployee = async (role: number) => {
+    console.log("EMp ", employeeId);
+    console.log("role ", role);
+
+    try {
+      await createUserEmployee({
+        empId: employeeId,
+        role,
+      }).unwrap();
+
+      handleCloseCreateUser(); // close dialog
+
+      toast.success("The account for employee has been created!");
+    } catch (error) {
+      console.error("Unable to create user. ", error);
+      toast.error(
+        <ErrorExtractor
+          mainMsg={error as ErrorResponse}
+          arrayMsg={(error as ZodErrorResponse).data.errors}
+        />,
+        {
+          duration: 6000,
+        }
+      );
+    }
+  };
+
+  const handleCloseCreateUser = () => {
+    if (openCreateAdmin) {
+      setOpenCreateAdmin(false);
+    }
+    if (openCreateEmployee) {
+      setOpenCreateEmployee(false);
     }
   };
 
@@ -363,6 +409,64 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
                 {data?.employee && nameJoiner(data.employee)} <br />
                 These are employee's account(s) listed.
               </DialogDescription>
+
+              {/* make an employee account  */}
+              <Dialog
+                open={openCreateEmployee}
+                onOpenChange={setOpenCreateEmployee}
+              >
+                <Button onClick={() => setOpenCreateEmployee(true)}>
+                  Make employee account
+                </Button>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Confirm create user employee?</DialogTitle>
+                    <DialogDescription>
+                      The default{" "}
+                      <strong>password is the employee's ID number</strong>{" "}
+                      <br /> and u
+                      <strong>
+                        sername is ID number + underscore + role (e.g.
+                        admin/employee
+                      </strong>
+                      ) no spaces. Click Proceed to continue.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      disabled={isCreateUserEmployeeLoading}
+                      onClick={() => handleCreateUserEmployee(2)}
+                    >
+                      Proceed
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              {/* make an admin account  */}
+              <Dialog open={openCreateAdmin} onOpenChange={setOpenCreateAdmin}>
+                <Button onClick={() => setOpenCreateAdmin(true)}>
+                  Make admin account
+                </Button>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Confirm create user employee?</DialogTitle>
+                    <DialogDescription>
+                      The default password is the employee's ID number <br />{" "}
+                      and username is ID number + underscore + ID number no
+                      spaces. Click Proceed to continue.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      disabled={isCreateUserEmployeeLoading}
+                      onClick={() => handleCreateUserEmployee(1)}
+                    >
+                      Proceed
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </DialogHeader>
             {data && (
               <div className="my-4">
