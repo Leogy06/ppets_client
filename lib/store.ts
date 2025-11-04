@@ -6,6 +6,7 @@ import { accountCodeApi } from "./api/accountCodeApi";
 import { employeeApi } from "./api/employeeApi";
 import { userApi } from "./api/userApi";
 import { transactionApi } from "./api/transactionApi";
+import { notificationApi } from "./api/notificationApi";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     [accountCodeApi.reducerPath]: accountCodeApi.reducer,
     [employeeApi.reducerPath]: employeeApi.reducer,
     [transactionApi.reducerPath]: transactionApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -24,7 +26,8 @@ export const store = configureStore({
       .concat(accountCodeApi.middleware)
       .concat(employeeApi.middleware)
       .concat(userApi.middleware)
-      .concat(transactionApi.middleware),
+      .concat(transactionApi.middleware)
+      .concat(notificationApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

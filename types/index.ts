@@ -73,3 +73,14 @@ export interface Transaction {
   item: Items;
   employee: Employee;
 }
+
+export interface Notification {
+  id: string;
+  message: string;
+  read: Read;
+}
+
+export enum Read {
+  READ = "READ",
+  UNREAD = "UNREAD",
+}

@@ -14,7 +14,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Bell, LogOut, Menu } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -34,6 +34,11 @@ import {
 } from "@/components/ui/drawer";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useSocket } from "../(hooks)/webSocketHook";
+import {
+  useGetNotificationQuery,
+  useReadNotificationMutation,
+} from "@/lib/api/notificationApi";
+import { Notification, Read } from "@/types";
 
 interface PathPage {
   path: string;
@@ -221,21 +226,111 @@ function AvatarDropdown({
 
 function NotificationBar() {
   const socket = useSocket();
+  const [take, setTake] = useState(5);
+  const [open, setOpen] = useState(false);
+
+  //for dynamic notification
+  const [idsNotification, setIdsNotification] = useState<string[]>();
+  const [notificationState, setNotificationState] = useState<Notification[]>();
+
+  //use get notification rtk api
+  const { data: notifications, isLoading: isNotificationLoading } =
+    useGetNotificationQuery(take);
+
+  //read notification
+  const [readNotifications] = useReadNotificationMutation();
+
+  //absorb the notificaiton
+  useEffect(() => {
+    if (notifications) {
+      setNotificationState(notifications);
+    }
+  }, [notifications]);
+
+  //update read notification status upon closing the notif
+  useEffect(() => {
+    //upon closing the notification drop down
+    // we update the notificaiton read status
+    const updateNotifications = () => {
+      if (!open) {
+        // if notification close, this where we update the read state of the notification
+        setNotificationState((prev) => {
+          return prev?.map(
+            (n) =>
+              idsNotification?.includes(n.id) ? { ...n, read: Read.READ } : n // update notificaiton with id
+          );
+        });
+
+        //empty id notificaiton state
+        setIdsNotification([]);
+      }
+    };
+
+    updateNotifications();
+  }, [open]);
+
+  const handleReadNotifications = async (notificationIds: string[]) => {
+    setOpen(true);
+
+    try {
+      await readNotifications(notificationIds).unwrap();
+
+      setIdsNotification(notificationIds);
+    } catch (error) {
+      console.error("Unable to read notification: ", error);
+    }
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={open}
+      onOpenChange={(v) => {
+        setOpen(v);
+        if (v) {
+          handleReadNotifications(
+            notifications
+              ?.filter((n) => n.read === "UNREAD")
+              .map((n) => n.id) || []
+          );
+        }
+      }}
+    >
       <DropdownMenuTrigger asChild>
-        <Button variant={"outline"}>
-          <Bell size={18} />
-          <span>10</span>
+        <Button variant={"ghost"} className="relative">
+          {notificationState?.some((i) => i.read === "UNREAD") && (
+            <span
+              className="absolute -top-1 -right-1
+            flex items-center justify-center
+            w-5 h-5
+            bg-red-500 text-white
+            text-[10px] font-medium
+            rounded-full"
+            >
+              {notificationState?.filter((i) => i.read === "UNREAD").length}
+            </span>
+          )}
+          <Bell className="w-5 h-5" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+        <DropdownMenuLabel asChild>
+          <h3 className="text-center">Notifications</h3>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem>
-        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        {notificationState?.map((item) => (
+          <DropdownMenuItem asChild key={item.id}>
+            <p
+              className={`px-4 py-2 ${
+                item.read === "READ"
+                  ? "text-muted-foreground"
+                  : "text-foreground font-semibold bg-muted"
+              }`}
+            >
+              {" "}
+              {item.message}
+            </p>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
