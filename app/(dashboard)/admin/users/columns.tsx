@@ -423,11 +423,13 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
                     <DialogTitle>Confirm create user employee?</DialogTitle>
                     <DialogDescription>
                       The default{" "}
-                      <strong>password is the employee's ID number</strong>{" "}
-                      <br /> and u
                       <strong>
-                        sername is ID number + underscore + role (e.g.
-                        admin/employee
+                        password is the employee's ID number (e.g 12345)
+                      </strong>{" "}
+                      <br /> and{" "}
+                      <strong>
+                        username is ID number + underscore + role (e.g.
+                        12345_employee
                       </strong>
                       ) no spaces. Click Proceed to continue.
                     </DialogDescription>
@@ -452,9 +454,13 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
                   <DialogHeader>
                     <DialogTitle>Confirm create user employee?</DialogTitle>
                     <DialogDescription>
-                      The default password is the employee's ID number <br />{" "}
-                      and username is ID number + underscore + ID number no
-                      spaces. Click Proceed to continue.
+                      The default password is the{" "}
+                      <strong>employee's ID number </strong>(e.g. 12345) <br />{" "}
+                      and{" "}
+                      <strong>
+                        username is ID number + underscore + ID number
+                      </strong>
+                      (e.g. 12345_admin). Click Proceed to continue.
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
