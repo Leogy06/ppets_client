@@ -20,7 +20,7 @@ const UserAvatar = () => {
   return (
     <div className="flex items-center gap-2">
       {employeeDto && (
-        <article className="flex justify-end items-end flex-col">
+        <article className="hidden md:flex justify-end items-end flex-col ">
           <h3>{nameJoiner(employeeDto)}</h3>
           <p className="text-muted-foreground tracking-tight">
             {departmentUser(employeeDto.CURRENT_DPT_ID)}
@@ -29,7 +29,7 @@ const UserAvatar = () => {
       )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant={"ghost"}>
+          <Button size={"icon-sm"} variant={"ghost"}>
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
@@ -37,9 +37,17 @@ const UserAvatar = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel className="text-center font-semibold text-lg">
-            Setting
+          <DropdownMenuLabel asChild>
+            {employeeDto && (
+              <article className="flex flex-col leading-tight text-center">
+                <h3>{nameJoiner(employeeDto)}</h3>
+                <p className="text-muted-foreground tracking-tight">
+                  {departmentUser(employeeDto.CURRENT_DPT_ID)}
+                </p>
+              </article>
+            )}
           </DropdownMenuLabel>
+
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <LogoutUser />
