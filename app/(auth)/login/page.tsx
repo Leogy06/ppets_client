@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/lib/api/authApi";
+import { setCredentials } from "@/lib/features/auth/authSlice";
 import { checkUserRole } from "@/utils/checkUserRole";
 import { extractedError } from "@/utils/errorExtractor";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [isPending, startTransition] = useTransition();
@@ -20,6 +22,7 @@ const Login = () => {
   });
 
   const [login, { isLoading }] = useLoginMutation();
+  const dispatch = useDispatch();
 
   const [errors, setErrors] = useState("");
 
@@ -36,11 +39,22 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await login(formData).unwrap();
+
+      //sotre in the local storage using redux
+
+      dispatch(
+        setCredentials({
+          employee: response.employee,
+          user: response.user,
+          message: response.message,
+        })
+      );
+
       // * todo redirect to dashboard
       // router.push/admin
 
       //chec user role
-
+      //this function navigate employee base on the role
       checkUserRole(response.user, router, startTransition);
 
       //store the role

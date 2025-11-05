@@ -22,3 +22,15 @@ export function nameJoiner(employee: Employee) {
     employee.MIDDLENAME ?? ""
   } ${employee.SUFFIX ?? ""}`.trim();
 }
+
+export function departmentUser(employeeDepartment: number) {
+  if (!employeeDepartment) return "Loading...";
+
+  switch (employeeDepartment) {
+    case 1:
+      return "City Accountant's Office";
+
+    default:
+      return "Unknown Department";
+  }
+}

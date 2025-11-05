@@ -48,6 +48,7 @@ export interface Employee {
   LASTNAME: string;
   SUFFIX?: string;
   DEPARTMENT_ID: number;
+  CURRENT_DPT_ID: number;
   CREATED_BY: string;
   CREATED_WHEN: string;
   UPDATED_BY: string;

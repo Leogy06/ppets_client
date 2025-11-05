@@ -17,7 +17,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useGetNotificationQuery } from "@/lib/api/notificationApi";
 import { Spinner } from "@/components/ui/spinner";
-import { Notification as NotificationType } from "@/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { nameJoiner } from "@/lib/utils";
+import UserAvatar from "./common/user-avatar";
 
 const EmployeeHeader = () => {
   const socket = useSocket();
@@ -25,23 +29,6 @@ const EmployeeHeader = () => {
   const router = useRouter();
 
   const [notifications, setNotifications] = useState([]);
-
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-      router.push("/login");
-    } catch (error) {
-      console.error("Unable to logout.", error);
-    }
-  };
-
-  const handleSendAdminNotif = () => {
-    if (!socket) return;
-
-    socket.emit("send_admin_notif", {
-      notification: "Hello admin!",
-    });
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">
@@ -72,6 +59,7 @@ const EmployeeHeader = () => {
         {/* 🌗 Theme toggle + (future user menu placeholder) */}
         <div className="flex items-center gap-2">
           {/* You can later add: <UserDropdown /> here */}
+          <UserAvatar />
           <Notification />
           <ModeToggle />
         </div>

@@ -4,6 +4,7 @@ import { Employee, User } from ".";
 export type LoginResponseDto = {
   message: string;
   user: User;
+  employee: Employee;
 };
 
 export type GetitemDto = {
