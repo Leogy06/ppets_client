@@ -1,5 +1,5 @@
 import { miniSerializeError } from "@reduxjs/toolkit";
-import { Employee, User } from ".";
+import { Employee, Transaction, User } from ".";
 
 export type LoginResponseDto = {
   message: string;
@@ -60,4 +60,21 @@ export interface ErrorResponse {
   data: {
     message: string;
   };
+}
+
+//transactions
+export interface CreateTransactionDto
+  extends Omit<
+    Transaction,
+    | "id"
+    | "status"
+    | "createdAt"
+    | "updatedAt"
+    | "item"
+    | "employee"
+    | "employeeId"
+  > {
+  // employeeId: null | number; no need for it will get byu the backend thru http cookie
+  itemId: null | number;
+  quantity: null | number;
 }

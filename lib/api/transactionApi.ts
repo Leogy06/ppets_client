@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "./baseQuery";
 import { Status, Transaction } from "@/types";
+import { CreateTransactionDto } from "@/types/dto";
 
 interface RespondTransactionDto {
   transactions: Transaction[];
@@ -34,8 +35,19 @@ export const transactionApi = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
+    createTransaction: builder.mutation<void, CreateTransactionDto>({
+      query: (dto) => ({
+        url: "/api/transaction",
+        method: "POST",
+        body: dto,
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
   }),
 });
 
-export const { useGetTransactionQuery, useUpdateStatusMutation } =
-  transactionApi;
+export const {
+  useCreateTransactionMutation,
+  useGetTransactionQuery,
+  useUpdateStatusMutation,
+} = transactionApi;
