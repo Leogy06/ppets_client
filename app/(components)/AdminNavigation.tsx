@@ -39,6 +39,7 @@ import {
   useReadNotificationMutation,
 } from "@/lib/api/notificationApi";
 import { Notification, Read } from "@/types";
+import { useRouterTransition } from "../(hooks)/routerTransition";
 
 interface PathPage {
   path: string;
@@ -70,7 +71,7 @@ const AdminHeader = () => {
     <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">
       <div className="flex items-center justify-between px-4 py-2 md:px-6">
         {/* 📱 Menu button (visible only on mobile) */}
-        <MenuBar router={router} />
+        <MenuBar />
 
         {/* 🏛️ Logo + System name */}
         <div className=" items-center gap-3 hidden md:flex">
@@ -94,7 +95,7 @@ const AdminHeader = () => {
         </div>
 
         {/* 🌗 Theme toggle + (future user menu placeholder) */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-row items-center gap-2">
           {/* You can later add: <UserDropdown /> here */}
           <NavigationComponent />
           <NotificationBar />
@@ -106,11 +107,10 @@ const AdminHeader = () => {
   );
 };
 
-//menu
-function MenuBar({ router }: { router: AppRouterInstance }) {
-  const handleNavigate = (pagePath: string) => {
-    router.push(pagePath);
-  };
+//menu for mobile
+function MenuBar() {
+  const { isPending, push } = useRouterTransition();
+  const pathName = usePathname();
 
   return (
     <div className="block md:hidden">
@@ -128,9 +128,10 @@ function MenuBar({ router }: { router: AppRouterInstance }) {
             {pathPages.map((page) => (
               <Button
                 key={page.name}
-                onClick={() => handleNavigate(page.path)}
-                variant={"ghost"}
-                className="w-full"
+                onClick={() => push(page.path)}
+                variant={"link"}
+                className={` w-full ${pathName === page.path && "underline"}`}
+                disabled={isPending}
               >
                 {page.name}
               </Button>
@@ -142,49 +143,25 @@ function MenuBar({ router }: { router: AppRouterInstance }) {
   );
 }
 
+//for large width screends navigation
 function NavigationComponent() {
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
 
-  const currentPage =
-    [...pathPages]
-      .sort((a, b) => b.path.length - a.path.length)
-      .find((page) => pathname.startsWith(page.path))?.name || "Menu";
+  const { isPending, push } = useRouterTransition();
 
   return (
-    <div className="hidden md:flex">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className="capitalize">
-              {isPending ? (
-                <div className="flex items-center text-muted-foreground gap-2">
-                  <Spinner />
-                  Please wait
-                </div>
-              ) : (
-                currentPage
-              )}
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              {pathPages.map((page) => (
-                <NavigationMenuLink asChild key={page.name}>
-                  <Button
-                    onClick={() =>
-                      startTransition(() => router.push(page.path))
-                    }
-                    variant={"ghost"}
-                    className="w-full"
-                  >
-                    {page.name}
-                  </Button>
-                </NavigationMenuLink>
-              ))}
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+    <div className="hidden md:flex items-center">
+      {pathPages.map((page) => (
+        <Button
+          key={page.name}
+          onClick={() => push(page.path)}
+          disabled={isPending}
+          variant={"link"}
+          className={`${pathname === page.path ? "underline" : ""}`}
+        >
+          {page.name}
+        </Button>
+      ))}
     </div>
   );
 }
