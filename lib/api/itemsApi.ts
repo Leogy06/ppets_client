@@ -6,7 +6,7 @@ import { CreateItemDto, GetitemDto } from "@/types/dto";
 export const itemsApi = createApi({
   reducerPath: "itemsApi",
   baseQuery,
-  tagTypes: ["Items"],
+  tagTypes: ["Items", "AvailableItems"],
   endpoints: (builder) => ({
     getItems: builder.query<{ items: Items[]; count: number }, GetitemDto>({
       query: ({ pageIndex, pageSize, itemName }) => {
@@ -37,6 +37,14 @@ export const itemsApi = createApi({
       }),
       invalidatesTags: ["Items"],
     }),
+
+    getAvailableItems: builder.query<
+      { availableItems: Items[]; itemCount: number },
+      void
+    >({
+      query: () => "/api/items/available-items",
+      providesTags: ["AvailableItems"],
+    }),
   }),
 });
 
@@ -44,4 +52,5 @@ export const {
   useGetItemsQuery,
   useCreateItemMutation,
   useUpdateItemMutation,
+  useGetAvailableItemsQuery,
 } = itemsApi;

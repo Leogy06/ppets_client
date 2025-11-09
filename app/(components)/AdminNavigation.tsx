@@ -150,7 +150,7 @@ function NavigationComponent() {
   const { isPending, push } = useRouterTransition();
 
   return (
-    <div className="hidden md:flex items-center">
+    <div className="hidden md:flex items-center overflow-x-auto">
       {pathPages.map((page) => (
         <Button
           key={page.name}

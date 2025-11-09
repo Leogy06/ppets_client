@@ -8,7 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetItemsQuery } from "@/lib/api/itemsApi";
+import {
+  useGetAvailableItemsQuery,
+  useGetItemsQuery,
+} from "@/lib/api/itemsApi";
 import {
   CreateTransactionDto,
   ErrorResponse,
@@ -37,13 +40,13 @@ const RequestAsset = () => {
     <>
       <div className="p-4 space-y-3 rounded-lg border">
         <h3>Request Asset</h3>
-        <CreateTransaction />
+        <CreateRequest />
       </div>
     </>
   );
 };
 
-function CreateTransaction() {
+function CreateRequest() {
   const [pagination, setPagination] = useState({
     pageIndex: 1,
     pageSize: 5,
@@ -59,10 +62,8 @@ function CreateTransaction() {
       quantity: null,
     });
 
-  const { data, isLoading } = useGetItemsQuery({
-    pageIndex: pagination.pageIndex,
-    pageSize: pagination.pageSize,
-  });
+  const { data: availableItems, isLoading: isAvailableItemsLoading } =
+    useGetAvailableItemsQuery();
 
   const [createTransaction, { isLoading: isCreateTransactionLoading }] =
     useCreateTransactionMutation();
@@ -118,13 +119,17 @@ function CreateTransaction() {
             }))
           }
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger
+            disabled={isAvailableItemsLoading}
+            className="w-[180px]"
+          >
             <SelectValue placeholder="Items" />
           </SelectTrigger>
           <SelectContent>
-            {data?.items.map((i) => (
+            {availableItems?.availableItems.map((i) => (
               <SelectItem key={i.ID} value={i.ID.toString()}>
-                {i.ITEM_NAME}
+                {i.ITEM_NAME} <br /> Qty:{" "}
+                {`${i.QUANTITY} / ${i.originalQuantity}`}
               </SelectItem>
             ))}
           </SelectContent>
@@ -141,6 +146,7 @@ function CreateTransaction() {
                 quantity: parseInt(e.target.value),
               }))
             }
+            onWheel={(e) => e.currentTarget.blur()}
             placeholder="Must be a number"
           />
         </div>
