@@ -120,6 +120,7 @@ const pages = [
   { path: "/employee/request", name: "Requests" },
 ];
 
+//for mobile
 function NavigationDrawer() {
   const { push, isPending } = useRouterTransition();
 
@@ -162,8 +163,9 @@ function NavigationPage() {
     <div className="hidden md:flex items-center gap-4">
       {pages.map((p) => (
         <Button
-          variant={`${path === p.path ? "default" : "ghost"}`}
+          variant={"link"}
           disabled={isPending}
+          className={`${path === p.path && "underline"}`}
           key={p.path}
           onClick={() => push(p.path)}
         >
