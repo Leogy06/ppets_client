@@ -109,6 +109,13 @@ export const itemsColumn: ColumnDef<Items>[] = [
   {
     accessorKey: "QUANTITY",
     header: "Quantity",
+    cell: ({ row }) => {
+      return (
+        <span>
+          {row.original.QUANTITY} / {row.original.originalQuantity ?? "--"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "condition",

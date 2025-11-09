@@ -12,6 +12,7 @@ export interface Items {
   DESCRIPTION: string;
   UNIT_VALUE: number;
   QUANTITY: number;
+  originalQuantity: number;
   RECEIVED_AT: string;
   PIS_NO: string;
   PROP_NO: string;
