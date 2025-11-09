@@ -37,9 +37,11 @@ const Employee = () => {
           Empty, make some request.
         </p>
       ) : (
-        transactions?.transactions.map((t) => (
-          <AssetCards key={t.id} transaction={t} />
-        ))
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {transactions?.transactions.map((t) => (
+            <AssetCards key={t.id} transaction={t} />
+          ))}
+        </div>
       )}
     </>
   );
