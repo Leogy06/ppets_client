@@ -18,43 +18,33 @@ const UserAvatar = () => {
   const employeeDto = useSelector((state: RootState) => state.auth.employee);
 
   return (
-    <div className="flex items-center gap-2">
-      {employeeDto && (
-        <article className="hidden md:flex justify-end items-end flex-col ">
-          <h3>{nameJoiner(employeeDto)}</h3>
-          <p className="text-muted-foreground tracking-tight">
-            {departmentUser(employeeDto.CURRENT_DPT_ID)}
-          </p>
-        </article>
-      )}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button size={"icon-sm"} variant={"ghost"}>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel asChild>
-            {employeeDto && (
-              <article className="flex flex-col leading-tight text-center">
-                <h3>{nameJoiner(employeeDto)}</h3>
-                <p className="text-muted-foreground tracking-tight">
-                  {departmentUser(employeeDto.CURRENT_DPT_ID)}
-                </p>
-              </article>
-            )}
-          </DropdownMenuLabel>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size={"icon-sm"} variant={"ghost"}>
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel asChild>
+          {employeeDto && (
+            <article className="flex flex-col leading-tight text-center">
+              <h3>{nameJoiner(employeeDto)}</h3>
+              <p className="text-muted-foreground tracking-tight">
+                {departmentUser(employeeDto.CURRENT_DPT_ID)}
+              </p>
+            </article>
+          )}
+        </DropdownMenuLabel>
 
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <LogoutUser />
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <LogoutUser />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

@@ -2,15 +2,6 @@
 
 import { ModeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Spinner } from "@/components/ui/spinner";
 import { Bell, LogOut, Menu } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -41,6 +32,7 @@ import {
 import { Notification, Read } from "@/types";
 import { useRouterTransition } from "../(hooks)/routerTransition";
 import { useLoading } from "../(context)/LoadingContext";
+import UserAvatar from "./common/user-avatar";
 
 interface PathPage {
   path: string;
@@ -56,18 +48,6 @@ const pathPages: PathPage[] = [
 ];
 
 const AdminHeader = () => {
-  const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-      router.push("/login");
-    } catch (error) {
-      console.error("Unable to logout.", error);
-    }
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">
       <div className="flex items-center justify-between px-4 py-2 md:px-6">
@@ -75,7 +55,7 @@ const AdminHeader = () => {
         <MenuBar />
 
         {/* 🏛️ Logo + System name */}
-        <div className=" items-center gap-3 hidden md:flex">
+        <div className=" items-center gap-3 hidden lg:flex">
           <div className="relative w-12 h-12 border">
             <Image
               src="/logo.png"
@@ -99,9 +79,9 @@ const AdminHeader = () => {
         <div className="flex flex-row items-center gap-2">
           {/* You can later add: <UserDropdown /> here */}
           <NavigationComponent />
+          <UserAvatar />
           <NotificationBar />
           <ModeToggle />
-          <AvatarDropdown logout={handleLogout} isLoading={isLogoutLoading} />
         </div>
       </div>
     </header>
@@ -114,7 +94,7 @@ function MenuBar() {
   const pathName = usePathname();
 
   return (
-    <div className="block md:hidden">
+    <div className="block lg:hidden">
       <Drawer>
         <DrawerTrigger asChild>
           <Button variant={"ghost"} size={"icon"}>
@@ -151,7 +131,7 @@ function NavigationComponent() {
   const { isPending, push } = useLoading();
 
   return (
-    <div className="hidden md:flex items-center overflow-x-auto">
+    <div className="hidden lg:flex items-center overflow-x-auto">
       {pathPages.map((page) => (
         <Button
           key={page.name}
@@ -163,41 +143,6 @@ function NavigationComponent() {
           {page.name}
         </Button>
       ))}
-    </div>
-  );
-}
-
-function AvatarDropdown({
-  logout,
-  isLoading,
-}: {
-  logout: () => void;
-  isLoading: boolean;
-}) {
-  return (
-    <div className="flex flex-row flex-wrap items-center gap-12">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant={"ghost"}>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={logout}>
-            {isLoading ? (
-              "Loading..."
-            ) : (
-              <>
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </>
-            )}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </div>
   );
 }

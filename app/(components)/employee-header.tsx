@@ -26,11 +26,12 @@ import {
 } from "@/components/ui/drawer";
 import { usePathname } from "next/navigation";
 import { useRouterTransition } from "../(hooks)/routerTransition";
+import { useLoading } from "../(context)/LoadingContext";
 
 const EmployeeHeader = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">
-      <div className="flex items-center justify-between px-4 py-2 md:px-6">
+      <div className="flex items-center justify-between px-4 py-2">
         {/* 📱 Menu button (visible only on mobile) */}
         <NavigationDrawer />
         {/* 🏛️ Logo + System name */}
@@ -122,7 +123,7 @@ const pages = [
 
 //for mobile
 function NavigationDrawer() {
-  const { push, isPending } = useRouterTransition();
+  const { isPending, push } = useLoading();
 
   return (
     <Drawer>
@@ -158,9 +159,9 @@ function NavigationDrawer() {
 
 function NavigationPage() {
   const path = usePathname();
-  const { isPending, push } = useRouterTransition();
+  const { isPending, push } = useLoading();
   return (
-    <div className="hidden md:flex items-center gap-4">
+    <div className="hidden md:flex items-center gap-3">
       {pages.map((p) => (
         <Button
           variant={"link"}
@@ -168,6 +169,7 @@ function NavigationPage() {
           className={`${path === p.path && "underline"}`}
           key={p.path}
           onClick={() => push(p.path)}
+          size={"sm"}
         >
           {p.name}
         </Button>
