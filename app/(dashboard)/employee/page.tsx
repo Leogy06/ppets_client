@@ -25,7 +25,7 @@ const Employee = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <PageHeader text="My Assets" />
         <Button disabled={isPending} onClick={() => push("/employee/request")}>
           <GrabIcon />
@@ -49,8 +49,25 @@ const Employee = () => {
 
 function AssetCards({ transaction }: { transaction: Transaction }) {
   return (
-    <div className="p-4 rounded-lg h-[280px] border">
-      {transaction.item.ITEM_NAME}
+    <div className="group relative overflow-hidden rounded-2xl border bg-accent/70 backdrop-blur-md shadow-md hover:shadow-xl transition-all duration-300 p-6">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      <div className="relative z-10 flex flex-col gap-3">
+        <h2 className="text-lg font-semibold text-gray-900 group-hover:text-violet-600 transition-colors">
+          {transaction.item.ITEM_NAME}
+        </h2>
+
+        <p className="text-sm text-foreground">
+          {transaction.item.DESCRIPTION ?? "--"}
+        </p>
+
+        <div className="mt-3 flex justify-between items-center">
+          <span className="font-medium">Quantity: {transaction.quantity}</span>
+          <span className="inline-block text-white rounded-lg bg-primary px-4 py-1.5 text-sm font-medium shadow-sm transition-colors">
+            ₱{transaction.item.UNIT_VALUE}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

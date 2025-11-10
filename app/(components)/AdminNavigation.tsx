@@ -40,6 +40,7 @@ import {
 } from "@/lib/api/notificationApi";
 import { Notification, Read } from "@/types";
 import { useRouterTransition } from "../(hooks)/routerTransition";
+import { useLoading } from "../(context)/LoadingContext";
 
 interface PathPage {
   path: string;
@@ -109,7 +110,7 @@ const AdminHeader = () => {
 
 //menu for mobile
 function MenuBar() {
-  const { isPending, push } = useRouterTransition();
+  const { isPending, push } = useLoading();
   const pathName = usePathname();
 
   return (
@@ -147,7 +148,7 @@ function MenuBar() {
 function NavigationComponent() {
   const pathname = usePathname();
 
-  const { isPending, push } = useRouterTransition();
+  const { isPending, push } = useLoading();
 
   return (
     <div className="hidden md:flex items-center overflow-x-auto">

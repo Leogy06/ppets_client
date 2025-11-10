@@ -7,15 +7,22 @@ import React from "react";
 import { Provider } from "react-redux";
 import Footer from "../(components)/footer";
 import { PersistGate } from "redux-persist/integration/react";
+import { LoadingProvider } from "../(context)/LoadingContext";
+import LoadingOverlay from "../(components)/common/loading-page";
 
 const AllProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem>
-          <main>{children}</main>
-          <Footer />
-          <Toaster position="top-center" richColors duration={6000} />
+          <LoadingProvider>
+            <>
+            <LoadingOverlay/>
+              <main>{children}</main>
+              <Footer />
+            </>
+            <Toaster position="top-center" richColors duration={6000} />
+          </LoadingProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>
