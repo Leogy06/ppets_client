@@ -55,7 +55,7 @@ export const transactionApi = createApi({
       { transactions: Transaction[]; count: number },
       void
     >({
-      query: () => "/api/transaction/approved-employee",
+      query: () => "/api/transaction/employee-transactions",
       providesTags: ["Transactions"],
     }),
   }),

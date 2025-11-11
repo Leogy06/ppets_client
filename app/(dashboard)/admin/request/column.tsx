@@ -1,5 +1,6 @@
 "use client";
 
+import { StatusColor } from "@/app/(components)/common/status-color";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -68,50 +69,9 @@ export const requestColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <StatusComp status={row.original.status} />,
+    cell: ({ row }) => <StatusColor status={row.original.status} />,
   },
 ];
-
-function StatusComp({ status }: { status: Status }) {
-  switch (status) {
-    case "PENDING":
-      return (
-        <div className="flex gap-2 text-blue-500 items-center text-xs">
-          <Clock size={16} />
-          Pending
-        </div>
-      );
-    case "APPROVED":
-      return (
-        <div className="flex gap-2 text-green-500 items-center text-xs">
-          <CircleCheckBig />
-          Approved
-        </div>
-      );
-    case "REJECTED":
-      return (
-        <div className="flex gap-2 text-red-500 items-center text-xs">
-          <CircleOff />
-          Rejected
-        </div>
-      );
-
-    case "CANCEL":
-      return (
-        <div className="flex gap-2 text-orange-500 items-center text-xs">
-          <OctagonX />
-          Cancel
-        </div>
-      );
-
-    default:
-      return (
-        <div className="flex gap-2 text-muted-foreground items-center text-xs">
-          Unknown Status
-        </div>
-      );
-  }
-}
 
 function employeeName(employee: Employee) {
   return `${employee.LASTNAME}, ${employee.FIRSTNAME} ${
