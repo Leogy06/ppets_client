@@ -1,6 +1,5 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout } from "../features/auth/authSlice"; // adjust path if needed
-import type { RootState } from "../store";
 
 // Wrap the baseQuery to handle 401 responses
 export const baseQuery = async (args: any, api: any, extraOptions: any) => {
