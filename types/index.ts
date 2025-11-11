@@ -23,7 +23,7 @@ export interface Items {
   SERIAL_NO: string;
   REMARKS: string;
   PAR_NO: string;
-  condition: string;
+  condition: Condition;
 }
 
 export enum Condition {

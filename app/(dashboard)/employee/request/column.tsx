@@ -1,4 +1,7 @@
-import { StatusColor } from "@/app/(components)/common/status-color";
+import {
+  ItemConditionColor,
+  StatusColor,
+} from "@/app/(components)/common/status-color";
 import { Transaction } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -19,5 +22,12 @@ export const transactionColumn: ColumnDef<Transaction>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => <StatusColor status={row.getValue("status")} />,
+  },
+  {
+    accessorKey: "item",
+    header: "Item condition",
+    cell: ({ row }) => (
+      <ItemConditionColor condition={row.original.item.condition} />
+    ),
   },
 ];

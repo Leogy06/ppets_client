@@ -47,6 +47,7 @@ import React from "react";
 import { useFindAllAccountCodesQuery } from "@/lib/api/accountCodeApi";
 import { Spinner } from "@/components/ui/spinner";
 import { ErrorResponse, ZodErrorResponse } from "@/types/dto";
+import { ItemConditionColor } from "@/app/(components)/common/status-color";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -120,17 +121,9 @@ export const itemsColumn: ColumnDef<Items>[] = [
   {
     accessorKey: "condition",
     header: "Condition",
-    cell: ({ row }) => {
-      return (
-        <span
-          className={`
-        ${itemConditionTextColor(row.getValue("condition"))}
-         tracking-tighter font-semibold`}
-        >
-          {row.getValue("condition")}
-        </span>
-      );
-    },
+    cell: ({ row }) => (
+      <ItemConditionColor condition={row.getValue("condition")} />
+    ),
   },
   {
     accessorKey: "ID",
@@ -145,23 +138,6 @@ export const itemsColumn: ColumnDef<Items>[] = [
     },
   },
 ];
-
-function itemConditionTextColor(condition: Condition) {
-  switch (condition) {
-    case "EXCELLENT":
-      return "text-green-500";
-    case "GOOD":
-      return "text-blue-500";
-    case "POOR":
-      return "text-purple-500";
-    case "REPAIR":
-      return "text-red-500";
-    case "MAINTENANCE":
-      return "text-yellow-500";
-    default:
-      return "text-foreground";
-  }
-}
 
 function EditDialog({ row }: { row: Row<Items> }) {
   const [openConfirmEditItem, setOpenConfirmEditItem] = useState(false);
