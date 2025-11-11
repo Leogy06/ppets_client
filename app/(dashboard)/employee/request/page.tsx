@@ -1,23 +1,54 @@
 "use client";
 
+import { DataTable } from "@/app/(components)/data-table";
 import { useSocket } from "@/app/(hooks)/webSocketHook";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import { useGetEmployeeTransactionQuery } from "@/lib/api/transactionApi";
+import React, { useState } from "react";
+import { transactionColumn } from "./column";
 
 const EmployeeRequest = () => {
-  const socket = useSocket();
+  const [pagination, setPagination] = useState({
+    pageSize: 5,
+    pageIndex: 1,
+  });
+  const { data, isLoading: isTransactionLoading } =
+    useGetEmployeeTransactionQuery();
 
-  const handleSendNotif = () => {
-    if (!socket) return;
-
-    socket.emit("send_admin_notif", {
-      notification: "hello admin from employee side.",
-    });
+  const handleChangePageSize = (pageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: pageSize,
+    }));
   };
+
+  const handlePageIndex = (add: boolean) => {
+    if (add) {
+      setPagination((prev) => ({
+        ...prev,
+        pageIndex: pagination.pageIndex + 1,
+      }));
+    }
+
+    if (!add) {
+      setPagination((prev) => ({
+        ...prev,
+        pageIndex: pagination.pageIndex - 1,
+      }));
+    }
+  };
+
   return (
-    <>
-      <Button onClick={handleSendNotif}>Send admin notif</Button>
-    </>
+    <DataTable
+      data={data?.transactions || []}
+      count={data?.count || 0}
+      columns={transactionColumn}
+      isLoading={isTransactionLoading}
+      pageSize={pagination.pageSize}
+      pageIndex={pagination.pageIndex}
+      handleChangePageSize={handleChangePageSize}
+      handlePageIndex={handlePageIndex}
+    />
   );
 };
 

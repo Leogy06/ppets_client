@@ -4,7 +4,10 @@ import { DataTable } from "@/app/(components)/data-table";
 import { PageHeader } from "@/app/(components)/page-header";
 import { useRouterTransition } from "@/app/(hooks)/routerTransition";
 import { Button } from "@/components/ui/button";
-import { useGetTransactionQuery } from "@/lib/api/transactionApi";
+import {
+  useGetApprovedTransactionQuery,
+  useGetTransactionQuery,
+} from "@/lib/api/transactionApi";
 import { Transaction } from "@/types";
 import { GrabIcon } from "lucide-react";
 import React, { useState } from "react";
@@ -15,11 +18,8 @@ const Employee = () => {
     pageSize: 5,
   });
 
-  const { data: transactions, isLoading: isTransactionsLoading } =
-    useGetTransactionQuery({
-      pageIndex: pagination.pageIndex,
-      pageSize: pagination.pageSize,
-    });
+  const { data: approvedItems, isLoading: isApprovedItemsLoading } =
+    useGetApprovedTransactionQuery();
 
   const { isPending, push } = useRouterTransition();
 
@@ -32,13 +32,13 @@ const Employee = () => {
           Request
         </Button>
       </div>
-      {!transactions || transactions.transactions.length === 0 ? (
+      {!approvedItems || approvedItems.length === 0 ? (
         <p className="text-center text-muted-foreground font-medium my-8">
           Empty, make some request.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {transactions?.transactions.map((t) => (
+          {approvedItems.map((t) => (
             <AssetCards key={t.id} transaction={t} />
           ))}
         </div>

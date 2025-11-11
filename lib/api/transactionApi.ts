@@ -43,11 +43,32 @@ export const transactionApi = createApi({
       }),
       invalidatesTags: ["Transactions"],
     }),
+
+    //get aproved transaction
+    getApprovedTransaction: builder.query<Transaction[], void>({
+      query: () => "/api/transaction/approved-employee",
+      providesTags: ["Transactions"],
+    }),
+
+    //use get employee transactions
+    getEmployeeTransaction: builder.query<
+      { transactions: Transaction[]; count: number },
+      void
+    >({
+      query: () => "/api/transaction/approved-employee",
+      providesTags: ["Transactions"],
+    }),
   }),
 });
 
 export const {
   useCreateTransactionMutation,
+
+  //for admin
   useGetTransactionQuery,
   useUpdateStatusMutation,
+  useGetApprovedTransactionQuery,
+
+  //for employee transactions
+  useGetEmployeeTransactionQuery,
 } = transactionApi;
