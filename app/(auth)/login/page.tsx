@@ -51,10 +51,6 @@ const Login = () => {
       );
 
       // * todo redirect to dashboard
-      // router.push/admin
-
-      //chec user role
-      //this function navigate employee base on the role
       checkUserRole(response.user, router, startTransition);
 
       //store the role

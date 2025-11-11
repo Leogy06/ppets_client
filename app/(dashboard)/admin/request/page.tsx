@@ -15,19 +15,7 @@ const Request = () => {
     pageSize,
   });
 
-  const socket = useSocket();
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("admin_notif", (data: { notification: string }) => {
-      console.log("Admin received:", data);
-    });
-
-    return () => {
-      socket.off("admin_notif");
-    };
-  }, [socket]);
+  console.log("Transactions ", data);
 
   const handleChangePage = (val: number) => {
     setPageSize(val);
