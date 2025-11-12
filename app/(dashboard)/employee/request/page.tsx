@@ -12,6 +12,7 @@ const EmployeeRequest = () => {
   });
   const { data, isLoading: isTransactionLoading } =
     useGetEmployeeTransactionQuery();
+    console.log("transactions: ", data?.transactions)
 
   const handleChangePageSize = (pageSize: number) => {
     setPagination((prev) => ({

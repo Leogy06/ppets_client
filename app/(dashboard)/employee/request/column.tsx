@@ -24,7 +24,7 @@ export const transactionColumn: ColumnDef<Transaction>[] = [
     cell: ({ row }) => <StatusColor status={row.getValue("status")} />,
   },
   {
-    accessorKey: "item",
+    accessorKey: "itemCondition",
     header: "Item condition",
     cell: ({ row }) => (
       <ItemConditionColor condition={row.original.item.condition} />
