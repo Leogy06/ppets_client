@@ -12,13 +12,14 @@ import {
   useGetNotificationQuery,
   useReadNotificationMutation,
 } from "@/lib/api/notificationApi";
-import { Spinner } from "@/components/ui/spinner";
 
 import React, { useEffect, useState } from "react";
 import { useSocket } from "@/app/(hooks)/webSocketHook";
 import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
 import { Notification, Read } from "@/types";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const TransactionNotifications = () => {
   const socket = useSocket();
@@ -31,12 +32,20 @@ const TransactionNotifications = () => {
     []
   );
 
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+
   //use get notification rtk api
   const { data: notifications, isLoading: isNotificationLoading } =
     useGetNotificationQuery(take);
 
   //read notification
   const [readNotifications] = useReadNotificationMutation();
+
+  useEffect(() => {
+    if (!isAuthenticated) setNotificationState([]);
+  }, [isAuthenticated]);
 
   //absorb the notificaiton
   useEffect(() => {
@@ -72,8 +81,8 @@ const TransactionNotifications = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const handleSocketReceiveNotif = (event: Notification) => {
-      setNotificationState((prevNotifs) => [...prevNotifs, event]);
+    const handleSocketReceiveNotif = (newNotif: Notification) => {
+      setNotificationState((prevNotifs) => [newNotif, ...prevNotifs]);
     };
 
     socket.on("receiveNotification", handleSocketReceiveNotif);
@@ -101,8 +110,9 @@ const TransactionNotifications = () => {
       onOpenChange={(v) => {
         setOpen(v);
         if (v) {
+          //setting the notif id
           handleReadNotifications(
-            notifications
+            notificationState
               ?.filter((n) => n.read === "UNREAD")
               .map((n) => n.id) || []
           );
