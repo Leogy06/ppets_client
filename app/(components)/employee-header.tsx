@@ -2,18 +2,9 @@
 
 import { ModeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
-import React, { useState, useTransition } from "react";
-import { Bell, MenuIcon } from "lucide-react";
+import React from "react";
+import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useGetNotificationQuery } from "@/lib/api/notificationApi";
-import { Spinner } from "@/components/ui/spinner";
 import UserAvatar from "./common/user-avatar";
 
 import {
@@ -25,8 +16,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { usePathname } from "next/navigation";
-import { useRouterTransition } from "../(hooks)/routerTransition";
 import { useLoading } from "../(context)/LoadingContext";
+import TransactionNotifications from "./common/notification-transaction";
 
 const EmployeeHeader = () => {
   return (
@@ -59,61 +50,13 @@ const EmployeeHeader = () => {
         <div className="flex items-center gap-2">
           {/* You can later add: <UserDropdown /> here */}
           <UserAvatar />
-          <Notification />
+          <TransactionNotifications />
           <ModeToggle />
         </div>
       </div>
     </header>
   );
 };
-
-function Notification() {
-  const [take, setTake] = useState(5);
-  const { data: notifications, isLoading: isNotificationLoading } =
-    useGetNotificationQuery(take);
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant={"ghost"} className="relative">
-          {notifications?.some((n) => n.read === "UNREAD") && (
-            <span className=" absolute -top-1 -right-1 rounded-full w-5 h-5 text-white bg-red-500">
-              {notifications?.filter((item) => item.read === "UNREAD").length}
-            </span>
-          )}
-          <Bell />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem className="text-center font-bold">
-          {isNotificationLoading ? <Spinner /> : "Notification"}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {notifications?.length === 0 ? (
-          <DropdownMenuItem asChild>
-            <h3 className="text-center font-bold text-muted-foreground">
-              --No notifications--
-            </h3>
-          </DropdownMenuItem>
-        ) : (
-          notifications?.map((item) => (
-            <DropdownMenuItem key={item.id} asChild>
-              <p
-                className={`${
-                  item.read === "UNREAD"
-                    ? "text-foreground font-semibold"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {item.message}
-              </p>
-            </DropdownMenuItem>
-          ))
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
 
 const pages = [
   { path: "/employee", name: "Assets" },

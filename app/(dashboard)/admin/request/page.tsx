@@ -15,8 +15,6 @@ const Request = () => {
     pageSize,
   });
 
-  console.log("Transactions ", data);
-
   const handleChangePage = (val: number) => {
     setPageSize(val);
   };
