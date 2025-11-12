@@ -24,17 +24,23 @@ export const transactionApi = createApi({
     }),
 
     //update transaction
-    updateStatus: builder.mutation<
-      void,
-      { status: Status; transactionId: string }
-    >({
-      query: ({ transactionId, status }) => ({
-        url: `/api/transaction/update-status/${transactionId}`,
+    approveTransaction: builder.mutation<void, { transactionId: string }>({
+      query: ({ transactionId }) => ({
+        url: `/api/transaction/approve-transaction/${transactionId}`,
         method: "PUT",
-        body: { status },
       }),
       invalidatesTags: ["Transactions"],
     }),
+
+    //reject transaction
+    rejectTransaction: builder.mutation<void, { transactionId: string }>({
+      query: ({ transactionId }) => ({
+        url: `/api/transaction/reject-transaction/${transactionId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
+
     createTransaction: builder.mutation<void, CreateTransactionDto>({
       query: (dto) => ({
         url: "/api/transaction",
@@ -66,7 +72,13 @@ export const {
 
   //for admin
   useGetTransactionQuery,
-  useUpdateStatusMutation,
+
+  //update transaction
+  // approve
+  useApproveTransactionMutation,
+  // reject
+  useRejectTransactionMutation,
+
   useGetApprovedTransactionQuery,
 
   //for employee transactions

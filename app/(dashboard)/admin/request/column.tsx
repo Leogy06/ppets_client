@@ -1,6 +1,7 @@
 "use client";
 
 import { StatusColor } from "@/app/(components)/common/status-color";
+import ErrorExtractor from "@/app/(components)/ErrorExtractor";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,13 +11,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useUpdateStatusMutation } from "@/lib/api/transactionApi";
+import {
+  useApproveTransactionMutation,
+  useRejectTransactionMutation,
+} from "@/lib/api/transactionApi";
 import { Employee, Status, Transaction } from "@/types";
+import { ErrorResponse, ZodErrorResponse } from "@/types/dto";
 import { formatDate } from "@/utils/dateFormatter";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { ColumnDef } from "@tanstack/react-table";
 import { CircleCheckBig, CircleOff, Clock, OctagonX } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const requestColumns: ColumnDef<Transaction>[] = [
   {
@@ -88,21 +94,35 @@ function StatusButton({
   transaction: Transaction;
 }) {
   const [open, setOpen] = useState(false);
-  const [updateTransactionStatus, { isLoading }] = useUpdateStatusMutation();
+
+  const [approveTransaction, { isLoading: isApproveTransactionLoading }] =
+    useApproveTransactionMutation();
+  const [rejectTransaction, { isLoading: isRejectTransactionloading }] =
+    useRejectTransactionMutation();
+
   const icon =
     textStatus === Status.APPROVED ? <CircleCheckBig /> : <CircleOff />;
 
-  const handleUpdateStatus = async () => {
+  const handleUpdateTransaction = async () => {
     try {
-      const response = await updateTransactionStatus({
-        transactionId: transaction.id,
-        status: textStatus,
-      }).unwrap();
-      console.log("resposne ", response);
+      if (textStatus === Status.APPROVED) {
+        await approveTransaction({ transactionId: transaction.id }).unwrap();
+        toast.success("Transaction approved succesfully!");
+      } else if (textStatus === Status.REJECTED) {
+        await rejectTransaction({ transactionId: transaction.id }).unwrap();
+        toast.info("Transaction has been rejected.");
+      } else {
+        throw new Error("Unknown action.");
+      }
     } catch (error) {
-      console.log("Unable to update status. ", error);
+      console.error("Unable to update transaction. ", error);
+      toast.error(
+        <ErrorExtractor
+          mainMsg={error as ErrorResponse}
+          arrayMsg={(error as ZodErrorResponse).data.errors}
+        />
+      );
     }
-    console.log("Status updated. ", textStatus);
   };
 
   return (
@@ -137,13 +157,16 @@ function StatusButton({
         </DialogHeader>
         <DialogFooter>
           <Button
-            disabled={isLoading}
+            disabled={isApproveTransactionLoading || isRejectTransactionloading}
             onClick={() => setOpen(false)}
             variant={"ghost"}
           >
             Cancel
           </Button>
-          <Button onClick={handleUpdateStatus} disabled={isLoading}>
+          <Button
+            onClick={handleUpdateTransaction}
+            disabled={isApproveTransactionLoading || isRejectTransactionloading}
+          >
             Proceed
           </Button>
         </DialogFooter>
