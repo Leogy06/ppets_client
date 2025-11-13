@@ -9,6 +9,7 @@ import { transactionApi } from "./api/transactionApi";
 import { notificationApi } from "./api/notificationApi";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { dashboardApi } from "./api/dashboardApi";
 
 const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   [employeeApi.reducerPath]: employeeApi.reducer,
   [transactionApi.reducerPath]: transactionApi.reducer,
   [notificationApi.reducerPath]: notificationApi.reducer,
+  [dashboardApi.reducerPath]: dashboardApi.reducer,
 });
 
 // only persist auth slice
@@ -42,7 +44,8 @@ export const store = configureStore({
       .concat(employeeApi.middleware)
       .concat(userApi.middleware)
       .concat(transactionApi.middleware)
-      .concat(notificationApi.middleware),
+      .concat(notificationApi.middleware)
+      .concat(dashboardApi.middleware),
 });
 
 export const persistor = persistStore(store);
