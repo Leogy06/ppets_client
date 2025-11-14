@@ -70,15 +70,12 @@ function CreateRequest() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("form data: ", transactionFormData);
     setOpenConfirmCreateTransaction(true);
   };
 
   const handleCreateTransaction = async () => {
     try {
       const response = await createTransaction(transactionFormData).unwrap();
-
-      console.log("response: ", response);
 
       //reset the form and close the dialog
       setTransactionFormData({

@@ -351,9 +351,6 @@ function EmployeeUser({ employeeId }: { employeeId: number }) {
   };
 
   const handleCreateUserEmployee = async (role: number) => {
-    console.log("EMp ", employeeId);
-    console.log("role ", role);
-
     try {
       await createUserEmployee({
         empId: employeeId,
