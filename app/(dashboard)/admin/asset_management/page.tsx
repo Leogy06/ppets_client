@@ -119,9 +119,12 @@ function AddItemDialog() {
 
   const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    const numberFields = ["UNIT_VALUE", "QUANTITY"];
+
     setFormData((prevForm) => ({
       ...prevForm,
-      [name]: value,
+      [name]: numberFields.includes(name) ? Number(value) : value,
     }));
   };
 
