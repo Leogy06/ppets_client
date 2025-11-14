@@ -22,8 +22,8 @@ export type CreateItemDto = {
   ID?: number;
   ITEM_NAME: string;
   DESCRIPTION: string;
-  UNIT_VALUE: number;
-  QUANTITY: number;
+  UNIT_VALUE: number | null;
+  QUANTITY: number | null;
   // TOTAL_VALUE: number | null;
   // STOCK_QUANTITY: number;
   RECEIVED_AT: string; // or Date, depending on how you handle it
@@ -36,7 +36,7 @@ export type CreateItemDto = {
   // DELETE: number;
   PAR_NO: string | null;
   MR_NO: string;
-  ACCOUNT_CODE: number;
+  ACCOUNT_CODE: number | null;
 
   DELETE?: number;
   // ADDED_BY: number;

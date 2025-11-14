@@ -142,30 +142,36 @@ function ItemsTable({ items }: { items: RecentItem[] }) {
     <FadeIn delay={0.7}>
       <Card className="p-4">
         <h3 className="font-semibold mb-3">Assets list</h3>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.map((it) => (
-              <TableRow key={it.ID}>
-                <TableCell>{it.ID}</TableCell>
-                <TableCell>{it.ITEM_NAME}</TableCell>
-                <TableCell>Available</TableCell>
-                <TableCell>
-                  <button className="text-[var(--primary-700)] hover:underline">
-                    View
-                  </button>
-                </TableCell>
+        {items.length === 0 ? (
+          <span className="text-center leading-normal text-muted-foreground my-4">
+            --No items--
+          </span>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {items.map((it) => (
+                <TableRow key={it.ID}>
+                  <TableCell>{it.ID}</TableCell>
+                  <TableCell>{it.ITEM_NAME}</TableCell>
+                  <TableCell>Available</TableCell>
+                  <TableCell>
+                    <button className="text-[var(--primary-700)] hover:underline">
+                      View
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </Card>
     </FadeIn>
   );

@@ -31,7 +31,8 @@ import { parseNumberSafe } from "@/lib/utils";
 import { extractedError } from "@/utils/errorExtractor";
 import { toast } from "sonner";
 import ErrorExtractor from "@/app/(components)/ErrorExtractor";
-import { ErrorResponse, ZodErrorResponse } from "@/types/dto";
+import { CreateItemDto, ErrorResponse, ZodErrorResponse } from "@/types/dto";
+import { motion } from "framer-motion";
 
 const AssetManagement = () => {
   const [pageIndex, setPageIndex] = useState(1);
@@ -84,40 +85,17 @@ const AssetManagement = () => {
   );
 };
 
-interface CreateItemState {
-  ID?: number;
-  ITEM_NAME: string;
-  DESCRIPTION: string;
-  UNIT_VALUE: string;
-  QUANTITY: string;
-  // TOTAL_VALUE: number | null;
-  // STOCK_QUANTITY: number;
-  RECEIVED_AT: string; // or Date, depending on how you handle it
-  PIS_NO: string;
-  PROP_NO: string;
-  SERIAL_NO: string;
-  ICS_NO: string;
-  // DEPARTMENT_ID: number;
-  REMARKS: string | null;
-  // DELETE: number;
-  PAR_NO: string | null;
-  MR_NO: string;
-  ACCOUNT_CODE: string;
-
-  DELETE?: number;
-}
-
 //add item dialog
 function AddItemDialog() {
   //for input
 
   const [openCreateItemDialog, setOpenCreateItemDialog] = useState(false);
 
-  const [formData, setFormData] = useState<CreateItemState>({
+  const [formData, setFormData] = useState<CreateItemDto>({
     ITEM_NAME: "",
     DESCRIPTION: "",
-    UNIT_VALUE: "",
-    QUANTITY: "",
+    UNIT_VALUE: null,
+    QUANTITY: null,
     RECEIVED_AT: "",
     PIS_NO: "",
     PROP_NO: "",
@@ -125,7 +103,7 @@ function AddItemDialog() {
     REMARKS: "",
     PAR_NO: "",
     MR_NO: "",
-    ACCOUNT_CODE: "",
+    ACCOUNT_CODE: null,
     ICS_NO: "",
   });
 
@@ -139,85 +117,17 @@ function AddItemDialog() {
     setIsConfirmOpen(true);
   };
 
-  const inputs: {
-    name: string;
-    label: string;
-    type: string;
-    required?: boolean;
-  }[] = [
-    {
-      name: "ITEM_NAME",
-      type: "text",
-      label: "Item name",
-      required: true,
-    },
-    {
-      name: "DESCRIPTION",
-      type: "text",
-      label: "Description",
-      required: true,
-    },
-    {
-      name: "UNIT_VALUE",
-      type: "number",
-      label: "Unit value",
-      required: true,
-    },
-    {
-      name: "QUANTITY",
-      type: "number",
-      label: "Quantity",
-      required: true,
-    },
-    {
-      name: "PIS_NO",
-      type: "text",
-      label: "PIS no.",
-    },
-    {
-      name: "PROP_NO",
-      type: "text",
-      label: "Prop no.",
-    },
-    {
-      name: "SERIAL_NO",
-      type: "text",
-      label: "Serial no.",
-    },
-    {
-      name: "ICS_NO",
-      type: "text",
-      label: "ICS no.",
-    },
-    {
-      name: "REMARKS",
-      type: "text",
-      label: "Remarks",
-    },
-    {
-      name: "PAR_NO",
-      type: "text",
-      label: "PAR no.",
-    },
-    {
-      name: "MR_NO",
-      type: "text",
-      label: "MR no.",
-    },
-  ];
+  const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+  };
 
   const handleConfirm = async () => {
     try {
-      const validateData = {
-        ...formData,
-        UNIT_VALUE: parseNumberSafe(formData.UNIT_VALUE),
-        QUANTITY: parseNumberSafe(formData.QUANTITY),
-        ACCOUNT_CODE: parseNumberSafe(formData.ACCOUNT_CODE),
-        updatedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-      };
-
-      await creatItem(validateData).unwrap();
+      await creatItem(formData).unwrap();
 
       toast.success("Item created successfully!", {
         duration: 10000,
@@ -225,6 +135,23 @@ function AddItemDialog() {
       //close dialog
       setIsConfirmOpen(false);
       setOpenCreateItemDialog(false);
+
+      //clear state
+      setFormData({
+        ITEM_NAME: "",
+        DESCRIPTION: "",
+        UNIT_VALUE: null,
+        QUANTITY: null,
+        RECEIVED_AT: "",
+        PIS_NO: "",
+        PROP_NO: "",
+        SERIAL_NO: "",
+        REMARKS: "",
+        PAR_NO: "",
+        MR_NO: "",
+        ACCOUNT_CODE: null,
+        ICS_NO: "",
+      });
     } catch (error) {
       console.error("Unable to create new item ", error);
 
@@ -247,31 +174,209 @@ function AddItemDialog() {
         Add item
       </Button>
       <DialogContent className="sm:max-w-[623px]  max-h-[425px] overflow-auto">
-        <form onSubmit={handleSubmit}>
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+        >
           <DialogHeader>
             <DialogTitle asChild>
               <h3>Add item</h3>
             </DialogTitle>
             <DialogDescription>Add new Items here</DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 my-4">
-            {inputs.map(({ name, label, required, type }) => (
-              <div key={name} className="grid gap-3">
-                <Label htmlFor={name}>{label}</Label>
-                <Input
-                  id={name}
-                  name={name}
-                  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  value={(formData as any)[name]}
-                  onChange={(e) =>
-                    setFormData({ ...formData, [name]: e.target.value })
-                  }
-                  type={type}
-                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                  required={required}
-                />
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+            {/* ITEM_NAME */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="ITEM_NAME">Item name</Label>
+              <Input
+                id="ITEM_NAME"
+                name="ITEM_NAME"
+                type="text"
+                required
+                value={formData.ITEM_NAME || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* DESCRIPTION */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="DESCRIPTION">Description</Label>
+              <Input
+                id="DESCRIPTION"
+                name="DESCRIPTION"
+                type="text"
+                required
+                value={formData.DESCRIPTION || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* UNIT_VALUE */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="UNIT_VALUE">Unit value</Label>
+              <Input
+                id="UNIT_VALUE"
+                name="UNIT_VALUE"
+                type="number"
+                required
+                value={formData.UNIT_VALUE?.toString() || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* QUANTITY */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="QUANTITY">Quantity</Label>
+              <Input
+                id="QUANTITY"
+                name="QUANTITY"
+                type="number"
+                required
+                value={formData.QUANTITY?.toString() || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* PIS_NO */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="PIS_NO">PIS no.</Label>
+              <Input
+                id="PIS_NO"
+                name="PIS_NO"
+                type="text"
+                value={formData.PIS_NO || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* PROP_NO */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="PROP_NO">Prop no.</Label>
+              <Input
+                id="PROP_NO"
+                name="PROP_NO"
+                type="text"
+                value={formData.PROP_NO || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* SERIAL_NO */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="SERIAL_NO">Serial no.</Label>
+              <Input
+                id="SERIAL_NO"
+                name="SERIAL_NO"
+                type="text"
+                value={formData.SERIAL_NO || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* ICS_NO */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="ICS_NO">ICS no.</Label>
+              <Input
+                id="ICS_NO"
+                name="ICS_NO"
+                type="text"
+                value={formData.ICS_NO || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* REMARKS */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="REMARKS">Remarks</Label>
+              <Input
+                id="REMARKS"
+                name="REMARKS"
+                type="text"
+                value={formData.REMARKS || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* PAR_NO */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="PAR_NO">PAR no.</Label>
+              <Input
+                id="PAR_NO"
+                name="PAR_NO"
+                type="text"
+                value={formData.PAR_NO || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
+
+            {/* MR_NO */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.55 }}
+              className="grid gap-1"
+            >
+              <Label htmlFor="MR_NO">MR no.</Label>
+              <Input
+                id="MR_NO"
+                name="MR_NO"
+                type="text"
+                value={formData.MR_NO || ""}
+                onChange={handleOnchange}
+              />
+            </motion.div>
 
             <DatePicker formData={formData} setFormData={setFormData} />
           </div>
@@ -283,7 +388,7 @@ function AddItemDialog() {
             </DialogClose>
             <Button type="submit">Create</Button>
           </DialogFooter>
-        </form>
+        </motion.form>
       </DialogContent>
 
       {/* 🟩 Child Confirmation Dialog */}
@@ -317,15 +422,20 @@ function DatePicker({
   formData,
   setFormData,
 }: {
-  formData: CreateItemState;
-  setFormData: React.Dispatch<React.SetStateAction<CreateItemState>>;
+  formData: CreateItemDto;
+  setFormData: React.Dispatch<React.SetStateAction<CreateItemDto>>;
 }) {
   const [date, setDate] = useState<Date | undefined>(undefined);
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <div className="flex flex-col">
-          <Label className="mb-3">Received at</Label>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.55 }}
+      className="grid gap-1"
+    >
+      <Label htmlFor="MR_NO">Received Date</Label>
+      <Popover>
+        <PopoverTrigger asChild>
           <Button
             type="button"
             variant="outline"
@@ -334,23 +444,22 @@ function DatePicker({
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date ? format(date, "PPP") : <span>Received date</span>}
           </Button>
-        </div>
-      </PopoverTrigger>
-
-      <PopoverContent className="w-auto p-0">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={(selectedDate) => {
-            setDate(selectedDate ?? undefined);
-            setFormData({
-              ...formData,
-              RECEIVED_AT: selectedDate ? selectedDate.toISOString() : "",
-            });
-          }}
-        />
-      </PopoverContent>
-    </Popover>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={(selectedDate) => {
+              setDate(selectedDate ?? undefined);
+              setFormData({
+                ...formData,
+                RECEIVED_AT: selectedDate ? selectedDate.toISOString() : "",
+              });
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    </motion.div>
   );
 }
 
