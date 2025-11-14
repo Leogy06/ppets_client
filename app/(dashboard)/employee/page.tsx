@@ -63,9 +63,12 @@ function AssetCards({ transaction }: { transaction: Transaction }) {
 
         <div className="mt-3 flex justify-between items-center">
           <span className="font-medium">Quantity: {transaction.quantity}</span>
-          <span className="inline-block text-white rounded-lg bg-primary px-4 py-1.5 text-sm font-medium shadow-sm transition-colors">
-            ₱{transaction.item.UNIT_VALUE}
-          </span>
+          <div className="flex gap-2">
+            <span className="inline-block text-white rounded-lg bg-primary px-4 py-1.5 text-sm font-medium shadow-sm transition-colors">
+              ₱{transaction.item.UNIT_VALUE}
+            </span>
+            <Button variant={"ghost"}>Return</Button>
+          </div>
         </div>
       </div>
     </div>

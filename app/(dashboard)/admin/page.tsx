@@ -192,7 +192,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-100)] to-[var(--bg-200)] text-gray-900 p-6">
       <StatsGrid data={dashboardData} />
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="my-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <TinyTrend data={trendData} />
         <RecentItems items={dashboardData.recentItems} />
         <FadeIn delay={0.8}>
