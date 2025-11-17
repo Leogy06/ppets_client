@@ -18,10 +18,16 @@ import {
 import { usePathname } from "next/navigation";
 import { useLoading } from "../(context)/LoadingContext";
 import TransactionNotifications from "./common/notification-transaction";
+import { motion } from "framer-motion";
 
 const EmployeeHeader = () => {
   return (
-    <header className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm">
+    <motion.header
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.7, ease: "backInOut", delay: 0.3 }}
+      className="sticky top-0 z-50 w-full bg-accent/50 backdrop-blur-md border-b border-border shadow-sm"
+    >
       <div className="flex items-center justify-between px-4 py-2">
         {/* 📱 Menu button (visible only on mobile) */}
         <NavigationDrawer />
@@ -55,7 +61,7 @@ const EmployeeHeader = () => {
           <ModeToggle />
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 };
 
