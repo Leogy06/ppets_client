@@ -34,7 +34,7 @@ import ErrorExtractor from "@/app/(components)/ErrorExtractor";
 import { CreateItemDto, ErrorResponse, ZodErrorResponse } from "@/types/dto";
 import { motion } from "framer-motion";
 
-const AssetManagement = () => {
+export default function AssetManagement() {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [itemName, setItemName] = useState("");
@@ -61,7 +61,7 @@ const AssetManagement = () => {
   };
 
   return (
-    <div className=" container mx-auto py-10">
+    <>
       <div className="flex flex-row justify-between items-center mb-4 ">
         <h3 className=" text-lg font-bold leading-tight tracking-tight">
           Asset Management
@@ -81,9 +81,9 @@ const AssetManagement = () => {
         handleItemNameOnchange={handleItemNameOnchange}
         totalPages={data?.count || 0}
       />
-    </div>
+    </>
   );
-};
+}
 
 //add item dialog
 function AddItemDialog() {
@@ -465,5 +465,3 @@ function DatePicker({
     </motion.div>
   );
 }
-
-export default AssetManagement;

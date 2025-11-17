@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const RequestLayout = ({ children }: { children: React.ReactNode }) => {
+const AssetManagementLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.main
       initial={{ opacity: 0, y: 40 }}
@@ -16,4 +16,4 @@ const RequestLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default RequestLayout;
+export default AssetManagementLayout;

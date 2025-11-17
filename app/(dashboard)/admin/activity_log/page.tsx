@@ -1,7 +1,7 @@
 import React from "react";
 
 const ActivityLog = () => {
-  return <div>ActivityLog</div>;
+  return <main>ActivityLog</main>;
 };
 
 export default ActivityLog;
