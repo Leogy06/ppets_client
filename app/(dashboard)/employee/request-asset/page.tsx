@@ -47,11 +47,6 @@ const RequestAsset = () => {
 };
 
 function CreateRequest() {
-  const [pagination, setPagination] = useState({
-    pageIndex: 1,
-    pageSize: 5,
-  });
-
   //create transaction
   const [openConfirmCreateTransaction, setOpenConfirmCreateTransaction] =
     useState(false);
