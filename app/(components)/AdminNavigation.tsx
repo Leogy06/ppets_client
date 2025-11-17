@@ -54,14 +54,17 @@ const AdminHeader = () => {
 
         {/* 🏛️ Logo + System name */}
         <div className=" items-center gap-3 hidden lg:flex">
-          <div className="relative w-12 h-12 border">
+          <div className="relative w-12 h-12">
             <Image
               src="/logo.png"
               alt="PPETS logo"
-              fill
-              className="object-contain rounded-full"
+              height={400}
+              width={600}
+              className=" rounded-full"
               unoptimized
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              placeholder="blur"
+              priority={false}
+              blurDataURL="/blur_logo.png"
             />
           </div>
           <h3 className=" md:block text-lg sm:text-xl font-semibold tracking-tight text-foreground">
