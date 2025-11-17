@@ -27,16 +27,17 @@ const EmployeeHeader = () => {
         <NavigationDrawer />
         {/* 🏛️ Logo + System name */}
         <div className=" items-center gap-3 hidden md:flex">
-          <div className="relative w-12 h-12 border">
-            <Image
-              src="/logo.png"
-              alt="PPETS logo"
-              fill
-              className="object-contain rounded-full"
-              unoptimized
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="PPETS logo"
+            height={50}
+            width={50}
+            className=" rounded-full"
+            unoptimized
+            placeholder="blur"
+            blurDataURL="/blur_logo.png"
+            priority={false}
+          />
           <h3 className=" md:block text-lg sm:text-xl font-semibold tracking-tight text-foreground">
             Property, Plant & Equipment
             <br />

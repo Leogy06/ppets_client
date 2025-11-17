@@ -68,8 +68,8 @@ const Login = () => {
         <Image
           src={"/logo.png"}
           alt="PPETS Logo"
-          width={400}
-          height={300}
+          width={100}
+          height={80}
           priority={false}
           placeholder="blur"
           blurDataURL="/blur_logo.png"
