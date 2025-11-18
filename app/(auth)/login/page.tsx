@@ -74,7 +74,7 @@ const Login = () => {
           placeholder="blur"
           blurDataURL="/blur_logo.png"
           className="rounded-full"
-          unoptimized
+          loading="lazy"
         />
         <h3 className="text-lg sm:text-xl font-semibold text-accent-foreground/50 leading-tight">
           Property, Plant & Equipment

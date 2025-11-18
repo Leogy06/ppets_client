@@ -8,7 +8,7 @@ const LoginLayout = ({ children }: { children: React.ReactNode }) => {
     <motion.main
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: 0.8, ease: "easeOut", delay: 0.8 }}
       className="p-2 sm:p-4 md:p-6 lg:p-8 min-h-screen container mx-auto py-10 flex items-center justify-center"
     >
       {children}

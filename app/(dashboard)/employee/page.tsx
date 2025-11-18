@@ -1,18 +1,26 @@
 "use client";
 
-import { DataTable } from "@/app/(components)/data-table";
 import { PageHeader } from "@/app/(components)/page-header";
 import { useRouterTransition } from "@/app/(hooks)/routerTransition";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   useGetApprovedTransactionQuery,
   useGetTransactionQuery,
 } from "@/lib/api/transactionApi";
-import { Transaction } from "@/types";
+import { Items, Transaction } from "@/types";
 import { GrabIcon } from "lucide-react";
 import React, { useState } from "react";
 
-const Employee = () => {
+export default function Employee() {
   const [pagination, setPagination] = useState({
     pageIndex: 1,
     pageSize: 5,
@@ -45,7 +53,7 @@ const Employee = () => {
       )}
     </>
   );
-};
+}
 
 function AssetCards({ transaction }: { transaction: Transaction }) {
   return (
@@ -67,7 +75,7 @@ function AssetCards({ transaction }: { transaction: Transaction }) {
             <span className="inline-block text-white rounded-lg bg-primary px-4 py-1.5 text-sm font-medium shadow-sm transition-colors">
               ₱{transaction.item.UNIT_VALUE}
             </span>
-            <Button variant={"ghost"}>Return</Button>
+            <ConfirmReturnItem item={transaction.item} />
           </div>
         </div>
       </div>
@@ -75,4 +83,19 @@ function AssetCards({ transaction }: { transaction: Transaction }) {
   );
 }
 
-export default Employee;
+function ConfirmReturnItem({ item }: { item: Items }) {
+  return (
+    <Dialog>
+      <DialogTrigger>Return</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Return Item?</DialogTitle>
+          <DialogDescription>Click Proceed to continue</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button>Proceed</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
