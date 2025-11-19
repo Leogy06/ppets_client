@@ -32,7 +32,7 @@ import { useRouter } from "next/navigation";
 
 const Users = () => {
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [employeeNameFilter, setEmployeeNameFilter] = useState("");
 
   const { data: employeeData, isLoading: isEmployeeLoading } =
