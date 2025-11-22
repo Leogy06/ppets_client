@@ -153,7 +153,6 @@ function ItemsTable({ items }: { items: RecentItem[] }) {
                 <TableCell>ID</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -162,11 +161,6 @@ function ItemsTable({ items }: { items: RecentItem[] }) {
                   <TableCell>{it.ID}</TableCell>
                   <TableCell>{it.ITEM_NAME}</TableCell>
                   <TableCell>Available</TableCell>
-                  <TableCell>
-                    <button className="text-[var(--primary-700)] hover:underline">
-                      View
-                    </button>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -204,12 +198,9 @@ export default function DashboardPage() {
         <FadeIn delay={0.8}>
           <Card className="p-4">
             <h3 className="font-semibold mb-3">Quick stats</h3>
-            <ul className="text-sm text-gray-600 space-y-2">
+            <ul className="text-sm text-foreground space-y-2">
               <li>
-                Total employees:{" "}
-                <strong className="text-gray-800">
-                  {dashboardData.employees}
-                </strong>
+                Total employees: <strong>{dashboardData.employees}</strong>
               </li>
               <li>
                 Active users: <strong>{dashboardData.activeUsers}</strong>
